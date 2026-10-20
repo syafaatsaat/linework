@@ -3,7 +3,7 @@ import {
   DEFAULT_ORDER,
   SECTION_TYPES,
   blankRow,
-  missingRequired,
+  validateRows,
 } from '../sections/types.js'
 
 export const STORAGE_KEY = 'linework:cv:v1'
@@ -12,7 +12,7 @@ export const STORAGE_KEY = 'linework:cv:v1'
 //   order:    section keys in CV order; 'general' is always first
 //   active:   key of the section shown in the editor
 //   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean, review: boolean } }
-//   missing:  required field keys the last submit of the active section lacked
+//   errors:   what blocked the last submit of the active section (see validateRows)
 //
 // `committed` is what the preview and exports read. `draft` is what the form
 // edits. Submit copies draft → committed; Edit and Cancel copy committed → draft.
@@ -70,7 +70,7 @@ function buildState(saved) {
   for (const key of order) {
     sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]), review.includes(key))
   }
-  return { order, active: 'general', sections, missing: [] }
+  return { order, active: 'general', sections, errors: [] }
 }
 
 export function createInitialState() {
@@ -109,7 +109,7 @@ export function cvReducer(state, action) {
   switch (action.type) {
     case 'select': {
       if (!state.sections[action.key] || action.key === state.active) return state
-      return { ...discardDraft(state, state.active), active: action.key, missing: [] }
+      return { ...discardDraft(state, state.active), active: action.key, errors: [] }
     }
 
     case 'updateField': {
@@ -118,8 +118,8 @@ export function cvReducer(state, action) {
         i === index ? { ...row, [field]: value } : row,
       )
       const next = updateSection(state, key, { draft })
-      // Once a submit has flagged fields, keep the list current as they're filled in.
-      return state.missing.length ? { ...next, missing: missingRequired(key, draft) } : next
+      // Once a submit has flagged problems, keep the list current as they're fixed.
+      return state.errors.length ? { ...next, errors: validateRows(key, draft) } : next
     }
 
     case 'addEntry': {
@@ -134,12 +134,12 @@ export function cvReducer(state, action) {
 
     case 'submit': {
       const { key } = action
-      const missing = missingRequired(key, state.sections[key].draft)
-      if (missing.length) {
-        return { ...state, missing }
+      const errors = validateRows(key, state.sections[key].draft)
+      if (errors.length) {
+        return { ...state, errors }
       }
       const committed = clone(state.sections[key].draft)
-      return { ...updateSection(state, key, { committed, editing: false, review: false }), missing: [] }
+      return { ...updateSection(state, key, { committed, editing: false, review: false }), errors: [] }
     }
 
     case 'edit': {
@@ -148,7 +148,7 @@ export function cvReducer(state, action) {
     }
 
     case 'cancel':
-      return { ...discardDraft(state, action.key), missing: [] }
+      return { ...discardDraft(state, action.key), errors: [] }
 
     case 'addSection': {
       const { key } = action
@@ -158,7 +158,7 @@ export function cvReducer(state, action) {
         order: [...state.order, key],
         sections: { ...state.sections, [key]: freshSection(key) },
         active: key,
-        missing: [],
+        errors: [],
       }
     }
 
@@ -170,7 +170,7 @@ export function cvReducer(state, action) {
       const sections = { ...state.sections }
       delete sections[key]
       const active = state.active === key ? order[Math.max(0, index - 1)] : state.active
-      return { ...state, order, sections, active, missing: [] }
+      return { ...state, order, sections, active, errors: [] }
     }
 
     case 'move': {

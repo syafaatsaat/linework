@@ -8,6 +8,20 @@ export function formatMonth(value) {
   return (m ? MONTHS[m - 1] + ' ' : '') + year
 }
 
+// Orders two month values ("YYYY-MM" or "YYYY"). When either lacks a month
+// and the years match, they count as equal: "2020" isn't after "2020-03".
+export function compareMonths(a, b) {
+  const [ya, ma] = String(a).split('-').map(Number)
+  const [yb, mb] = String(b).split('-').map(Number)
+  if (ya !== yb) return ya - yb
+  return ma && mb ? ma - mb : 0
+}
+
+// This month as "YYYY-MM".
+export function currentMonth(date = new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+}
+
 // "Jul 2020 – Present". A blank end date means the role is ongoing.
 export function formatRange(from, to) {
   return (formatMonth(from) || '—') + ' – ' + (formatMonth(to) || 'Present')

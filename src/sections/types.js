@@ -1,5 +1,7 @@
 import {
   bareUrl,
+  compareMonths,
+  currentMonth,
   formatMonth,
   formatRange,
   joinParts,
@@ -11,6 +13,8 @@ export const PROFICIENCY_LEVELS = ['Native', 'Fluent', 'Professional', 'Conversa
 
 export const SUMMARY_MAX = 400
 
+// Section shape adds `range: [fromKey, toKey]` when an entry has a date span.
+//
 // Field shape: { key, label, type, half?, placeholder?, options?, maxLength?, required?, hint? }
 // type is one of: text, email, tel, month, textarea, select. Month values are
 // "YYYY-MM", or "YYYY" when only the year is known.
@@ -68,11 +72,12 @@ export const SECTION_TYPES = {
     sheet: 'Work Experience',
     noun: 'experience',
     multi: true,
+    range: ['from', 'until'],
     fields: [
       { key: 'company', label: 'Company', type: 'text', half: true, placeholder: 'Company name' },
       { key: 'position', label: 'Position title', type: 'text', half: true, placeholder: 'Your role' },
       { key: 'responsibilities', label: 'Main responsibilities', type: 'textarea', placeholder: 'One responsibility per line' },
-      { key: 'from', label: 'From', type: 'month', half: true },
+      { key: 'from', label: 'From', type: 'month', half: true, required: true },
       { key: 'until', label: 'Until', type: 'month', half: true, hint: 'Leave blank if you still work here.' },
     ],
     view: (r) => ({
@@ -89,10 +94,11 @@ export const SECTION_TYPES = {
     sheet: 'Education',
     noun: 'education',
     multi: true,
+    range: ['from', 'to'],
     fields: [
       { key: 'school', label: 'School', type: 'text', placeholder: 'School or university' },
       { key: 'titleOfStudy', label: 'Title of study', type: 'text', placeholder: 'e.g. BSc Computer Science' },
-      { key: 'from', label: 'From', type: 'month', half: true },
+      { key: 'from', label: 'From', type: 'month', half: true, required: true },
       { key: 'to', label: 'To', type: 'month', half: true, hint: 'Leave blank if you’re still studying.' },
     ],
     view: (r) => ({
@@ -172,10 +178,34 @@ export function blankRow(sectionKey) {
   return row
 }
 
-// Returns the keys of required fields left empty. Only single-row sections
-// (general) declare required fields, so the first row is the one to check.
-export function missingRequired(sectionKey, rows) {
-  const required = SECTION_TYPES[sectionKey].fields.filter((f) => f.required)
-  const row = rows[0] || {}
-  return required.filter((f) => !String(row[f.key] || '').trim()).map((f) => f.key)
+// Problems that block Submit, as [{ index, fields, kind }]:
+//   required — a required field is empty, checked on every entry.
+//   range    — an entry's end date is before its start date.
+//   future   — the end date is blank (Present) but the start date is after
+//              this month, so the entry can't be ongoing yet.
+// `today` ("YYYY-MM") is injectable for tests.
+export function validateRows(sectionKey, rows, today = currentMonth()) {
+  const type = SECTION_TYPES[sectionKey]
+  const errors = []
+
+  rows.forEach((row, index) => {
+    for (const field of type.fields) {
+      if (field.required && !String(row[field.key] || '').trim()) {
+        errors.push({ index, fields: [field.key], kind: 'required' })
+      }
+    }
+  })
+
+  if (type.range) {
+    const [from, to] = type.range
+    rows.forEach((row, index) => {
+      if (row[from] && row[to] && compareMonths(row[from], row[to]) > 0) {
+        errors.push({ index, fields: [from, to], kind: 'range' })
+      } else if (row[from] && !row[to] && compareMonths(row[from], today) > 0) {
+        errors.push({ index, fields: [from, to], kind: 'future', today })
+      }
+    })
+  }
+
+  return errors
 }

@@ -20,7 +20,18 @@ export default function Field({ id, field, value, invalid, errorId, onChange }) 
 
   let control
   if (type === 'month') {
-    control = <MonthField id={id} labelId={labelId} label={label} value={value} describedBy={describedBy} onChange={onChange} />
+    control = (
+      <MonthField
+        id={id}
+        labelId={labelId}
+        label={label}
+        value={value}
+        required={field.required}
+        invalid={invalid}
+        describedBy={describedBy}
+        onChange={onChange}
+      />
+    )
   } else if (type === 'textarea') {
     control = <textarea {...shared} rows={maxLength ? 4 : 3} placeholder={placeholder} maxLength={maxLength} />
   } else if (type === 'select') {

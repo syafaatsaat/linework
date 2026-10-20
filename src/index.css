@@ -612,6 +612,15 @@ textarea::placeholder {
   color: var(--muted);
 }
 
+.alert p,
+.alert ul {
+  margin: 0;
+}
+
+.alert ul {
+  padding-left: 18px;
+}
+
 .alert {
   margin: 0;
   padding: 10px 12px;

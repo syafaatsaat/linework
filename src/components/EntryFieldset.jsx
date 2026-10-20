@@ -1,6 +1,6 @@
 import Field from './Field.jsx'
 
-export default function EntryFieldset({ sectionKey, type, row, index, missing, errorId, onChange, onRemove }) {
+export default function EntryFieldset({ sectionKey, type, row, index, errors, errorId, onChange, onRemove }) {
   const legend = type.multi ? `Entry ${index + 1}` : 'Details'
 
   return (
@@ -13,7 +13,7 @@ export default function EntryFieldset({ sectionKey, type, row, index, missing, e
             id={`${sectionKey}-${index}-${field.key}`}
             field={field}
             value={row[field.key] ?? ''}
-            invalid={missing.includes(field.key)}
+            invalid={errors.some((e) => e.index === index && e.fields.includes(field.key))}
             errorId={errorId}
             onChange={(value) => onChange(index, field.key, value)}
           />

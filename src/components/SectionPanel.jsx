@@ -10,10 +10,10 @@ import { SECTION_ERROR_ID, SECTION_FORM_ID } from './formIds.js'
 // changes in the Sections sheet, so the panel drops those controls.
 //
 // Actions that replace the focused control hand focus on (see lib/focus.js):
-// submit → Edit button, or the first missing field; cancel → Edit button;
+// submit → Edit button, or the first invalid field; cancel → Edit button;
 // add/remove entry → the new entry's first field / the add button;
 // remove section → the next section's title.
-export default function SectionPanel({ sectionKey, position, count, section, missing, actions, compact = false }) {
+export default function SectionPanel({ sectionKey, position, count, section, errors, actions, compact = false }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
 
@@ -114,7 +114,7 @@ export default function SectionPanel({ sectionKey, position, count, section, mis
 
       {editing ? (
         <div className="panel-body">
-          <ValidationAlert id={SECTION_ERROR_ID} type={type} missing={missing} />
+          <ValidationAlert id={SECTION_ERROR_ID} type={type} rows={draft} errors={errors} />
           {type.hint && <p className="panel-hint">{type.hint}</p>}
 
           {draft.map((row, i) => (
@@ -124,7 +124,7 @@ export default function SectionPanel({ sectionKey, position, count, section, mis
               type={type}
               row={row}
               index={i}
-              missing={missing}
+              errors={errors}
               errorId={SECTION_ERROR_ID}
               onChange={(index, field, value) => actions.updateField(sectionKey, index, field, value)}
               onRemove={removeEntry}
