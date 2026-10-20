@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CV Generator — Drafting v2 dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0B2A5B}a:hover{color:#1E5BB8}
+input,textarea,select{font:inherit;color:inherit}
+input:focus,textarea:focus,select:focus{outline:2px solid #4A80DE;outline-offset:0}
+button:focus-visible,a:focus-visible{outline:2px solid #4A80DE;outline-offset:3px}
+button:disabled{cursor:not-allowed}
+input::placeholder,textarea::placeholder{color:#7D8FAD}
+@media print{
+  @page{size:A4;margin:16mm 18mm}
+  body{background:#FFFFFF !important}
+  .no-print,.dp-paged{display:none !important}
+  .dp-root{background:#FFFFFF !important;background-image:none !important}
+  .dp-wrap{padding:0 !important;display:block !important}
+  .dp-stage{padding:0 !important;display:block !important}
+  .dp-holder{position:static !important;max-width:none !important}
+  .dp-flow{position:static !important;visibility:visible !important;padding:0 !important}
+  .dp-blk{break-inside:avoid}
+  .dp-head{break-after:avoid}
+}
+</style>
+</helmet>
+<div class="dp-root" style="min-height: 100vh; background-color: {{t.bg}}; background-image: linear-gradient({{t.gMaj}} 1px, transparent 1px), linear-gradient(90deg, {{t.gMaj}} 1px, transparent 1px), linear-gradient({{t.gMin}} 1px, transparent 1px), linear-gradient(90deg, {{t.gMin}} 1px, transparent 1px); background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px; color: {{t.ink}}; font-family: 'Hanken Grotesk', system-ui, sans-serif; font-size: 15px; line-height: 1.5; color-scheme: {{t.scheme}}">
+
+<header class="no-print" style="border-bottom: 2px solid {{t.strong}}; background: {{t.bg}}">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 14px">
+<svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="22" height="22"></rect><path d="M3 10h22M10 10v15"></path></svg>
+<span style="font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: 0.04em">cv/drafting</span>
+</div>
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+<button type="button" onClick="{{toggleDark}}" aria-pressed="{{darkPressed}}" aria-label="Dark mode" style="min-height: 44px; min-width: 44px; padding: 0 12px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.strong}}; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 12px">
+<sc-if value="{{isDark}}" hint-placeholder-val="{{true}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></sc-if>
+<sc-if value="{{isLight}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg></sc-if>
+{{themeLabel}}</button>
+<div role="group" aria-label="Export CV" style="display: flex">
+<button type="button" onClick="{{exportPdf}}" style="min-height: 44px; padding: 0 16px; background: {{t.solid}}; color: {{t.onSolid}}; border: 1.5px solid {{t.solid}}; border-radius: 4px 0 0 4px; font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path><path d="M12 11v6M9 14l3 3 3-3"></path></svg>
+Export PDF</button>
+<button type="button" onClick="{{exportDocx}}" style="min-height: 44px; padding: 0 16px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.solid}}; border-left: 0; border-radius: 0 4px 4px 0; font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path><path d="M9 12l1 5 2-4 2 4 1-5"></path></svg>
+DOCX</button>
+</div>
+</div>
+</div>
+</header>
+
+<div class="dp-wrap" style="max-width: 1440px; margin: 0 auto; padding: 32px 28px 72px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+
+<aside class="no-print" aria-label="CV editor" style="flex: 1 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<nav aria-label="CV sections, drag to reorder" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="7">
+<button type="button" draggable="{{tb.draggable}}" onDragStart="{{tb.dragStart}}" onDragOver="{{tb.dragOver}}" onDrop="{{tb.drop}}" onDragEnd="{{dragEnd}}" onClick="{{tb.pick}}" aria-pressed="{{tb.pressed}}" style="flex: 1 1 120px; min-height: 60px; padding: 8px 12px; background: {{tb.bg}}; color: {{tb.fg}}; border: 1.5px solid {{t.strong}}; border-radius: 4px; box-shadow: {{tb.dropShadow}}; opacity: {{tb.opacity}}; text-align: left; font-family: 'Hanken Grotesk', sans-serif; cursor: {{tb.cursor}}; display: flex; flex-direction: column; gap: 1px">
+<span style="font-family: 'Space Mono', monospace; font-size: 11px; opacity: 0.85">{{tb.handle}}{{tb.num}} · {{tb.status}}</span>
+<span style="font-size: 15px; font-weight: 600">{{tb.label}}</span>
+</button>
+</sc-for>
+<sc-if value="{{canAdd}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{toggleMenu}}" aria-expanded="{{menuExpanded}}" style="flex: 1 1 120px; min-height: 60px; padding: 8px 12px; background: transparent; color: {{t.accent}}; border: 1.5px dashed {{t.accent}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; cursor: pointer">+ Add section</button>
+</sc-if>
+</nav>
+<p style="margin: -4px 0 0; font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">Drag tabs to reorder the CV. General stays at the top.</p>
+<sc-if value="{{menuOpen}}" hint-placeholder-val="{{false}}">
+<div style="border: 1.5px solid {{t.strong}}; border-radius: 4px; background: {{t.panel}}; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">ADD AN OPTIONAL SECTION</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{addable}}" as="a" hint-placeholder-count="2">
+<button type="button" onClick="{{a.add}}" style="min-height: 44px; padding: 0 16px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.line}}; border-radius: 4px; font-family: 'Hanken Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer">{{a.label}}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<form onSubmit="{{p.submit}}" style="border: 1.5px solid {{t.strong}}; border-radius: 4px; background: {{t.panel}}; padding: 22px 24px 26px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div>
+<p style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">SECTION {{p.num}} · {{p.statusUpper}}</p>
+<h2 style="margin: 2px 0 0; font-size: 22px; font-weight: 700">{{p.label}}</h2>
+</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<sc-if value="{{p.removable}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{p.removeSection}}" style="min-height: 44px; padding: 0 10px; background: transparent; color: {{t.muted}}; border: 0; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; text-decoration: underline; cursor: pointer">Remove section</button>
+</sc-if>
+<button type="button" onClick="{{p.toggle}}" style="min-height: 44px; min-width: 96px; padding: 0 16px; background: {{p.btnBg}}; color: {{p.btnFg}}; border: 1.5px solid {{t.accent}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; cursor: pointer">{{p.btn}}</button>
+</div>
+</div>
+<sc-if value="{{p.movable}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">
+<span>POSITION ON CV</span>
+<button type="button" onClick="{{p.moveEarlier}}" disabled="{{p.atStart}}" aria-label="Move section earlier on the CV" style="min-height: 44px; padding: 0 12px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.line}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 12px; cursor: pointer; opacity: {{p.earlierOpacity}}">← Earlier</button>
+<button type="button" onClick="{{p.moveLater}}" disabled="{{p.atEnd}}" aria-label="Move section later on the CV" style="min-height: 44px; padding: 0 12px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.line}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 12px; cursor: pointer; opacity: {{p.laterOpacity}}">Later →</button>
+</div>
+</sc-if>
+
+<sc-if value="{{p.editing}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<sc-if value="{{p.hasErr}}" hint-placeholder-val="{{false}}"><p role="alert" style="margin: 0; padding: 10px 12px; border: 1.5px solid {{t.warn}}; border-radius: 4px; color: {{t.warn}}; font-size: 14px; font-weight: 600">{{p.err}}</p></sc-if>
+<sc-if value="{{p.hint}}" hint-placeholder-val="{{false}}"><p style="margin: 0; font-size: 14px; color: {{t.muted}}">{{p.hint}}</p></sc-if>
+<sc-for list="{{p.entries}}" as="e" hint-placeholder-count="2">
+<fieldset style="margin: 0; border: 1.5px dashed {{t.line}}; border-radius: 4px; padding: 14px 16px 16px">
+<legend style="padding: 0 6px; font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">{{e.legend}}</legend>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<sc-for list="{{e.fields}}" as="f" hint-placeholder-count="3">
+<div style="grid-column: {{f.col}}; display: flex; flex-direction: column; gap: 6px">
+<label for="{{f.id}}" style="font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">{{f.label}}</label>
+<sc-if value="{{f.isInput}}" hint-placeholder-val="{{true}}">
+<input id="{{f.id}}" type="{{f.type}}" value="{{f.value}}" placeholder="{{f.ph}}" onChange="{{f.onChange}}" style="border: 1.5px solid {{t.line}}; border-radius: 4px; background: {{t.input}}; padding: 10px 12px; font-size: 15px; min-height: 46px; box-sizing: border-box; width: 100%">
+</sc-if>
+<sc-if value="{{f.isArea}}" hint-placeholder-val="{{false}}">
+<textarea id="{{f.id}}" rows="3" value="{{f.value}}" placeholder="{{f.ph}}" onChange="{{f.onChange}}" style="border: 1.5px solid {{t.line}}; border-radius: 4px; background: {{t.input}}; padding: 10px 12px; font-size: 15px; line-height: 1.5; box-sizing: border-box; width: 100%; resize: vertical"></textarea>
+</sc-if>
+<sc-if value="{{f.isLimited}}" hint-placeholder-val="{{false}}">
+<textarea id="{{f.id}}" rows="4" maxLength="{{f.max}}" aria-describedby="{{f.counterId}}" value="{{f.value}}" placeholder="{{f.ph}}" onChange="{{f.onChange}}" style="border: 1.5px solid {{t.line}}; border-radius: 4px; background: {{t.input}}; padding: 10px 12px; font-size: 15px; line-height: 1.5; box-sizing: border-box; width: 100%; resize: vertical"></textarea>
+<p id="{{f.counterId}}" aria-live="polite" style="margin: 0; align-self: flex-end; font-family: 'Space Mono', monospace; font-size: 12px; color: {{f.counterColor}}">{{f.counter}}</p>
+</sc-if>
+<sc-if value="{{f.isSelect}}" hint-placeholder-val="{{false}}">
+<select id="{{f.id}}" value="{{f.value}}" onChange="{{f.onChange}}" style="border: 1.5px solid {{t.line}}; border-radius: 4px; background: {{t.input}}; padding: 10px 12px; font-size: 15px; min-height: 46px; box-sizing: border-box; width: 100%">
+<sc-for list="{{f.options}}" as="o" hint-placeholder-count="4"><option value="{{o}}">{{o}}</option></sc-for>
+</select>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{e.multi}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; justify-content: flex-end"><button type="button" onClick="{{e.remove}}" aria-label="{{e.removeLabel}}" style="min-height: 44px; padding: 0 6px; background: none; border: 0; color: {{t.muted}}; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; text-decoration: underline; cursor: pointer">Remove entry</button></div>
+</sc-if>
+</fieldset>
+</sc-for>
+<sc-if value="{{p.multi}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{p.addEntry}}" style="align-self: flex-start; min-height: 44px; padding: 0 16px; background: transparent; color: {{t.accent}}; border: 1.5px dashed {{t.accent}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; cursor: pointer">+ Add {{p.noun}}</button>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{p.viewing}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{p.summary}}" as="x" hint-placeholder-count="2">
+<div style="padding: 10px 0; border-top: 1px dashed {{t.line}}"><p style="margin: 0; font-weight: 600">{{x.primary}}</p><p style="margin: 0; color: {{t.muted}}; font-size: 14px">{{x.line}}</p></div>
+</sc-for>
+<sc-if value="{{p.empty}}" hint-placeholder-val="{{false}}"><p style="margin: 0; color: {{t.muted}}">Nothing submitted yet. Press Edit to add entries.</p></sc-if>
+</div>
+</sc-if>
+</form>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<button type="button" onClick="{{prev}}" style="min-height: 44px; padding: 0 14px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.strong}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; cursor: pointer">← Prev</button>
+<span style="font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">{{progress}}</span>
+<button type="button" onClick="{{next}}" style="min-height: 44px; padding: 0 14px; background: transparent; color: {{t.ink}}; border: 1.5px solid {{t.strong}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; cursor: pointer">Next →</button>
+</div>
+</aside>
+
+<main class="dp-stage" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 12px">
+<div class="no-print" style="width: 100%; max-width: 620px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<span style="font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">ATS-ready · single column · text-based</span>
+<button type="button" onClick="{{toggleParser}}" aria-pressed="{{parserPressed}}" style="min-height: 44px; padding: 0 14px; background: transparent; color: {{t.accent}}; border: 1.5px solid {{t.accent}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; cursor: pointer">{{parserLabel}}</button>
+</div>
+<div class="no-print" style="width: 100%; max-width: 620px; display: flex; align-items: center; color: {{t.accent}}; font-family: 'Space Mono', monospace; font-size: 12px">
+<span aria-hidden="true" style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 9px solid {{t.accent}}"></span>
+<span style="flex: 1; height: 1.5px; background: {{t.accent}}"></span>
+<span style="padding: 0 10px">210 mm</span>
+<span style="flex: 1; height: 1.5px; background: {{t.accent}}"></span>
+<span aria-hidden="true" style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 9px solid {{t.accent}}"></span>
+</div>
+
+<div class="dp-holder" style="position: relative; width: 100%; max-width: 620px">
+<sc-if value="{{designOn}}" hint-placeholder-val="{{true}}">
+<article class="dp-paged" ref="{{pageRef}}" aria-label="{{pageAria}}" style="width: 100%; aspect-ratio: 210 / 297; overflow: hidden; background: #FFFFFF; color: #16181D; border: 1.5px solid {{t.strong}}; padding: 48px 50px 52px; box-sizing: border-box; box-shadow: 10px 10px 0 {{t.shadow}}; font-family: 'Hanken Grotesk', Arial, sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; color-scheme: light">
+<sc-for list="{{pageBlocks}}" as="bk" hint-placeholder-count="8">
+<div class="dp-blk {{bk.cls}}" style="padding-top: {{bk.pad}}">
+<sc-if value="{{bk.isHeader}}" hint-placeholder-val="{{false}}">
+<header style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 700; line-height: 1.1">{{bk.name}}</h1>
+<p style="margin: 0; font-size: 12.5px; color: #3A4250">{{bk.contact}}</p>
+<sc-if value="{{bk.hasLinks}}" hint-placeholder-val="{{true}}"><p style="margin: 0; font-size: 12.5px; color: #3A4250">{{bk.links}}</p></sc-if>
+</header>
+</sc-if>
+<sc-if value="{{bk.isHeading}}" hint-placeholder-val="{{false}}"><h2 style="margin: 0; padding-bottom: 4px; border-bottom: 1px solid #1E5BB8; font-size: 14px; font-weight: 700; color: #0B2A5B">{{bk.label}}</h2></sc-if>
+<sc-if value="{{bk.isItem}}" hint-placeholder-val="{{true}}">
+<sc-if value="{{bk.hasPrimary}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 2px 12px; flex-wrap: wrap">
+<h3 style="margin: 0; font-size: 13.5px; font-weight: 700">{{bk.primary}}</h3>
+<span style="font-size: 12px; color: #3A4250">{{bk.meta}}</span>
+</div>
+</sc-if>
+<sc-if value="{{bk.hasPlainSecondary}}" hint-placeholder-val="{{true}}"><p style="margin: 0; color: #3A4250">{{bk.secondary}}</p></sc-if>
+<sc-if value="{{bk.hasLead}}" hint-placeholder-val="{{false}}"><p style="margin: 0"><strong style="font-weight: 700">{{bk.lead}}:</strong> {{bk.secondary}}</p></sc-if>
+<sc-if value="{{bk.hasBody}}" hint-placeholder-val="{{false}}"><p style="margin: 0">{{bk.body}}</p></sc-if>
+<sc-if value="{{bk.hasBullets}}" hint-placeholder-val="{{false}}">
+<ul style="margin: 4px 0 0; padding-left: 18px">
+<sc-for list="{{bk.bullets}}" as="b" hint-placeholder-count="2"><li>{{b}}</li></sc-for>
+</ul>
+</sc-if>
+</sc-if>
+</div>
+</sc-for>
+</article>
+</sc-if>
+
+<div class="dp-flow" ref="{{flowRef}}" style="position: absolute; top: 0; left: 0; width: 100%; visibility: hidden; pointer-events: none; padding: 0 51.5px; box-sizing: border-box; background: #FFFFFF; color: #16181D; font-family: 'Hanken Grotesk', Arial, sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column">
+<sc-for list="{{allBlocks}}" as="bk" hint-placeholder-count="8">
+<div class="dp-blk {{bk.cls}}" data-blk="1" style="padding-top: {{bk.pad}}">
+<sc-if value="{{bk.isHeader}}" hint-placeholder-val="{{false}}">
+<header style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 700; line-height: 1.1">{{bk.name}}</h1>
+<p style="margin: 0; font-size: 12.5px; color: #3A4250">{{bk.contact}}</p>
+<sc-if value="{{bk.hasLinks}}" hint-placeholder-val="{{true}}"><p style="margin: 0; font-size: 12.5px; color: #3A4250">{{bk.links}}</p></sc-if>
+</header>
+</sc-if>
+<sc-if value="{{bk.isHeading}}" hint-placeholder-val="{{false}}"><h2 style="margin: 0; padding-bottom: 4px; border-bottom: 1px solid #1E5BB8; font-size: 14px; font-weight: 700; color: #0B2A5B">{{bk.label}}</h2></sc-if>
+<sc-if value="{{bk.isItem}}" hint-placeholder-val="{{true}}">
+<sc-if value="{{bk.hasPrimary}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 2px 12px; flex-wrap: wrap">
+<h3 style="margin: 0; font-size: 13.5px; font-weight: 700">{{bk.primary}}</h3>
+<span style="font-size: 12px; color: #3A4250">{{bk.meta}}</span>
+</div>
+</sc-if>
+<sc-if value="{{bk.hasPlainSecondary}}" hint-placeholder-val="{{true}}"><p style="margin: 0; color: #3A4250">{{bk.secondary}}</p></sc-if>
+<sc-if value="{{bk.hasLead}}" hint-placeholder-val="{{false}}"><p style="margin: 0"><strong style="font-weight: 700">{{bk.lead}}:</strong> {{bk.secondary}}</p></sc-if>
+<sc-if value="{{bk.hasBody}}" hint-placeholder-val="{{false}}"><p style="margin: 0">{{bk.body}}</p></sc-if>
+<sc-if value="{{bk.hasBullets}}" hint-placeholder-val="{{false}}">
+<ul style="margin: 4px 0 0; padding-left: 18px">
+<sc-for list="{{bk.bullets}}" as="b" hint-placeholder-count="2"><li>{{b}}</li></sc-for>
+</ul>
+</sc-if>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{parserOn}}" hint-placeholder-val="{{false}}">
+<pre class="no-print" aria-label="Plain text an ATS parser would extract" style="width: 100%; min-height: 600px; margin: 0; box-sizing: border-box; background: #FFFFFF; color: #16181D; border: 1.5px dashed {{t.strong}}; padding: 32px 36px; font-family: 'Space Mono', monospace; font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; word-break: break-word">{{plain}}</pre>
+</sc-if>
+</div>
+
+<sc-if value="{{designOn}}" hint-placeholder-val="{{true}}">
+<nav class="no-print" aria-label="CV pages" style="width: 100%; max-width: 620px; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 6px">
+<button type="button" onClick="{{prevPage}}" disabled="{{atFirstPage}}" aria-label="Previous page" style="min-height: 44px; min-width: 44px; padding: 0 14px; background: {{t.panel}}; color: {{t.ink}}; border: 1.5px solid {{t.strong}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; opacity: {{prevOpacity}}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Prev</button>
+<span aria-live="polite" style="font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: {{t.ink}}">Page {{pageNum}} of {{pageCount}}</span>
+<button type="button" onClick="{{nextPage}}" disabled="{{atLastPage}}" aria-label="Next page" style="min-height: 44px; min-width: 44px; padding: 0 14px; background: {{t.panel}}; color: {{t.ink}}; border: 1.5px solid {{t.strong}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; opacity: {{nextOpacity}}">Next<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+</nav>
+<sc-if value="{{pageWarn}}" hint-placeholder-val="{{false}}"><p class="no-print" role="status" style="margin: 0; max-width: 620px; font-size: 13px; color: {{t.warn}}; font-weight: 600">{{pageWarnText}}</p></sc-if>
+</sc-if>
+<p class="no-print" style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; color: {{t.muted}}">Preview shows submitted sections only · prints on white in both themes</p>
+</main>
+</div>
+
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}">
+<div class="no-print" role="status" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); max-width: calc(100% - 32px); box-sizing: border-box; padding: 12px 16px; background: {{t.solid}}; color: {{t.onSolid}}; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 13px; box-shadow: 4px 4px 0 {{t.shadow}}">{{toast}}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1500}}'>
+const START_DARK=true;
+const PFX=START_DARK?'v2d-':'v2-';
+const SEED={
+general:[{name:'Ada Tan',email:'ada.tan@example.com',phone:'+65 9123 4567',country:'Singapore',linkedin:'linkedin.com/in/adatan',portfolio:'adatan.dev',summary:'Frontend engineer with 4+ years of experience building accessible React and TypeScript dashboards. Led the move to a shared component library.'}],
+edu:[{school:'National University of Singapore',title:'BSc Computer Science',from:'2016-08',to:'2020-05'}],
+exp:[{company:'Northwind Labs',position:'Frontend Engineer',resp:'Build and maintain the customer dashboard used by enterprise clients.\nLead the move to a shared component library across product teams.\nMentor two junior engineers through code review and pairing.\nRun accessibility audits and fix WCAG AA issues before release.',from:'2020-07',to:''},{company:'Kopi Digital',position:'Software Engineering Intern',resp:'Shipped internal tooling for the support team.\nAutomated weekly reporting with a small Node.js service.',from:'2019-05',to:'2019-08'},{company:'Harbourline Logistics',position:'Part-time Web Developer',resp:'Maintained the shipment tracking portal.\nWrote end-to-end tests for the booking flow.\nReduced page weight by optimising images and bundles.',from:'2018-01',to:'2019-04'}],
+skills:[{category:'Frontend',items:'React, TypeScript, CSS, Accessibility'},{category:'Tooling',items:'Vite, Playwright, Figma'}],
+projects:[{name:'Hawker Map',link:'github.com/adatan/hawker-map',desc:'Open-source map of hawker centres and their stalls.'}],
+certs:[{name:'AWS Certified Developer – Associate',issuer:'Amazon Web Services',date:'2023-03'}],
+languages:[{language:'English',level:'Native'},{language:'Mandarin',level:'Professional'},{language:'Malay',level:'Conversational'}]
+};
+const LEVELS=['Native','Fluent','Professional','Conversational','Basic'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmt(v){if(!v)return '';const p=String(v).split('-');const m=+p[1];return (m?MON[m-1]+' ':'')+p[0];}
+function range(a,b){return (fmt(a)||'—')+' – '+(fmt(b)||'Present');}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function chips(s){return String(s||'').split(',').map((x)=>x.trim()).filter(Boolean);}
+function bare(u){return String(u||'').trim().replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');}
+const TYPES={
+general:{label:'General information',short:'General',multi:false,fields:[['name','Full name','text',0,'Your full name'],['email','Email','email',1,'name@example.com'],['phone','Phone','tel',1,'+65 0000 0000'],['country','Country (optional)','text',1,'e.g. Singapore'],['linkedin','LinkedIn (optional)','text',1,'linkedin.com/in/you'],['portfolio','Portfolio website (optional)','text',0,'yourname.dev'],['summary','Summary (optional)','textarea',0,'2–3 sentences: your role, years of experience and strongest skills',null,400]],blank:{name:'',email:'',phone:'',country:'',linkedin:'',portfolio:'',summary:''}},
+edu:{label:'Education',short:'Education',noun:'education',multi:true,fields:[['school','School','text',0,'School or university'],['title','Title of study','text',0,'e.g. BSc Computer Science'],['from','From','month',1,''],['to','To','month',1,'']],blank:{school:'',title:'',from:'',to:''},view:(r)=>({primary:r.title||'[Title of study]',secondary:r.school,meta:range(r.from,r.to)})},
+exp:{label:'Practical experience',short:'Experience',sheet:'Work Experience',noun:'experience',multi:true,fields:[['company','Company','text',1,'Company name'],['position','Position title','text',1,'Your role'],['resp','Main responsibilities','textarea',0,'One responsibility per line'],['from','From','month',1,''],['to','Until','month',1,'']],blank:{company:'',position:'',resp:'',from:'',to:''},view:(r)=>({primary:r.position||'[Position title]',secondary:r.company,meta:range(r.from,r.to),bullets:String(r.resp||'').split('\n').map((x)=>x.replace(/^[-•*]\s*/,'').trim()).filter(Boolean)})},
+skills:{label:'Skills',short:'Skills',noun:'skill group',multi:true,hint:'Group related skills and separate them with commas. They print as plain text, so an ATS can read every keyword. Use the exact terms from the job ad.',fields:[['category','Group','text',0,'e.g. Frontend, Languages, Design'],['items','Skills','text',0,'React, TypeScript, CSS']],blank:{category:'',items:''},view:(r)=>({primary:'',lead:r.category||'',secondary:chips(r.items).join(', ')})},
+projects:{label:'Projects',short:'Projects',noun:'project',multi:true,optional:true,fields:[['name','Project name','text',1,'Project name'],['link','Link','text',1,'github.com/you/project'],['desc','Description','textarea',0,'What it does and your part in it']],blank:{name:'',link:'',desc:''},view:(r)=>({primary:r.name||'[Project name]',secondary:bare(r.link),body:r.desc})},
+certs:{label:'Certifications',short:'Certifications',noun:'certification',multi:true,optional:true,fields:[['name','Certification','text',0,'e.g. AWS Certified Developer'],['issuer','Issuer','text',1,'Issuing body'],['date','Date earned','month',1,'']],blank:{name:'',issuer:'',date:''},view:(r)=>({primary:r.name||'[Certification]',secondary:r.issuer,meta:fmt(r.date)})},
+languages:{label:'Languages',short:'Languages',noun:'language',multi:true,optional:true,fields:[['language','Language','text',1,'e.g. Mandarin'],['level','Proficiency','select',1,'',LEVELS]],blank:{language:'',level:'Fluent'},view:(r)=>({primary:r.language||'[Language]',meta:r.level})}
+};
+const OPTIONAL=['projects','certs','languages'];
+function sheetSections(st){return st.active.filter((s)=>s!=='general'&&(st.c[s]||[]).length>0).map((s)=>({label:TYPES[s].sheet||TYPES[s].label,items:st.c[s].map((r)=>{const v=TYPES[s].view(r);return {primary:v.primary||'',meta:v.meta||'',secondary:v.secondary||'',body:v.body||'',lead:v.lead||'',bullets:v.bullets||[]};})}));}
+function buildBlocks(st){const g=st.c.general[0]||{};const raw=[{kind:'header',name:g.name||'[Your name]',contact:[g.email,g.phone,g.country].filter(Boolean).join(' | '),links:[bare(g.linkedin),bare(g.portfolio)].filter(Boolean).join(' | ')}];if(g.summary){raw.push({kind:'heading',label:'Summary'});raw.push({kind:'item',body:g.summary});}sheetSections(st).forEach((s)=>{raw.push({kind:'heading',label:s.label});s.items.forEach((x)=>raw.push({kind:'item',...x}));});return raw.map((b)=>{const x={primary:'',meta:'',secondary:'',body:'',lead:'',bullets:[],links:'',...b};return {...x,isHeader:x.kind==='header',isHeading:x.kind==='heading',isItem:x.kind==='item',hasLinks:!!x.links,hasPrimary:!!x.primary,hasLead:!!x.lead,hasPlainSecondary:!!(x.secondary&&!x.lead),hasBody:!!x.body,hasBullets:x.bullets.length>0,pad:x.kind==='header'?'0px':(x.kind==='heading'?'18px':'8px'),cls:x.kind==='heading'?'dp-head':''};});}
+function plainText(st){const g=st.c.general[0]||{};const out=[g.name||'[Your name]',[g.email,g.phone,g.country].filter(Boolean).join(' | ')];const links=[bare(g.linkedin),bare(g.portfolio)].filter(Boolean).join(' | ');if(links)out.push(links);out.push('');if(g.summary){out.push('SUMMARY',g.summary,'');}sheetSections(st).forEach((s)=>{out.push(s.label.toUpperCase());s.items.forEach((x)=>{const head=[x.primary,x.meta].filter(Boolean).join(' | ');if(head)out.push(head);if(x.secondary||x.lead)out.push(x.lead?x.lead+': '+x.secondary:x.secondary);if(x.body)out.push(x.body);x.bullets.forEach((b)=>out.push('• '+b));out.push('');});});return out.join('\n').trim();}
+const THEMES={
+light:{bg:'#F4F7FB',gMaj:'rgba(30,91,184,0.16)',gMin:'rgba(30,91,184,0.07)',ink:'#0B2A5B',muted:'#3D5A86',line:'#9DB4D6',strong:'#0B2A5B',accent:'#1E5BB8',onAccent:'#FFFFFF',panel:'#FFFFFF',input:'#FFFFFF',solid:'#0B2A5B',onSolid:'#FFFFFF',shadow:'rgba(30,91,184,0.18)',scheme:'light',warn:'#9A4A00'},
+dark:{bg:'#0A1424',gMaj:'rgba(120,165,235,0.14)',gMin:'rgba(120,165,235,0.05)',ink:'#DCE7F7',muted:'#9DB2D3',line:'#3A5682',strong:'#7FA3DB',accent:'#7FAEF5',onAccent:'#0A1424',panel:'#0F1C31',input:'#0B1628',solid:'#DCE7F7',onSolid:'#0A1424',shadow:'rgba(0,0,0,0.5)',scheme:'dark',warn:'#F2B544'}
+};
+class Component extends DCLogic {
+constructor(props){super(props);const dk=(props&&props.dark!=null)?!!props.dark:START_DARK;
+const base={d:clone(SEED),c:clone(SEED),menu:false,err:'',dark:dk,parser:false,page:0,pages:null,dragging:null,over:null,toast:''};
+if(START_DARK){base.active=['general','skills','exp','edu','projects','certs','languages'];base.open={exp:true};base.tab='exp';}else{base.active=['general','skills','exp','edu','projects'];base.open={general:true};base.tab='general';}
+this.state=base;this.blocksCache=[];this.pagesKey='';this.lastPageH=777;
+this.flowRef=(el)=>{this.flowEl=el;};this.pageRef=(el)=>{this.pageEl=el;};}
+componentDidMount(){this._onResize=()=>this.measure();try{window.addEventListener('resize',this._onResize);}catch(e){}this.measure();try{if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>this.measure());}catch(e){}}
+componentWillUnmount(){try{window.removeEventListener('resize',this._onResize);}catch(e){}clearTimeout(this._toastT);}
+componentDidUpdate(prev){if(prev&&this.props&&prev.dark!==this.props.dark&&this.props.dark!=null&&!!this.props.dark!==this.state.dark){this.setState({dark:!!this.props.dark});}this.measure();}
+measure(){try{const el=this.flowEl;if(!el)return;const kids=el.querySelectorAll('[data-blk]');if(!kids.length)return;const hs=Array.prototype.map.call(kids,(k)=>k.offsetHeight);if(this.pageEl&&this.pageEl.clientHeight>200)this.lastPageH=this.pageEl.clientHeight-100;const cap=this.lastPageH;const pages=[];let cur=[];let used=0;hs.forEach((h,i)=>{if(used+h>cap&&cur.length){pages.push(cur);cur=[];used=0;}cur.push(i);used+=h;});if(cur.length)pages.push(cur);for(let p=0;p<pages.length-1;p++){const pg=pages[p];const last=pg[pg.length-1];const b=this.blocksCache[last];if(b&&b.isHeading&&pg.length>1){pg.pop();pages[p+1].unshift(last);}}const key=JSON.stringify(pages);if(key!==this.pagesKey){this.pagesKey=key;this.setState({pages:pages,page:Math.min(this.state.page,pages.length-1)});}}catch(e){}}
+showToast(msg){clearTimeout(this._toastT);this.setState({toast:msg});this._toastT=setTimeout(()=>this.setState({toast:''}),3200);}
+upd(sec,i,k,v){const d={...this.state.d};d[sec]=d[sec].map((r,j)=>j===i?{...r,[k]:v}:r);this.setState({d});}
+addEntry(sec){const d={...this.state.d};d[sec]=[...d[sec],clone(TYPES[sec].blank)];this.setState({d});}
+delEntry(sec,i){const d={...this.state.d};d[sec]=d[sec].filter((r,j)=>j!==i);this.setState({d});}
+commit(sec){if(sec==='general'){const g=this.state.d.general[0]||{};const miss=['name','email','phone'].filter((k)=>!String(g[k]||'').trim());if(miss.length){this.setState({err:'Add your '+miss.join(', ')+' to submit. Everything else in this section is optional.'});return;}}const c={...this.state.c,[sec]:clone(this.state.d[sec])};this.setState({c,open:{...this.state.open,[sec]:false},err:''});}
+edit(sec){const d={...this.state.d,[sec]:clone(this.state.c[sec])};this.setState({d,open:{...this.state.open,[sec]:true}});}
+addSection(sec){const d={...this.state.d,[sec]:[clone(TYPES[sec].blank)]};const c={...this.state.c,[sec]:[]};this.setState({d,c,active:[...this.state.active,sec],open:{...this.state.open,[sec]:true},tab:sec,menu:false});}
+removeSection(sec){const act=this.state.active;const i=act.indexOf(sec);const next=act.filter((s)=>s!==sec);this.setState({active:next,tab:next[Math.max(0,i-1)],c:{...this.state.c,[sec]:[]},d:{...this.state.d,[sec]:[]}});}
+moveTo(from,to){const a=this.state.active.slice();const fi=a.indexOf(from);const ti=a.indexOf(to);if(fi<1||ti<1||fi===ti){this.setState({dragging:null,over:null});return;}a.splice(fi,1);a.splice(ti,0,from);this.setState({active:a,dragging:null,over:null});}
+shift(sec,dir){const a=this.state.active.slice();const i=a.indexOf(sec);const j=i+dir;if(i<1||j<1||j>=a.length)return;a[i]=a[j];a[j]=sec;this.setState({active:a});}
+go(step){const act=this.state.active;const i=act.indexOf(this.state.tab);const n=Math.max(0,Math.min(act.length-1,i+step));this.setState({tab:act[n],err:''});}
+fields(sec,row,i){const th=this.state.dark?THEMES.dark:THEMES.light;return TYPES[sec].fields.map(([k,l,t,half,ph,opts,max])=>{const val=row[k]||'';const n=val.length;return {id:PFX+sec+i+'-'+k,counterId:PFX+sec+i+'-'+k+'-count',label:l,type:t,ph:ph,value:val,options:opts||[],max:max||0,counter:n+' / '+(max||0)+(max&&n>=max?' · limit reached':''),counterColor:(max&&n>=max*0.9)?th.warn:th.muted,isArea:t==='textarea'&&!max,isLimited:t==='textarea'&&!!max,isSelect:t==='select',isInput:t!=='textarea'&&t!=='select',col:half?'auto':'1 / -1',onChange:(e)=>this.upd(sec,i,k,max?String(e.target.value).slice(0,max):e.target.value)};});}
+renderVals(){
+const st=this.state;const t=st.dark?THEMES.dark:THEMES.light;const act=st.active;const sec=st.tab;const T=TYPES[sec];const o=!!st.open[sec];const idx=act.indexOf(sec);
+const cg=st.c.general[0]||{};
+const committed=st.c[sec]||[];
+const lineOf=(r)=>{const v=sec==='general'?{primary:r.name,secondary:[r.email,r.phone,r.country].filter(Boolean).join(' | ')}:T.view(r);if(v.lead)return {primary:v.lead,line:v.secondary||''};return v.primary?{primary:v.primary,line:[v.secondary,v.meta].filter(Boolean).join(' · ')}:{primary:v.secondary||'—',line:v.meta||''};};
+const addable=OPTIONAL.filter((s)=>act.indexOf(s)<0);
+const done=act.filter((s)=>!st.open[s]).length;
+const all=buildBlocks(st);this.blocksCache=all;
+let pages=st.pages;const total=pages?pages.reduce((a,p)=>a+p.length,0):-1;if(!pages||total!==all.length)pages=[all.map((_,i)=>i)];
+const pg=Math.max(0,Math.min(st.page||0,pages.length-1));const pageCount=pages.length;
+const dragIdx=st.dragging?act.indexOf(st.dragging):-1;
+const name=(cg.name||'CV').trim().replace(/\s+/g,'_');
+return {
+t:t,isDark:st.dark,isLight:!st.dark,darkPressed:st.dark?'true':'false',themeLabel:st.dark?'Light':'Dark',
+toggleDark:()=>this.setState({dark:!st.dark}),
+exportPdf:()=>this.setState({parser:false},()=>{try{window.print();}catch(err){}}),
+exportDocx:()=>this.showToast('Mockup: this downloads '+name+'_CV.docx, built from the same data as the PDF.'),
+hasToast:!!st.toast,toast:st.toast,
+parserOn:!!st.parser,designOn:!st.parser,parserPressed:st.parser?'true':'false',parserLabel:st.parser?'Show design':'Parser view',
+toggleParser:()=>this.setState({parser:!st.parser}),plain:plainText(st),
+tabs:act.map((s,i)=>{const a=s===sec;const pinned=s==='general';const isOver=!pinned&&st.dragging&&st.dragging!==s&&st.over===s;const side=dragIdx>i?'inset 4px 0 0 ':'inset -4px 0 0 ';return {num:String(i+1).padStart(2,'0'),label:TYPES[s].short,status:pinned?'pinned':(st.open[s]?'editing':'submitted'),handle:pinned?'':'⠿ ',pressed:a?'true':'false',bg:a?t.solid:t.panel,fg:a?t.onSolid:t.ink,draggable:pinned?'false':'true',cursor:pinned?'pointer':'grab',opacity:st.dragging===s?'0.45':'1',dropShadow:isOver?side+t.accent:'none',
+dragStart:(e)=>{if(pinned)return;try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',s);}catch(err){}this.setState({dragging:s});},
+dragOver:(e)=>{if(pinned||!this.state.dragging)return;e.preventDefault();if(this.state.over!==s)this.setState({over:s});},
+drop:(e)=>{e.preventDefault();this.moveTo(this.state.dragging,s);},
+pick:()=>this.setState({tab:s,menu:false,err:''})};}),
+dragEnd:()=>this.setState({dragging:null,over:null}),
+canAdd:addable.length>0,menuOpen:st.menu&&addable.length>0,menuExpanded:st.menu?'true':'false',
+toggleMenu:()=>this.setState({menu:!st.menu}),
+addable:addable.map((s)=>({label:TYPES[s].label,add:()=>this.addSection(s)})),
+p:{
+num:String(idx+1).padStart(2,'0'),label:T.label,noun:T.noun||'',hint:T.hint||'',multi:!!T.multi,removable:!!T.optional,
+statusUpper:o?'EDITING':'SUBMITTED',hasErr:!!st.err&&sec==='general',err:st.err||'',editing:o,viewing:!o,
+movable:sec!=='general',atStart:idx<=1,atEnd:idx>=act.length-1,earlierOpacity:idx<=1?'0.4':'1',laterOpacity:idx>=act.length-1?'0.4':'1',
+moveEarlier:()=>this.shift(sec,-1),moveLater:()=>this.shift(sec,1),
+btn:o?'Submit':'Edit',btnBg:o?t.accent:'transparent',btnFg:o?t.onAccent:t.accent,
+toggle:()=>{if(o)this.commit(sec);else this.edit(sec);},
+submit:(e)=>{if(e&&e.preventDefault)e.preventDefault();this.commit(sec);},
+removeSection:()=>this.removeSection(sec),
+addEntry:()=>this.addEntry(sec),
+entries:(st.d[sec]||[]).map((r,i)=>({legend:T.multi?'Entry '+(i+1):'Details',multi:!!T.multi,fields:this.fields(sec,r,i),remove:()=>this.delEntry(sec,i),removeLabel:'Remove '+(T.noun||'entry')+' '+(i+1)})),
+summary:committed.map(lineOf),empty:committed.length===0
+},
+progress:done+' / '+act.length+' submitted',
+prev:()=>this.go(-1),next:()=>this.go(1),
+flowRef:this.flowRef,pageRef:this.pageRef,
+allBlocks:all,pageBlocks:pages[pg].filter((i)=>i<all.length).map((i)=>all[i]),
+pageNum:pg+1,pageCount:pageCount,pageAria:'CV preview, page '+(pg+1)+' of '+pageCount,
+atFirstPage:pg<=0,atLastPage:pg>=pageCount-1,prevOpacity:pg<=0?'0.4':'1',nextOpacity:pg>=pageCount-1?'0.4':'1',
+prevPage:()=>this.setState({page:Math.max(0,pg-1)}),nextPage:()=>this.setState({page:Math.min(pageCount-1,pg+1)}),
+pageWarn:pageCount>2,pageWarnText:pageCount+' pages. Most recruiters expect 1–2: trim older roles or bullets.'
+};}
+}
+</script>
+</body>
+</html>
