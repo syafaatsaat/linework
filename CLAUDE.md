@@ -6,7 +6,7 @@ Reference mockups live in `/design` (see "Design references" below). They are de
 
 ## Stack (decided)
 
-- Vite + React + TypeScript
+- Vite + React, in plain JavaScript (`.jsx`/`.js`), not TypeScript
 - Plain CSS with custom properties (CSS variables) for theme tokens. No CSS framework.
 - `docx` (npm) for DOCX export
 - `@dnd-kit/core` + `@dnd-kit/sortable` for drag-to-reorder (works with touch and keyboard, unlike native HTML5 drag)
@@ -45,7 +45,7 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 
 - Users can reorder every section except `general`, which stays pinned first.
 - **Desktop:** drag the section tabs (dnd-kit sortable). Also show "← Earlier / Later →" buttons in each section panel as an accessible fallback.
-- **Mobile:** a "Reorder" bottom sheet with up/down arrow buttons per row. That sheet is also where users add optional sections.
+- **Mobile:** a "Sections" bottom sheet with up/down arrow buttons per row. The same sheet is where users add optional sections (and Import CV / Reset CV), which is why it's named "Sections" rather than "Reorder".
 - The preview, PDF, DOCX and parser view all follow this one order.
 
 ## CV output rules (ATS: do not break these)
@@ -93,7 +93,7 @@ Editor column:
 4. ← Prev / `n / N submitted` / Next →
 
 **Mobile (390px reference):** sticky 56px header (logo, theme icon button, Export) → segmented control `Edit | Preview · Np`.
-- **Edit view:** a horizontally scrolling chip row (● editing / ✓ submitted) plus a "Reorder" chip, a single-column form, and a bottom bar with `‹`, a full-width "Submit/Edit {section}" button and `›`.
+- **Edit view:** a horizontally scrolling chip row (● editing / ✓ submitted / ! check) plus a "Sections" chip pinned outside the scroller so it's always visible, a single-column form, and a bottom bar with `‹`, a full-width "Submit/Edit {section}" button and `›`.
 - **Preview view:** the real A4 page scaled to fit the width (not reflowed), "Parser view" at the top right, and a bottom bar `‹ Page X of Y ›`.
 - Inputs use 16px text to prevent iOS zoom. Tap targets are at least 44px.
 
@@ -135,6 +135,34 @@ The grid background is four layered `linear-gradient`s (major and minor, horizon
 - Give icon-only buttons an `aria-label`. Use `aria-pressed` on the theme toggle, the parser toggle and the active tab.
 - Use `aria-live` on the page counter and the character counter, and `role="alert"` on validation errors.
 - Keep text contrast at 4.5:1 or higher in both themes. Mobile bottom sheets use `role="dialog" aria-modal="true"`.
+
+## Motion
+
+Rules for every animation:
+
+- Short and purposeful: 150–250 ms for UI, up to ~600 ms for the drafting-line draws. Animation shows what changed; it never slows editing down.
+- `prefers-reduced-motion: reduce` makes everything instant (`src/styles/motion.css`, plus `prefersReducedMotion()` in `src/lib/motion.js` for JS-driven motion).
+- The CV output never animates: the hidden print copy (`CvFlow`), the PDF and the DOCX are untouched. Preview-only effects go on `.cv-sheet` or get props that only `CvSheet` passes to `CvBlock`.
+- No animation library: CSS transitions/keyframes, plus the View Transitions API where it helps. Unsupported browsers just update instantly.
+- Entry animations use `animation-fill-mode: backwards`, not `both`, so nothing stays applied after they end (a lingering fill kept parts of the sheet on separate compositor layers and changed text rendering).
+
+Built:
+
+| Animation | What it does | Where |
+|---|---|---|
+| Change highlight | On submit, new or changed blocks on the A4 preview get a fading blue highlight (~1.6 s). If the change is on another page, the preview jumps there. Reordering alone highlights nothing. | `src/cv/useChangedBlocks.js`, page jump in `App.jsx`, `.cv-block--changed` in `CvSheet.css` |
+| Smooth reorder | Every section move (Earlier/Later, mobile ↑/↓, dropping a dragged tab) runs in a View Transition: desktop tabs (`tab-*`), Sections sheet rows (`row-*`) and preview blocks (`cv-*`) glide to their new places in 220 ms. Mobile chips are deliberately unnamed: they sit behind the open sheet and would fly over it. | `withViewTransition()` in `src/lib/motion.js`, wrapped `move` in `App.jsx`, timing in `motion.css` |
+| Bottom sheets | Slide up with a backdrop fade. Closing by the user (Done, backdrop, Escape) plays the slide down before unmounting; closing after an action (import, export) is instant. | `BottomSheet.jsx`, `BottomSheet.css` |
+| Confirm dialog | Fades and scales in on `showModal()` and out on `close()`, in pure CSS (`@starting-style` + `transition-behavior: allow-discrete`). | `ConfirmDialog.css` |
+| Edit ↔ Submit | The incoming form or summary fades up into place; summary rows arrive one after another (45 ms apart, capped at 360 ms). Only plays when the panel toggles; switching tabs stays instant. | `SectionPanel.jsx` (toggle detection), `SectionPanel.css`, `SubmittedSummary.css` |
+| Drafting lines | The "210 mm" dimension line draws in sequence (arrow, rule, label, rule, arrow) when the preview appears. On the preview sheet, each heading rule draws left to right, 80 ms after the one above, whenever a heading appears (load, new section, page turn). The sheet swaps the heading border for an identical 1px line so it can animate; the print copy keeps the real border. | `DimensionLine.css`, `CvSheet.jsx`/`CvBlock.jsx` (`drawDelay`), `CvSheet.css` |
+
+Ideas not built yet:
+
+- **Page turns:** Prev/Next slides the A4 page left or right.
+- **Validation feedback:** the alert slides into view and invalid fields pulse once (avoid a shake).
+- **Theme switch reveal:** light/dark spreads as a circle from the toggle via a View Transition.
+- **Import "scan":** a blueprint scan line sweeps over the sheet while a file is being read.
 
 ## Design references (`/design`)
 
