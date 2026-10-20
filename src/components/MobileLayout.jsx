@@ -9,13 +9,19 @@ import ViewSwitch from './ViewSwitch.jsx'
 
 // Sticky header, Edit | Preview switch, the chosen view with its bottom bar,
 // and the Sections / Export bottom sheets.
-export default function MobileLayout({ cv, preview, theme, exports, reset }) {
+export default function MobileLayout({ cv, preview, theme, exports, reset, importCv }) {
   const [view, setView] = useState('edit')
   const [sheet, setSheet] = useState(null) // 'sections' | 'export' | null
   const closeSheet = () => setSheet(null)
 
   const resetCv = () => {
     reset()
+    closeSheet()
+    setView('edit')
+  }
+
+  const importFile = (result) => {
+    importCv.run(result)
     closeSheet()
     setView('edit')
   }
@@ -53,6 +59,8 @@ export default function MobileLayout({ cv, preview, theme, exports, reset }) {
             onMove={cv.actions.move}
             onAdd={cv.actions.addSection}
             onReset={resetCv}
+            onImport={importFile}
+            hasData={importCv.hasData}
           />
         </BottomSheet>
       )}

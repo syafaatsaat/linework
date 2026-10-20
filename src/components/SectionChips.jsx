@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { SECTION_TYPES } from '../sections/types.js'
 import { ReorderIcon } from './Icons.jsx'
 
-// Horizontally scrolling section chips (● editing / ✓ submitted), with the
+// Horizontally scrolling section chips (● editing / ✓ submitted / ! check), with the
 // Sections chip pinned outside the scroller so it's always visible. It opens
 // the sheet for reordering and adding optional sections.
 export default function SectionChips({ order, active, sections, onSelect, onOpenSections }) {
@@ -17,7 +17,8 @@ export default function SectionChips({ order, active, sections, onSelect, onOpen
     <div className="m-chip-row">
       <nav className="m-chips" aria-label="CV sections">
         {order.map((key) => {
-          const editing = sections[key].editing
+          const { editing, review } = sections[key]
+          const [mark, status] = review ? ['!', 'needs checking'] : editing ? ['●', 'editing'] : ['✓', 'submitted']
           return (
             <button
               key={key}
@@ -30,10 +31,10 @@ export default function SectionChips({ order, active, sections, onSelect, onOpen
               onClick={() => onSelect(key)}
             >
               <span className="chip-mark" aria-hidden="true">
-                {editing ? '●' : '✓'}
+                {mark}
               </span>
               {SECTION_TYPES[key].short}
-              <span className="sr-only">{editing ? ', editing' : ', submitted'}</span>
+              <span className="sr-only">, {status}</span>
             </button>
           )
         })}

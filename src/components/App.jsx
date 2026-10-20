@@ -33,6 +33,7 @@ export default function App() {
   }, [blocks, pages, page])
 
   const name = submitted.committed.general[0]?.name
+  const hasData = submitted.order.some((key) => submitted.committed[key]?.length > 0)
 
   const layoutProps = {
     cv: { state, actions },
@@ -51,13 +52,21 @@ export default function App() {
       setPage(0)
       setParser(false)
     },
+    importCv: {
+      hasData,
+      run: (result) => {
+        actions.importCv({ ...result.data, review: result.review })
+        setPage(0)
+        setParser(false)
+      },
+    },
     exports: {
       pdf: () => {
         // Leave parser view (and flush any closing sheet) before the print dialog opens.
         flushSync(() => setParser(false))
         printPdf(name)
       },
-      docx: () => exportDocx(blocks, name),
+      docx: () => exportDocx(blocks, name, { order: submitted.order, committed: submitted.committed }),
     },
   }
 

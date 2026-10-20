@@ -1,4 +1,5 @@
 import { BorderStyle, Document, HeadingLevel, Paragraph, TabStopType, TextRun } from 'docx'
+import { toCustomProperties } from './embedded.js'
 
 export { Packer } from 'docx'
 
@@ -90,7 +91,9 @@ function itemParagraphs(block, isFirstInSection) {
   return keepTogether(parts)
 }
 
-export function buildDocument(blocks, name) {
+// `data` ({ order, committed }) is embedded as custom properties so Import CV
+// can restore this file exactly; it's invisible in Word and to ATS parsers.
+export function buildDocument(blocks, name, data) {
   const children = []
   let afterHeading = false
 
@@ -110,6 +113,7 @@ export function buildDocument(blocks, name) {
   return new Document({
     creator: name || 'Linework',
     title: name ? `${name} CV` : 'CV',
+    customProperties: data ? toCustomProperties(data) : [],
     styles,
     sections: [
       {

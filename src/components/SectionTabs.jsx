@@ -33,7 +33,11 @@ export default function SectionTabs({ order, active, sections, onSelect, onMove,
     if (over && active.id !== over.id) onMove(active.id, order.indexOf(over.id))
   }
 
-  const status = (key) => (SECTION_TYPES[key].pinned ? 'pinned' : sections[key].editing ? 'editing' : 'submitted')
+  const status = (key) => {
+    if (sections[key].review) return 'check'
+    if (SECTION_TYPES[key].pinned) return 'pinned'
+    return sections[key].editing ? 'editing' : 'submitted'
+  }
   const tab = (key) => (
     <SectionTab
       key={key}

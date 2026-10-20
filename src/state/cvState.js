@@ -11,11 +11,13 @@ export const STORAGE_KEY = 'linework:cv:v1'
 // State shape:
 //   order:    section keys in CV order; 'general' is always first
 //   active:   key of the section shown in the editor
-//   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean } }
+//   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean, review: boolean } }
 //   missing:  required field keys the last submit of the active section lacked
 //
 // `committed` is what the preview and exports read. `draft` is what the form
 // edits. Submit copies draft → committed; Edit and Cancel copy committed → draft.
+// `review` marks a section filled in by Import CV that the user hasn't checked
+// yet; submitting the section or pressing "Looks right" clears it.
 
 const clone = (rows) => rows.map((row) => ({ ...row }))
 
@@ -23,8 +25,13 @@ function draftFrom(key, committed) {
   return committed.length ? clone(committed) : [blankRow(key)]
 }
 
-function freshSection(key, committed = []) {
-  return { committed, draft: draftFrom(key, committed), editing: committed.length === 0 }
+function freshSection(key, committed = [], review = false) {
+  return {
+    committed,
+    draft: draftFrom(key, committed),
+    editing: committed.length === 0,
+    review: review && committed.length > 0,
+  }
 }
 
 // Keep only known fields, coerced to strings, so a stale or hand-edited
@@ -54,12 +61,14 @@ function sanitizeOrder(order) {
   return ['general', ...merged.filter((key) => key !== 'general')]
 }
 
-// From a saved snapshot, or a blank CV in the default order when there's none.
+// From a saved snapshot or an import ({ order, committed, review? }), or a
+// blank CV in the default order when there's none.
 function buildState(saved) {
   const order = sanitizeOrder(saved?.order)
+  const review = Array.isArray(saved?.review) ? saved.review : []
   const sections = {}
   for (const key of order) {
-    sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]))
+    sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]), review.includes(key))
   }
   return { order, active: 'general', sections, missing: [] }
 }
@@ -68,11 +77,13 @@ export function createInitialState() {
   return buildState(loadJSON(STORAGE_KEY))
 }
 
-// Only committed data and order persist; unsaved drafts are discarded on reload.
+// Only committed data, order and review flags persist; unsaved drafts are
+// discarded on reload.
 export function toStorage(state) {
   const committed = {}
   for (const key of state.order) committed[key] = state.sections[key].committed
-  return { order: state.order, committed }
+  const review = state.order.filter((key) => state.sections[key].review)
+  return { order: state.order, committed, review }
 }
 
 function updateSection(state, key, patch) {
@@ -128,7 +139,7 @@ export function cvReducer(state, action) {
         return { ...state, missing }
       }
       const committed = clone(state.sections[key].draft)
-      return { ...updateSection(state, key, { committed, editing: false }), missing: [] }
+      return { ...updateSection(state, key, { committed, editing: false, review: false }), missing: [] }
     }
 
     case 'edit': {
@@ -175,6 +186,13 @@ export function cvReducer(state, action) {
 
     case 'reset':
       return buildState(null)
+
+    // Replace the whole CV with imported data ({ order, committed, review }).
+    case 'import':
+      return buildState(action.data)
+
+    case 'markReviewed':
+      return updateSection(state, action.key, { review: false })
 
     default:
       return state

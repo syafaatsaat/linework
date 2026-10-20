@@ -1,9 +1,9 @@
 import { cvFileBase } from './fileName.js'
 
 // docx is large, so it's only fetched the first time someone exports.
-export async function exportDocx(blocks, name) {
+export async function exportDocx(blocks, name, data) {
   const { buildDocument, Packer } = await import('./docx.js')
-  const blob = await Packer.toBlob(buildDocument(blocks, name))
+  const blob = await Packer.toBlob(buildDocument(blocks, name, data))
 
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')

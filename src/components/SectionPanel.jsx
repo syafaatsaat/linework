@@ -138,7 +138,24 @@ export default function SectionPanel({ sectionKey, position, count, section, mis
           )}
         </div>
       ) : (
-        <SubmittedSummary type={type} rows={committed} verb={compact ? 'Tap' : 'Press'} />
+        <>
+          {section.review && (
+            <div className="review-note" role="note">
+              <p>Imported automatically. Check these entries against your original CV.</p>
+              <button
+                type="button"
+                className="btn-small"
+                onClick={() => {
+                  actions.markReviewed(sectionKey)
+                  focusAfterRender(toggle)
+                }}
+              >
+                Looks right
+              </button>
+            </div>
+          )}
+          <SubmittedSummary type={type} rows={committed} verb={compact ? 'Tap' : 'Press'} />
+        </>
       )}
     </form>
   )

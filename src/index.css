@@ -277,6 +277,29 @@ textarea::placeholder {
   font-weight: 700;
 }
 
+.btn-primary {
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: var(--border) solid var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-accent-link {
+  min-height: 44px;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .btn-danger-link {
   min-height: 44px;
   padding: 0 6px;
@@ -564,6 +587,23 @@ textarea::placeholder {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.review-note {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  border: var(--border) dashed var(--warn);
+  border-radius: var(--radius);
+}
+
+.review-note p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
 }
 
 .panel-hint {
@@ -1122,6 +1162,22 @@ textarea::placeholder {
   color: var(--muted);
 }
 
+.confirm-list {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.confirm-list--notes {
+  color: var(--warn);
+}
+
+.confirm-warn {
+  font-weight: 600;
+  color: var(--warn) !important;
+}
+
 .confirm-actions {
   margin-top: 16px;
   display: flex;
@@ -1257,6 +1313,8 @@ textarea::placeholder {
 .sheet-footer {
   margin-top: 4px;
   padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
   border-top: 1px dashed var(--line);
 }
 

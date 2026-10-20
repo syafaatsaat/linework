@@ -3,7 +3,19 @@ import { useEffect, useId, useRef } from 'react'
 // Native modal <dialog>: the browser traps focus, makes the page behind it
 // inert, closes on Escape and returns focus to the opener. The safe choice
 // gets autofocus so a stray Enter doesn't confirm.
-export default function ConfirmDialog({ open, title, children, confirmLabel, cancelLabel, onConfirm, onCancel }) {
+//
+// Without `confirmLabel` it's a plain message with one button (cancelLabel).
+// `danger` styles the confirm button for actions that destroy data.
+export default function ConfirmDialog({
+  open,
+  title,
+  children,
+  confirmLabel,
+  cancelLabel,
+  danger = true,
+  onConfirm,
+  onCancel,
+}) {
   const dialog = useRef(null)
   const titleId = useId()
   const bodyId = useId()
@@ -37,9 +49,11 @@ export default function ConfirmDialog({ open, title, children, confirmLabel, can
         <button type="button" className="btn-outline" autoFocus onClick={onCancel}>
           {cancelLabel}
         </button>
-        <button type="button" className="btn-danger" onClick={onConfirm}>
-          {confirmLabel}
-        </button>
+        {confirmLabel && (
+          <button type="button" className={danger ? 'btn-danger' : 'btn-primary'} onClick={onConfirm}>
+            {confirmLabel}
+          </button>
+        )}
       </div>
     </dialog>
   )

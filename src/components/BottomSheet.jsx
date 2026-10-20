@@ -19,7 +19,8 @@ export default function BottomSheet({ title, onClose, children }) {
     sheet.current?.querySelector('button')?.focus()
 
     const onKey = (e) => {
-      if (e.key === 'Escape') {
+      // A confirm dialog opened from the sheet handles its own Escape.
+      if (e.key === 'Escape' && !document.querySelector('dialog[open]')) {
         e.preventDefault()
         close.current()
       }
