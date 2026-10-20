@@ -1,6 +1,6 @@
 import Field from './Field.jsx'
 
-export default function EntryFieldset({ sectionKey, type, row, index, missing, onChange, onRemove }) {
+export default function EntryFieldset({ sectionKey, type, row, index, missing, errorId, onChange, onRemove }) {
   const legend = type.multi ? `Entry ${index + 1}` : 'Details'
 
   return (
@@ -14,6 +14,7 @@ export default function EntryFieldset({ sectionKey, type, row, index, missing, o
             field={field}
             value={row[field.key] ?? ''}
             invalid={missing.includes(field.key)}
+            errorId={errorId}
             onChange={(value) => onChange(index, field.key, value)}
           />
         ))}
@@ -24,7 +25,7 @@ export default function EntryFieldset({ sectionKey, type, row, index, missing, o
             type="button"
             className="btn-link"
             aria-label={`Remove ${type.noun} ${index + 1}`}
-            onClick={() => onRemove(index)}
+            onClick={(e) => onRemove(index, e)}
           >
             Remove entry
           </button>

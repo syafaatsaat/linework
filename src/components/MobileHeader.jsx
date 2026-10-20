@@ -4,6 +4,7 @@ import ThemeToggle from './ThemeToggle.jsx'
 export default function MobileHeader({ theme, onToggleTheme, onExport }) {
   return (
     <header className="m-header">
+      <h1 className="sr-only">Linework CV builder</h1>
       <div className="logo logo--compact">
         <LogoIcon size={24} />
         <span className="logo-text">linework/cv</span>

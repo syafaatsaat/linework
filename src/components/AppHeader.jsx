@@ -5,6 +5,7 @@ import ThemeToggle from './ThemeToggle.jsx'
 export default function AppHeader({ theme, onToggleTheme, onExportPdf, onExportDocx }) {
   return (
     <header className="app-header no-print">
+      <h1 className="sr-only">Linework CV builder</h1>
       <div className="app-header-inner">
         <div className="logo">
           <LogoIcon />

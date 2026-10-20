@@ -1,5 +1,5 @@
+import { keepFocusInGroup } from '../lib/focus.js'
 import { SECTION_TYPES } from '../sections/types.js'
-import { SECTION_FORM_ID } from './formIds.js'
 import { ChevronLeft, ChevronRight } from './Icons.jsx'
 import SubmitToggle from './SubmitToggle.jsx'
 
@@ -9,19 +9,21 @@ export default function MobileEditBar({ order, active, editing, onSelect, onEdit
   const name = SECTION_TYPES[active].short.toLowerCase()
 
   return (
-    <footer className="m-bar">
+    <footer className="m-bar" data-focus-group>
       <button
         type="button"
         className="btn-icon-box"
         aria-label="Previous section"
         disabled={index <= 0}
-        onClick={() => onSelect(order[index - 1])}
+        onClick={(e) => {
+          onSelect(order[index - 1])
+          keepFocusInGroup(e.currentTarget)
+        }}
       >
         <ChevronLeft />
       </button>
       <SubmitToggle
         editing={editing}
-        form={SECTION_FORM_ID}
         onEdit={onEdit}
         className="m-bar-main"
         submitLabel={`Submit ${name}`}
@@ -32,7 +34,10 @@ export default function MobileEditBar({ order, active, editing, onSelect, onEdit
         className="btn-icon-box"
         aria-label="Next section"
         disabled={index >= order.length - 1}
-        onClick={() => onSelect(order[index + 1])}
+        onClick={(e) => {
+          onSelect(order[index + 1])
+          keepFocusInGroup(e.currentTarget)
+        }}
       >
         <ChevronRight />
       </button>

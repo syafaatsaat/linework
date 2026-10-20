@@ -1,8 +1,9 @@
 import CharCounter from './CharCounter.jsx'
 
-export default function Field({ id, field, value, invalid, onChange }) {
+export default function Field({ id, field, value, invalid, errorId, onChange }) {
   const { label, type, placeholder, options, maxLength } = field
   const counterId = maxLength ? `${id}-count` : undefined
+  const describedBy = [counterId, invalid && errorId].filter(Boolean).join(' ') || undefined
   const handle = (e) => onChange(maxLength ? e.target.value.slice(0, maxLength) : e.target.value)
 
   const shared = {
@@ -10,7 +11,8 @@ export default function Field({ id, field, value, invalid, onChange }) {
     value,
     onChange: handle,
     'aria-invalid': invalid || undefined,
-    'aria-describedby': counterId,
+    'aria-required': field.required || undefined,
+    'aria-describedby': describedBy,
   }
 
   let control
