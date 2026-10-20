@@ -13,7 +13,7 @@ export default function ValidationAlert({ id, type, rows, errors }) {
   const required = errors.filter((e) => e.kind === 'required')
   if (required.length && !type.multi) {
     const labels = required.map((e) => label(e.fields[0]).toLowerCase())
-    messages.push(`Add your ${joinWithAnd(labels)} to submit. Everything else in this section is optional.`)
+    messages.push(`Add your ${joinWithAnd(labels)} to submit. Optional fields are indicated.`)
   } else {
     for (const index of new Set(required.map((e) => e.index))) {
       const labels = required.filter((e) => e.index === index).map((e) => label(e.fields[0]))

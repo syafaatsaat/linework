@@ -26,7 +26,7 @@ export const SUMMARY_MAX = 400
 // Adding a section type means adding one entry here.
 export const SECTION_TYPES = {
   general: {
-    label: 'General information',
+    label: 'General Information',
     short: 'General',
     multi: false,
     pinned: true,
@@ -60,22 +60,22 @@ export const SECTION_TYPES = {
     multi: true,
     hint: 'Group related skills and separate them with commas. They print as plain text, so an ATS can read every keyword. Use the exact terms from the job ad.',
     fields: [
-      { key: 'category', label: 'Group', type: 'text', placeholder: 'e.g. Frontend, Languages, Design' },
-      { key: 'items', label: 'Skills', type: 'text', placeholder: 'React, TypeScript, CSS' },
+      { key: 'category', label: 'Group', type: 'text', placeholder: 'e.g. Frontend, Languages, Design', required: true },
+      { key: 'items', label: 'Skills', type: 'text', placeholder: 'React, TypeScript, CSS', required: true },
     ],
     view: (r) => ({ lead: r.category, secondary: splitList(r.items).join(', ') }),
   },
 
   exp: {
-    label: 'Practical experience',
+    label: 'Work Experience',
     short: 'Experience',
     sheet: 'Work Experience',
     noun: 'experience',
     multi: true,
     range: ['from', 'until'],
     fields: [
-      { key: 'company', label: 'Company', type: 'text', half: true, placeholder: 'Company name' },
-      { key: 'position', label: 'Position title', type: 'text', half: true, placeholder: 'Your role' },
+      { key: 'company', label: 'Company', type: 'text', half: true, placeholder: 'Company name', required: true },
+      { key: 'position', label: 'Position title', type: 'text', half: true, placeholder: 'Your role', required: true },
       { key: 'responsibilities', label: 'Main responsibilities', type: 'textarea', placeholder: 'One responsibility per line' },
       { key: 'from', label: 'From', type: 'month', half: true, required: true },
       { key: 'until', label: 'Until', type: 'month', half: true, hint: 'Leave blank if you still work here.' },
@@ -96,8 +96,8 @@ export const SECTION_TYPES = {
     multi: true,
     range: ['from', 'to'],
     fields: [
-      { key: 'school', label: 'School', type: 'text', placeholder: 'School or university' },
-      { key: 'titleOfStudy', label: 'Title of study', type: 'text', placeholder: 'e.g. BSc Computer Science' },
+      { key: 'school', label: 'School', type: 'text', placeholder: 'School or university', required: true },
+      { key: 'titleOfStudy', label: 'Title of study', type: 'text', placeholder: 'e.g. BSc Computer Science', required: true },
       { key: 'from', label: 'From', type: 'month', half: true, required: true },
       { key: 'to', label: 'To', type: 'month', half: true, hint: 'Leave blank if you’re still studying.' },
     ],
@@ -116,8 +116,8 @@ export const SECTION_TYPES = {
     multi: true,
     optional: true,
     fields: [
-      { key: 'name', label: 'Project name', type: 'text', half: true, placeholder: 'Project name' },
-      { key: 'link', label: 'Link', type: 'text', half: true, placeholder: 'github.com/you/project' },
+      { key: 'name', label: 'Project name', type: 'text', half: true, placeholder: 'Project name', required: true },
+      { key: 'link', label: 'Link', type: 'text', half: true, placeholder: 'github.com/you/project', required: true },
       { key: 'description', label: 'Description', type: 'textarea', placeholder: 'What it does and your part in it' },
     ],
     view: (r) => ({
@@ -135,9 +135,9 @@ export const SECTION_TYPES = {
     multi: true,
     optional: true,
     fields: [
-      { key: 'name', label: 'Certification', type: 'text', placeholder: 'e.g. AWS Certified Developer' },
-      { key: 'issuer', label: 'Issuer', type: 'text', half: true, placeholder: 'Issuing body' },
-      { key: 'dateEarned', label: 'Date earned', type: 'month', half: true },
+      { key: 'name', label: 'Certification', type: 'text', placeholder: 'e.g. AWS Certified Developer', required: true },
+      { key: 'issuer', label: 'Issuer', type: 'text', half: true, placeholder: 'Issuing body', required: true },
+      { key: 'dateEarned', label: 'Date earned', type: 'month', half: true, required: true },
     ],
     view: (r) => ({
       primary: r.name || '[Certification]',
@@ -154,8 +154,8 @@ export const SECTION_TYPES = {
     multi: true,
     optional: true,
     fields: [
-      { key: 'language', label: 'Language', type: 'text', half: true, placeholder: 'e.g. Mandarin' },
-      { key: 'proficiency', label: 'Proficiency', type: 'select', half: true, options: PROFICIENCY_LEVELS },
+      { key: 'language', label: 'Language', type: 'text', half: true, placeholder: 'e.g. Mandarin', required: true },
+      { key: 'proficiency', label: 'Proficiency', type: 'select', half: true, options: PROFICIENCY_LEVELS, required: true },
     ],
     view: (r) => ({ primary: r.language || '[Language]', meta: r.proficiency }),
   },
