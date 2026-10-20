@@ -4,6 +4,7 @@ import { buildBlocks } from '../cv/blocks.js'
 import { exportDocx } from '../cv/exportDocx.js'
 import { printPdf } from '../cv/printPdf.js'
 import { useCv } from '../state/useCv.js'
+import { useTheme } from '../state/useTheme.js'
 import AppHeader from './AppHeader.jsx'
 import Editor from './Editor.jsx'
 import PreviewStage from './PreviewStage.jsx'
@@ -11,6 +12,7 @@ import PreviewStage from './PreviewStage.jsx'
 export default function App() {
   const [state, actions, submitted] = useCv()
   const [parser, setParser] = useState(false)
+  const [theme, toggleTheme] = useTheme()
 
   const blocks = useMemo(() => buildBlocks(submitted), [submitted])
 
@@ -24,7 +26,12 @@ export default function App() {
 
   return (
     <div className="app">
-      <AppHeader onExportPdf={exportPdf} onExportDocx={() => exportDocx(blocks, name)} />
+      <AppHeader
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onExportPdf={exportPdf}
+        onExportDocx={() => exportDocx(blocks, name)}
+      />
       <div className="workspace">
         <Editor state={state} actions={actions} />
         <PreviewStage blocks={blocks} parser={parser} onToggleParser={() => setParser(!parser)} />
