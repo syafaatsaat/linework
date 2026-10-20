@@ -2,7 +2,8 @@ import { bareUrl, joinParts } from '../lib/format.js'
 import { SECTION_TYPES } from '../sections/types.js'
 
 // The one source the preview sheet, parser view and exports all read from.
-// Built from committed data only, in the user's section order.
+// Takes the submitted snapshot from useCv ({ order, committed }), so drafts
+// can't leak in, and follows the user's section order.
 //
 // Block kinds:
 //   header  { name, contact, links }
@@ -24,8 +25,8 @@ function itemBlock(id, view) {
   }
 }
 
-export function buildBlocks(state) {
-  const general = state.sections.general.committed[0] || {}
+export function buildBlocks({ order, committed }) {
+  const general = committed.general[0] || {}
   const blocks = [
     {
       id: 'header',
@@ -41,9 +42,9 @@ export function buildBlocks(state) {
     blocks.push(itemBlock('item-summary', { body: general.summary }))
   }
 
-  for (const key of state.order) {
+  for (const key of order) {
     const type = SECTION_TYPES[key]
-    const rows = state.sections[key].committed
+    const rows = committed[key]
     if (key === 'general' || rows.length === 0) continue
 
     blocks.push({ id: `heading-${key}`, kind: 'heading', label: type.sheet || type.label })

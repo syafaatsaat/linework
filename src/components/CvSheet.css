@@ -1,22 +1,55 @@
 /* The CV itself. Locked template: always black on white in both site themes,
-   so these colours are fixed rather than theme tokens. */
+   so these colours are fixed rather than theme tokens.
 
-.cv-sheet {
-  width: 100%;
-  /* A4. While content fits, the ratio fixes the height; longer content grows
-     the sheet until pagination (step 4) splits it. */
-  aspect-ratio: 210 / 297;
-  padding: 48px 50px 52px;
+   .cv carries the typography and is shared by the visible page (.cv-sheet)
+   and the hidden measuring/printing flow (.cv-flow), so both wrap text
+   identically. */
+
+.cv {
   display: flex;
   flex-direction: column;
   background: #ffffff;
   color: #16181d;
-  border: var(--border) solid var(--strong);
-  box-shadow: var(--sheet-shadow);
   font-family: 'Hanken Grotesk', Arial, sans-serif;
   font-size: 13px;
   line-height: 1.45;
   color-scheme: light;
+
+  /* Must match the @page margins below (@page can't read custom properties). */
+  --page-margin-y: 16mm;
+  --page-margin-x: 18mm;
+}
+
+/* Border and shadow live on the frame so they aren't scaled with the page. */
+.cv-sheet-frame {
+  width: 100%;
+  overflow: hidden;
+  border: var(--border) solid var(--strong);
+  box-shadow: var(--sheet-shadow);
+}
+
+/* True A4 with print margins; CvSheet scales it to the frame's width. */
+.cv-sheet {
+  width: 210mm;
+  height: 297mm;
+  padding: var(--page-margin-y) var(--page-margin-x);
+  overflow: hidden;
+  transform-origin: 0 0;
+}
+
+/* The printable width of A4, out of sight. The clip keeps its full height
+   from stretching the page scroll. */
+.cv-flow-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cv-flow {
+  width: 210mm;
+  padding: 0 var(--page-margin-x);
 }
 
 .cv-block--heading {
@@ -89,4 +122,34 @@
 .cv-bullets {
   margin: 4px 0 0;
   padding-left: 18px;
+}
+
+/* ---------- Print: only the flow prints, and the browser paginates ---------- */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 18mm;
+  }
+
+  .cv-flow-clip {
+    position: static;
+    overflow: visible;
+    visibility: visible;
+  }
+
+  /* Block layout fragments across printed pages more reliably than flex. */
+  .cv-flow {
+    display: block;
+    width: auto;
+    padding: 0;
+  }
+
+  .cv-block {
+    break-inside: avoid;
+  }
+
+  .cv-block--heading {
+    break-after: avoid;
+  }
 }

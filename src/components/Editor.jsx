@@ -6,7 +6,7 @@ export default function Editor({ state, actions }) {
   const { order, active, sections, missing } = state
 
   return (
-    <aside className="editor" aria-label="CV editor">
+    <aside className="editor no-print" aria-label="CV editor">
       <SectionTabs order={order} active={active} sections={sections} onSelect={actions.select} />
       <SectionPanel
         key={active}

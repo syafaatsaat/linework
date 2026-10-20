@@ -34,13 +34,24 @@ export default function SectionPanel({ sectionKey, position, section, missing, a
               Cancel
             </button>
           )}
-          {/* While editing, this is the form's submit button, so Enter in an input submits too. */}
+          {/* While editing, this is the form's submit button, so Enter in an input submits too.
+              Distinct keys stop React reusing one element and flipping its type mid-click, and
+              preventDefault stops the browser from treating the Edit click as a submit once the
+              re-render has already swapped in the Submit button. */}
           {editing ? (
-            <button type="submit" className="btn-toggle btn-toggle--on">
+            <button key="submit" type="submit" className="btn-toggle btn-toggle--on">
               Submit
             </button>
           ) : (
-            <button type="button" className="btn-toggle" onClick={() => actions.edit(sectionKey)}>
+            <button
+              key="edit"
+              type="button"
+              className="btn-toggle"
+              onClick={(e) => {
+                e.preventDefault()
+                actions.edit(sectionKey)
+              }}
+            >
               Edit
             </button>
           )}

@@ -1,13 +1,40 @@
+import { useLayoutEffect, useState } from 'react'
 import CvBlock from './CvBlock.jsx'
 import './CvSheet.css'
 
-// The A4 sheet. Shows every block on one sheet for now; pagination arrives in step 4.
-export default function CvSheet({ blocks }) {
+// CSS px per mm at the 96 dpi reference.
+const PX_PER_MM = 96 / 25.4
+const A4_WIDTH = 210 * PX_PER_MM
+const A4_HEIGHT = 297 * PX_PER_MM
+
+// One A4 page of the preview. The page is laid out at true A4 size with the
+// print margins, then scaled to fit, so it wraps and paginates exactly like
+// the printed PDF. The paginator sizes pages from the unscaled sheet.
+export default function CvSheet({ blocks, sheetRef, label }) {
+  const [frame, setFrame] = useState(null)
+  const [scale, setScale] = useState(1)
+
+  useLayoutEffect(() => {
+    if (!frame) return
+    const fit = () => setScale(frame.clientWidth / A4_WIDTH)
+    fit()
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(fit)
+    observer.observe(frame)
+    return () => observer.disconnect()
+  }, [frame])
+
   return (
-    <article className="cv-sheet" aria-label="CV preview">
-      {blocks.map((block) => (
-        <CvBlock key={block.id} block={block} />
-      ))}
-    </article>
+    <div
+      ref={setFrame}
+      className="cv-sheet-frame no-print"
+      style={{ height: `calc(${A4_HEIGHT * scale}px + 2 * var(--border))` }}
+    >
+      <article ref={sheetRef} className="cv cv-sheet" style={{ transform: `scale(${scale})` }} aria-label={label}>
+        {blocks.map((block) => (
+          <CvBlock key={block.id} block={block} />
+        ))}
+      </article>
+    </div>
   )
 }

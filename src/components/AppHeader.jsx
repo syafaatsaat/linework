@@ -1,7 +1,9 @@
-// Theme toggle and export buttons join the logo in later build steps.
-export default function AppHeader() {
+import ExportButtons from './ExportButtons.jsx'
+
+// The theme toggle joins the logo and export buttons in step 7.
+export default function AppHeader({ onExportPdf }) {
   return (
-    <header className="app-header">
+    <header className="app-header no-print">
       <div className="app-header-inner">
         <div className="logo">
           <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -10,6 +12,7 @@ export default function AppHeader() {
           </svg>
           <span className="logo-text">linework/cv</span>
         </div>
+        <ExportButtons onPdf={onExportPdf} />
       </div>
     </header>
   )

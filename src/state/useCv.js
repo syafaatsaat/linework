@@ -12,6 +12,10 @@ export function useCv() {
     saveText(STORAGE_KEY, snapshot)
   }, [snapshot])
 
+  // Committed data as { order, committed }, stable across keystrokes. The CV
+  // preview and exports read this, so they can never see a draft.
+  const submitted = useMemo(() => JSON.parse(snapshot), [snapshot])
+
   const actions = useMemo(
     () => ({
       select: (key) => dispatch({ type: 'select', key }),
@@ -28,5 +32,5 @@ export function useCv() {
     [],
   )
 
-  return [state, actions]
+  return [state, actions, submitted]
 }

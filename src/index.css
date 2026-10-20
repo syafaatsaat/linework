@@ -177,6 +177,25 @@ textarea::placeholder {
   font-size: 13px;
 }
 
+.btn-solid {
+  min-height: 44px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--solid);
+  color: var(--on-solid);
+  border: var(--border) solid var(--solid);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.export-group {
+  display: flex;
+}
+
 .btn-accent-outline {
   min-height: 44px;
   padding: 0 14px;
@@ -432,7 +451,8 @@ textarea::placeholder {
 
 .stage-bar,
 .dimension,
-.stage-holder {
+.stage-holder,
+.page-nav {
   width: 100%;
   max-width: 620px;
 }
@@ -482,6 +502,29 @@ textarea::placeholder {
   position: relative;
 }
 
+.page-nav {
+  width: 100%;
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-count {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.page-warn {
+  margin: 0;
+  max-width: 620px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warn);
+}
+
 /* Plain-text view is white like the sheet, but dashed to read as "not the design". */
 .parser-view {
   width: 100%;
@@ -508,5 +551,26 @@ textarea::placeholder {
   .field textarea,
   .field select {
     font-size: 16px; /* prevents iOS zoom on focus */
+  }
+}
+
+/* ---------- Print: strip the app, keep the CV ---------- */
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .workspace,
+  .stage,
+  .stage-holder {
+    display: block;
+    max-width: none;
+    padding: 0;
+    margin: 0;
   }
 }
