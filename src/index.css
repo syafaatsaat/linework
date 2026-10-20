@@ -1,0 +1,389 @@
+/* Theme tokens. Light only for now; dark mode and the toggle come in step 7. */
+:root {
+  --bg: #f4f7fb;
+  --grid-major: rgba(30, 91, 184, 0.16);
+  --grid-minor: rgba(30, 91, 184, 0.07);
+  --ink: #0b2a5b;
+  --muted: #3d5a86;
+  --line: #9db4d6;
+  --strong: #0b2a5b;
+  --accent: #1e5bb8;
+  --on-accent: #ffffff;
+  --panel: #ffffff;
+  --input: #ffffff;
+  --solid: #0b2a5b;
+  --on-solid: #ffffff;
+  --warn: #9a4a00;
+  --placeholder: #7d8fad;
+  --focus: #4a80de;
+
+  --font-ui: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+  --border: 1.5px;
+  --radius: 4px;
+
+  color-scheme: light;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 0;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--placeholder);
+}
+
+.mono-meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Layout ---------- */
+
+.workspace {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 28px 72px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.editor {
+  flex: 1 1 440px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn-link {
+  min-height: 44px;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.btn-outline {
+  min-height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.btn-add {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 16px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) dashed var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.btn-toggle {
+  min-height: 44px;
+  min-width: 96px;
+  padding: 0 16px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) solid var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-toggle--on {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ---------- Tabs ---------- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tab {
+  flex: 1 1 120px;
+  min-height: 60px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--panel);
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.tab[aria-pressed='true'] {
+  background: var(--solid);
+  color: var(--on-solid);
+}
+
+.tab-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.tab-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ---------- Section panel ---------- */
+
+.panel {
+  padding: 22px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--panel);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  margin: 2px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.panel-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel-hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.alert {
+  margin: 0;
+  padding: 10px 12px;
+  border: var(--border) solid var(--warn);
+  border-radius: var(--radius);
+  color: var(--warn);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ---------- Entries and fields ---------- */
+
+.entry {
+  margin: 0;
+  padding: 14px 16px 16px;
+  border: var(--border) dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.entry legend {
+  padding: 0 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.entry-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.field {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field--half {
+  grid-column: auto;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input);
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
+.field input,
+.field select {
+  min-height: 46px;
+}
+
+.field textarea {
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.field [aria-invalid='true'] {
+  border-color: var(--warn);
+}
+
+.counter {
+  margin: 0;
+  align-self: flex-end;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.counter--warn {
+  color: var(--warn);
+}
+
+/* ---------- Submitted summary ---------- */
+
+.summary {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary li {
+  padding: 10px 0;
+  border-top: 1px dashed var(--line);
+}
+
+.summary-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary-detail {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.summary-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------- Prev / Next ---------- */
+
+.editor-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Two field columns get cramped on narrow screens. */
+@media (max-width: 520px) {
+  .entry-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+}

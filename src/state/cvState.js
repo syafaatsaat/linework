@@ -12,7 +12,7 @@ export const STORAGE_KEY = 'linework:cv:v1'
 //   order:    section keys in CV order; 'general' is always first
 //   active:   key of the section shown in the editor
 //   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean } }
-//   error:    validation message for the active section ('' when none)
+//   missing:  required field keys the last submit of the active section lacked
 //
 // `committed` is what the preview and exports read. `draft` is what the form
 // edits. Submit copies draft → committed; Edit and Cancel copy committed → draft.
@@ -61,7 +61,7 @@ export function createInitialState() {
   for (const key of order) {
     sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]))
   }
-  return { order, active: 'general', sections, error: '' }
+  return { order, active: 'general', sections, missing: [] }
 }
 
 // Only committed data and order persist; unsaved drafts are discarded on reload.
@@ -89,7 +89,7 @@ export function cvReducer(state, action) {
   switch (action.type) {
     case 'select': {
       if (!state.sections[action.key] || action.key === state.active) return state
-      return { ...discardDraft(state, state.active), active: action.key, error: '' }
+      return { ...discardDraft(state, state.active), active: action.key, missing: [] }
     }
 
     case 'updateField': {
@@ -97,7 +97,9 @@ export function cvReducer(state, action) {
       const draft = state.sections[key].draft.map((row, i) =>
         i === index ? { ...row, [field]: value } : row,
       )
-      return updateSection(state, key, { draft })
+      const next = updateSection(state, key, { draft })
+      // Once a submit has flagged fields, keep the list current as they're filled in.
+      return state.missing.length ? { ...next, missing: missingRequired(key, draft) } : next
     }
 
     case 'addEntry': {
@@ -114,13 +116,10 @@ export function cvReducer(state, action) {
       const { key } = action
       const missing = missingRequired(key, state.sections[key].draft)
       if (missing.length) {
-        return {
-          ...state,
-          error: `Add your ${missing.join(', ')} to submit. Everything else in this section is optional.`,
-        }
+        return { ...state, missing }
       }
       const committed = clone(state.sections[key].draft)
-      return { ...updateSection(state, key, { committed, editing: false }), error: '' }
+      return { ...updateSection(state, key, { committed, editing: false }), missing: [] }
     }
 
     case 'edit': {
@@ -136,7 +135,7 @@ export function cvReducer(state, action) {
           // Nothing submitted yet means there's no summary to fall back to.
           editing: committed.length === 0,
         }),
-        error: '',
+        missing: [],
       }
     }
 
@@ -148,7 +147,7 @@ export function cvReducer(state, action) {
         order: [...state.order, key],
         sections: { ...state.sections, [key]: freshSection(key) },
         active: key,
-        error: '',
+        missing: [],
       }
     }
 
@@ -160,7 +159,7 @@ export function cvReducer(state, action) {
       const sections = { ...state.sections }
       delete sections[key]
       const active = state.active === key ? order[Math.max(0, index - 1)] : state.active
-      return { ...state, order, sections, active, error: '' }
+      return { ...state, order, sections, active, missing: [] }
     }
 
     case 'move': {

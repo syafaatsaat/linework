@@ -1,11 +1,11 @@
 import { SECTION_TYPES } from '../sections/types.js'
 import EntryFieldset from './EntryFieldset.jsx'
 import SubmittedSummary from './SubmittedSummary.jsx'
+import ValidationAlert from './ValidationAlert.jsx'
 
-export default function SectionPanel({ sectionKey, position, section, error, actions }) {
+export default function SectionPanel({ sectionKey, position, section, missing, actions }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
-  const status = editing ? 'EDITING' : 'SUBMITTED'
 
   const submit = (e) => {
     e.preventDefault()
@@ -13,22 +13,44 @@ export default function SectionPanel({ sectionKey, position, section, error, act
   }
 
   return (
-    <section className="panel" aria-labelledby={`${sectionKey}-title`}>
-      <p className="panel-meta">
-        SECTION {String(position).padStart(2, '0')} · {status}
-      </p>
-      <h2 id={`${sectionKey}-title`}>{type.label}</h2>
-
-      {type.optional && (
-        <button type="button" onClick={() => actions.removeSection(sectionKey)}>
-          Remove section
-        </button>
-      )}
+    <form className="panel" onSubmit={submit} noValidate aria-labelledby={`${sectionKey}-title`}>
+      <div className="panel-head">
+        <div>
+          <p className="mono-meta">
+            SECTION {String(position).padStart(2, '0')} · {editing ? 'EDITING' : 'SUBMITTED'}
+          </p>
+          <h2 id={`${sectionKey}-title`} className="panel-title">
+            {type.label}
+          </h2>
+        </div>
+        <div className="panel-controls">
+          {type.optional && (
+            <button type="button" className="btn-link" onClick={() => actions.removeSection(sectionKey)}>
+              Remove section
+            </button>
+          )}
+          {editing && committed.length > 0 && (
+            <button type="button" className="btn-link" onClick={() => actions.cancel(sectionKey)}>
+              Cancel
+            </button>
+          )}
+          {/* While editing, this is the form's submit button, so Enter in an input submits too. */}
+          {editing ? (
+            <button type="submit" className="btn-toggle btn-toggle--on">
+              Submit
+            </button>
+          ) : (
+            <button type="button" className="btn-toggle" onClick={() => actions.edit(sectionKey)}>
+              Edit
+            </button>
+          )}
+        </div>
+      </div>
 
       {editing ? (
-        <form onSubmit={submit} noValidate>
+        <div className="panel-body">
+          <ValidationAlert type={type} missing={missing} />
           {type.hint && <p className="panel-hint">{type.hint}</p>}
-          {error && <p role="alert">{error}</p>}
 
           {draft.map((row, i) => (
             <EntryFieldset
@@ -37,36 +59,21 @@ export default function SectionPanel({ sectionKey, position, section, error, act
               type={type}
               row={row}
               index={i}
+              missing={missing}
               onChange={(index, field, value) => actions.updateField(sectionKey, index, field, value)}
               onRemove={(index) => actions.removeEntry(sectionKey, index)}
             />
           ))}
 
           {type.multi && (
-            <button type="button" onClick={() => actions.addEntry(sectionKey)}>
+            <button type="button" className="btn-add" onClick={() => actions.addEntry(sectionKey)}>
               + Add {type.noun}
             </button>
           )}
-
-          <div className="panel-actions">
-            {committed.length > 0 && (
-              <button type="button" onClick={() => actions.cancel(sectionKey)}>
-                Cancel
-              </button>
-            )}
-            <button type="submit">Submit</button>
-          </div>
-        </form>
+        </div>
       ) : (
-        <>
-          <SubmittedSummary type={type} rows={committed} />
-          <div className="panel-actions">
-            <button type="button" onClick={() => actions.edit(sectionKey)}>
-              Edit
-            </button>
-          </div>
-        </>
+        <SubmittedSummary type={type} rows={committed} />
       )}
-    </section>
+    </form>
   )
 }

@@ -8,7 +8,9 @@ function summarize(view) {
 }
 
 export default function SubmittedSummary({ type, rows }) {
-  if (rows.length === 0) return <p className="summary-empty">Nothing added yet.</p>
+  if (rows.length === 0) {
+    return <p className="summary-empty">Nothing submitted yet. Press Edit to add entries.</p>
+  }
 
   return (
     <ul className="summary">
@@ -16,8 +18,8 @@ export default function SubmittedSummary({ type, rows }) {
         const { title, detail } = summarize(type.view(row))
         return (
           <li key={i}>
-            <strong>{title}</strong>
-            {detail && <span>{detail}</span>}
+            <p className="summary-title">{title}</p>
+            {detail && <p className="summary-detail">{detail}</p>}
           </li>
         )
       })}
