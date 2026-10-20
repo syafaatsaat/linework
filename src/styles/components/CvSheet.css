@@ -137,6 +137,33 @@
   color: #3a4250;
 }
 
+/* On the preview sheet the heading rule draws itself left to right when the
+   heading appears. The border stays (transparent) to keep the layout, and a
+   1px line takes its exact place; the print copy keeps the real border. */
+.cv-sheet .cv-heading {
+  position: relative;
+  border-bottom-color: transparent;
+}
+
+.cv-sheet .cv-heading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: #1e5bb8;
+  transform-origin: left;
+  animation: cv-rule-draw 450ms cubic-bezier(0.2, 0, 0, 1) backwards;
+  animation-delay: var(--draw-delay, 0ms);
+}
+
+@keyframes cv-rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
 .cv-text {
   margin: 0;
 }

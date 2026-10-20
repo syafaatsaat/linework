@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { focusAfterRender, keepFocusInGroup } from '../lib/focus.js'
 import { SECTION_TYPES } from '../sections/types.js'
 import EntryFieldset from './EntryFieldset.jsx'
@@ -16,6 +17,16 @@ import { SECTION_ERROR_ID, SECTION_FORM_ID } from './formIds.js'
 export default function SectionPanel({ sectionKey, position, count, section, errors, actions, compact = false }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
+
+  // Animate the form ↔ summary swap, but only once this panel has actually
+  // toggled: switching tabs mounts a fresh panel, which should appear at once.
+  const [shownEditing, setShownEditing] = useState(editing)
+  const [toggled, setToggled] = useState(false)
+  if (shownEditing !== editing) {
+    setShownEditing(editing)
+    setToggled(true)
+  }
+  const enter = toggled ? ' panel-enter' : ''
 
   const toggle = () => document.querySelector('[data-section-toggle]')
 
@@ -113,7 +124,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
       )}
 
       {editing ? (
-        <div className="panel-body">
+        <div className={`panel-body${enter}`}>
           <ValidationAlert id={SECTION_ERROR_ID} type={type} rows={draft} errors={errors} />
           {type.hint && <p className="panel-hint">{type.hint}</p>}
 
@@ -140,7 +151,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
       ) : (
         <>
           {section.review && (
-            <div className="review-note" role="note">
+            <div className={`review-note${enter}`} role="note">
               <p>Imported automatically. Check these entries against your original CV.</p>
               <button
                 type="button"
@@ -154,7 +165,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
               </button>
             </div>
           )}
-          <SubmittedSummary type={type} rows={committed} verb={compact ? 'Tap' : 'Press'} />
+          <SubmittedSummary type={type} rows={committed} verb={compact ? 'Tap' : 'Press'} animate={toggled} />
         </>
       )}
     </form>

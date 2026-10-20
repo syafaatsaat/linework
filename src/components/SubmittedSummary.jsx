@@ -7,17 +7,22 @@ function summarize(view) {
   return { title: view.secondary || '—', detail: view.meta || '' }
 }
 
-export default function SubmittedSummary({ type, rows, verb = 'Press' }) {
+// `animate` plays the entry animation, rows appearing one after another.
+export default function SubmittedSummary({ type, rows, verb = 'Press', animate = false }) {
   if (rows.length === 0) {
-    return <p className="summary-empty">Nothing submitted yet. {verb} Edit to add entries.</p>
+    return (
+      <p className={animate ? 'summary-empty panel-enter' : 'summary-empty'}>
+        Nothing submitted yet. {verb} Edit to add entries.
+      </p>
+    )
   }
 
   return (
-    <ul className="summary">
+    <ul className={animate ? 'summary summary--enter' : 'summary'}>
       {rows.map((row, i) => {
         const { title, detail } = summarize(type.view(row))
         return (
-          <li key={i}>
+          <li key={i} style={animate ? { '--i': i } : undefined}>
             <p className="summary-title">{title}</p>
             {detail && <p className="summary-detail">{detail}</p>}
           </li>

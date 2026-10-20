@@ -23,6 +23,9 @@ export default function CvSheet({ blocks, changed, label }) {
     return () => observer.disconnect()
   }, [frame])
 
+  // Heading rules draw one after another down the page (CvSheet.css).
+  let headingIndex = 0
+
   return (
     <div
       ref={setFrame}
@@ -36,6 +39,7 @@ export default function CvSheet({ blocks, changed, label }) {
             block={block}
             changed={changed?.has(block.id)}
             transitionName={`cv-${block.id}`}
+            drawDelay={block.kind === 'heading' ? 80 * headingIndex++ : undefined}
           />
         ))}
       </article>

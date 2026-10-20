@@ -1,13 +1,17 @@
 // Renders one block from buildBlocks(). Markup follows the ATS rules: plain
 // headings, real lists, no tables or columns.
 //
-// The preview sheet also passes `changed` (play the "just edited" highlight)
-// and `transitionName` (its view-transition-name, so reordering animates).
-// The hidden print copy passes neither.
-export default function CvBlock({ block, changed = false, transitionName }) {
+// The preview sheet also passes `changed` (play the "just edited" highlight),
+// `transitionName` (its view-transition-name, so reordering animates) and
+// `drawDelay` (when a heading's rule starts drawing). The hidden print copy
+// passes none of them.
+export default function CvBlock({ block, changed = false, transitionName, drawDelay }) {
+  const style = {}
+  if (transitionName) style.viewTransitionName = transitionName
+  if (drawDelay !== undefined) style['--draw-delay'] = `${drawDelay}ms`
   const wrapper = (kind) => ({
     className: `cv-block cv-block--${kind}${changed ? ' cv-block--changed' : ''}`,
-    style: transitionName ? { viewTransitionName: transitionName } : undefined,
+    style: Object.keys(style).length ? style : undefined,
     'data-blk': true,
   })
 

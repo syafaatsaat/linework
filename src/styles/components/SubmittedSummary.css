@@ -26,3 +26,10 @@
   margin: 0;
   color: var(--muted);
 }
+
+/* Rows arrive one after another (panel-enter keyframes, SectionPanel.css),
+   capped so long lists don't drag. */
+.summary--enter li {
+  animation: panel-enter 220ms ease-out backwards;
+  animation-delay: min(calc(var(--i, 0) * 45ms), 360ms);
+}
