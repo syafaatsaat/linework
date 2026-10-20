@@ -1,9 +1,12 @@
 import CharCounter from './CharCounter.jsx'
+import MonthField from './MonthField.jsx'
 
 export default function Field({ id, field, value, invalid, errorId, onChange }) {
-  const { label, type, placeholder, options, maxLength } = field
+  const { label, type, placeholder, options, maxLength, hint } = field
+  const labelId = `${id}-label`
   const counterId = maxLength ? `${id}-count` : undefined
-  const describedBy = [counterId, invalid && errorId].filter(Boolean).join(' ') || undefined
+  const hintId = hint ? `${id}-hint` : undefined
+  const describedBy = [hintId, counterId, invalid && errorId].filter(Boolean).join(' ') || undefined
   const handle = (e) => onChange(maxLength ? e.target.value.slice(0, maxLength) : e.target.value)
 
   const shared = {
@@ -16,7 +19,9 @@ export default function Field({ id, field, value, invalid, errorId, onChange }) 
   }
 
   let control
-  if (type === 'textarea') {
+  if (type === 'month') {
+    control = <MonthField id={id} labelId={labelId} label={label} value={value} describedBy={describedBy} onChange={onChange} />
+  } else if (type === 'textarea') {
     control = <textarea {...shared} rows={maxLength ? 4 : 3} placeholder={placeholder} maxLength={maxLength} />
   } else if (type === 'select') {
     control = (
@@ -31,9 +36,16 @@ export default function Field({ id, field, value, invalid, errorId, onChange }) 
   }
 
   return (
-    <div className={field.half ? 'field field--half' : 'field'}>
-      <label htmlFor={id}>{label}</label>
+    <div className={['field', field.half && 'field--half', type === 'month' && 'field--month'].filter(Boolean).join(' ')}>
+      <label id={labelId} htmlFor={id}>
+        {label}
+      </label>
       {control}
+      {hint && (
+        <p id={hintId} className="field-hint">
+          {hint}
+        </p>
+      )}
       {maxLength && <CharCounter id={counterId} length={value.length} max={maxLength} />}
     </div>
   )

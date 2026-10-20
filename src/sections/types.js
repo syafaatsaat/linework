@@ -11,8 +11,9 @@ export const PROFICIENCY_LEVELS = ['Native', 'Fluent', 'Professional', 'Conversa
 
 export const SUMMARY_MAX = 400
 
-// Field shape: { key, label, type, half?, placeholder?, options?, maxLength?, required? }
-// type is one of: text, email, tel, month, textarea, select.
+// Field shape: { key, label, type, half?, placeholder?, options?, maxLength?, required?, hint? }
+// type is one of: text, email, tel, month, textarea, select. Month values are
+// "YYYY-MM", or "YYYY" when only the year is known.
 //
 // view(row) returns display parts used by the submitted summary and, later,
 // the CV block builder:
@@ -72,7 +73,7 @@ export const SECTION_TYPES = {
       { key: 'position', label: 'Position title', type: 'text', half: true, placeholder: 'Your role' },
       { key: 'responsibilities', label: 'Main responsibilities', type: 'textarea', placeholder: 'One responsibility per line' },
       { key: 'from', label: 'From', type: 'month', half: true },
-      { key: 'until', label: 'Until', type: 'month', half: true },
+      { key: 'until', label: 'Until', type: 'month', half: true, hint: 'Leave blank if you still work here.' },
     ],
     view: (r) => ({
       primary: r.position || '[Position title]',
@@ -92,7 +93,7 @@ export const SECTION_TYPES = {
       { key: 'school', label: 'School', type: 'text', placeholder: 'School or university' },
       { key: 'titleOfStudy', label: 'Title of study', type: 'text', placeholder: 'e.g. BSc Computer Science' },
       { key: 'from', label: 'From', type: 'month', half: true },
-      { key: 'to', label: 'To', type: 'month', half: true },
+      { key: 'to', label: 'To', type: 'month', half: true, hint: 'Leave blank if you’re still studying.' },
     ],
     view: (r) => ({
       primary: r.titleOfStudy || '[Title of study]',

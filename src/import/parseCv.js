@@ -63,25 +63,22 @@ function headingKey(line, bodySize) {
   return line.heading || caps ? 'skip' : null
 }
 
-// "Jul 2020" / "07/2020" / "2020-07" / "2020" → "2020-07" (year-only → January).
-function toMonth(text, notes) {
+// "Jul 2020" / "07/2020" / "2020-07" → "2020-07"; a bare year stays "2020".
+function toMonth(text) {
   const t = text.trim().toLowerCase()
   let m = t.match(new RegExp(`^(${MONTH})\\.?\\s+(\\d{4})$`))
   if (m) return `${m[2]}-${String(MONTHS[m[1].slice(0, 3)]).padStart(2, '0')}`
   if ((m = t.match(/^(\d{1,2})[/.](\d{4})$/))) return `${m[2]}-${m[1].padStart(2, '0')}`
   if (/^\d{4}-\d{2}$/.test(t)) return t
-  if ((m = t.match(/^(\d{4})$/))) {
-    notes.add('Year-only dates were set to January. Check the months.')
-    return `${m[1]}-01`
-  }
+  if (/^\d{4}$/.test(t)) return t
   return ''
 }
 
-function parseRange(text, notes) {
+function parseRange(text) {
   const m = text.match(RANGE)
   if (!m) return null
-  const end = new RegExp(`^${PRESENT}$`, 'i').test(m[2]) ? '' : toMonth(m[2], notes)
-  return { from: toMonth(m[1], notes), to: end, raw: m[0] }
+  const end = new RegExp(`^${PRESENT}$`, 'i').test(m[2]) ? '' : toMonth(m[2])
+  return { from: toMonth(m[1]), to: end, raw: m[0] }
 }
 
 function splitSections(lines) {
@@ -165,7 +162,7 @@ function setSummary(row, lines, notes) {
 
 // Groups a section's lines into entries: short header lines (title, company,
 // school…), longer body text, bullets, and any dates found along the way.
-function toEntries(lines, notes) {
+function toEntries(lines) {
   const entries = []
   let cur = null
   const start = () => {
@@ -181,7 +178,7 @@ function toEntries(lines, notes) {
     }
 
     let text = line.text
-    const range = parseRange(text, notes)
+    const range = parseRange(text)
     if (range) text = text.replace(range.raw, ' ')
     const datePart = !range && line.parts.find((p) => ONLY_DATE.test(p.trim()))
     if (datePart) text = text.replace(datePart, ' ')
@@ -197,7 +194,7 @@ function toEntries(lines, notes) {
     const hasDate = range || datePart
     if (!cur || cur.bullets.length || (cur.body.length && !isBody) || (hasDate && (cur.range || cur.date))) start()
     if (range) cur.range = range
-    if (datePart) cur.date = toMonth(datePart, notes)
+    if (datePart) cur.date = toMonth(datePart)
     if (text) (isBody ? cur.body : cur.head).push(text)
   }
   return entries.filter((e) => e.head.length || e.body.length || e.bullets.length)
@@ -221,8 +218,8 @@ function headPair(head) {
 }
 
 const parsers = {
-  exp(lines, notes) {
-    return toEntries(lines, notes).map((e) => {
+  exp(lines) {
+    return toEntries(lines).map((e) => {
       let [position, company] = headPair(e.head)
       // "Acme — Senior Developer" puts the company first.
       if (company && JOB_TITLE.test(company) && !JOB_TITLE.test(position)) [position, company] = [company, position]
@@ -237,7 +234,7 @@ const parsers = {
   },
 
   edu(lines, notes) {
-    return toEntries(lines, notes).map((e) => {
+    return toEntries(lines).map((e) => {
       let head = e.head
       if (head.length === 1) head = splitPair(head[0]).filter(Boolean)
       const title = head.find((h) => DEGREE.test(h)) ?? head[0] ?? ''
@@ -251,8 +248,8 @@ const parsers = {
     })
   },
 
-  projects(lines, notes) {
-    return toEntries(lines, notes).map((e) => {
+  projects(lines) {
+    return toEntries(lines).map((e) => {
       const all = [...e.head, ...e.body, ...e.bullets]
       const link = all.join(' ').replace(new RegExp(EMAIL.source, 'g'), ' ').match(URL)?.[0] ?? ''
       const strip = (s) => (link ? s.replace(link, '') : s).replace(/^[\s|–—-]+|[\s|–—-]+$/g, '').trim()
@@ -264,8 +261,8 @@ const parsers = {
     })
   },
 
-  certs(lines, notes) {
-    return toEntries(lines, notes).map((e) => {
+  certs(lines) {
+    return toEntries(lines).map((e) => {
       const [name, issuer] = headPair(e.head)
       return { name, issuer, dateEarned: e.date || e.range?.to || e.range?.from || '' }
     })
