@@ -268,23 +268,53 @@ textarea::placeholder {
   gap: 6px;
 }
 
+/* The tile is a plain box; the select button fills it and the ⠿ handle sits
+   over its top-left corner. */
 .tab {
+  position: relative;
   flex: 1 1 120px;
   min-height: 60px;
-  padding: 8px 12px;
   display: flex;
-  flex-direction: column;
-  gap: 1px;
   background: var(--panel);
   color: var(--ink);
   border: var(--border) solid var(--strong);
   border-radius: var(--radius);
-  text-align: left;
+  cursor: grab;
+  touch-action: manipulation;
 }
 
-.tab[aria-pressed='true'] {
+.tab--pinned {
+  cursor: default;
+}
+
+.tab--active {
   background: var(--solid);
   color: var(--on-solid);
+}
+
+.tab--dragging {
+  z-index: 1;
+  opacity: 0.6;
+  cursor: grabbing;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.tab-select {
+  flex: 1;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  cursor: inherit;
+}
+
+/* Leave room for the handle in front of the number. */
+.tab:not(.tab--pinned) .tab-meta {
+  padding-left: 16px;
 }
 
 .tab-meta {
@@ -294,6 +324,68 @@ textarea::placeholder {
 }
 
 .tab-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tab-handle {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  border-radius: 2px;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.85;
+  cursor: grab;
+}
+
+.tab-add {
+  flex: 1 1 120px;
+  min-height: 60px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) dashed var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.editor-hint {
+  margin-top: -4px;
+}
+
+.add-menu {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--panel);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+}
+
+.add-menu-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-option {
+  min-height: 44px;
+  padding: 0 16px;
+  background: transparent;
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
   font-size: 15px;
   font-weight: 600;
 }
@@ -328,6 +420,27 @@ textarea::placeholder {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+.panel-position {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn-small {
+  min-height: 44px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--ink);
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
 .panel-body {

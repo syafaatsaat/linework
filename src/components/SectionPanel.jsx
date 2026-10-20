@@ -3,7 +3,7 @@ import EntryFieldset from './EntryFieldset.jsx'
 import SubmittedSummary from './SubmittedSummary.jsx'
 import ValidationAlert from './ValidationAlert.jsx'
 
-export default function SectionPanel({ sectionKey, position, section, missing, actions }) {
+export default function SectionPanel({ sectionKey, position, count, section, missing, actions }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
 
@@ -57,6 +57,31 @@ export default function SectionPanel({ sectionKey, position, section, missing, a
           )}
         </div>
       </div>
+
+      {!type.pinned && (
+        <div className="panel-position">
+          <span>POSITION ON CV</span>
+          {/* Accessible fallback for dragging the tabs. Position 1 belongs to General. */}
+          <button
+            type="button"
+            className="btn-small"
+            aria-label="Move section earlier on the CV"
+            disabled={position <= 2}
+            onClick={() => actions.move(sectionKey, position - 2)}
+          >
+            ← Earlier
+          </button>
+          <button
+            type="button"
+            className="btn-small"
+            aria-label="Move section later on the CV"
+            disabled={position >= count}
+            onClick={() => actions.move(sectionKey, position)}
+          >
+            Later →
+          </button>
+        </div>
+      )}
 
       {editing ? (
         <div className="panel-body">
