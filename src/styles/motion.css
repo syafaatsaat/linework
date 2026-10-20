@@ -1,0 +1,27 @@
+/* Motion shared across the app. Component animations live in their own files
+   (CvSheet.css highlight, BottomSheet.css slide, ConfirmDialog.css fade). */
+
+/* View transitions (lib/motion.js): only elements with a view-transition-name
+   move; the rest of the page updates in place instead of cross-fading. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(*) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Reduced motion: everything happens instantly. The !important also beats
+   inline transitions (dnd-kit's tab drag). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  ::backdrop {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

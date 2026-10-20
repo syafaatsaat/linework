@@ -35,4 +35,5 @@
 @import './components/BottomSheet.css';
 @import './components/SectionsSheet.css';
 @import './components/ExportSheet.css';
+@import './motion.css';
 @import './print.css';

@@ -60,6 +60,28 @@
   height: calc(297mm - 2 * var(--page-margin-y));
 }
 
+/* "Just edited" highlight on the preview sheet (useChangedBlocks). Only the
+   visible sheet ever gets the class, so it can't reach print or exports. */
+.cv-block--changed {
+  border-radius: 2px;
+  animation: cv-changed 1.6s ease-out;
+}
+
+@keyframes cv-changed {
+  0% {
+    background-color: rgba(30, 91, 184, 0);
+    box-shadow: 0 0 0 4px rgba(30, 91, 184, 0);
+  }
+  12% {
+    background-color: rgba(30, 91, 184, 0.16);
+    box-shadow: 0 0 0 4px rgba(30, 91, 184, 0.16);
+  }
+  100% {
+    background-color: rgba(30, 91, 184, 0);
+    box-shadow: 0 0 0 4px rgba(30, 91, 184, 0);
+  }
+}
+
 .cv-block--heading {
   padding-top: 18px;
 }

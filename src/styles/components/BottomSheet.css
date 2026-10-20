@@ -80,3 +80,44 @@
   justify-content: space-between;
   border-top: 1px dashed var(--line);
 }
+
+/* Slide up on open; .sheet-layer--closing plays the reverse before unmount. */
+.sheet-backdrop {
+  animation: sheet-fade-in 200ms ease-out;
+}
+
+.sheet {
+  animation: sheet-in 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.sheet-layer--closing .sheet-backdrop {
+  animation: sheet-fade-out 180ms ease-in forwards;
+}
+
+.sheet-layer--closing .sheet {
+  animation: sheet-out 180ms ease-in forwards;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-fade-out {
+  to {
+    opacity: 0;
+  }
+}

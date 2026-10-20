@@ -37,7 +37,12 @@ export default function SectionsSheet({ order, active, onMove, onAdd, onReset, o
       </p>
       <ol ref={list} className="order-list">
         {order.map((key, i) => (
-          <li key={key} data-row={key} className={key === active ? 'order-row order-row--active' : 'order-row'}>
+          <li
+            key={key}
+            data-row={key}
+            className={key === active ? 'order-row order-row--active' : 'order-row'}
+            style={{ viewTransitionName: `row-${key}` }}
+          >
             <span className="order-num">{String(i + 1).padStart(2, '0')}</span>
             <span className="order-label">{label(key)}</span>
             {!SECTION_TYPES[key].pinned && (

@@ -6,7 +6,7 @@ import ParserView from './ParserView.jsx'
 import ParserToggle from './ParserToggle.jsx'
 
 // Desktop preview column.
-export default function PreviewStage({ blocks, pageBlocks, page, pageCount, onPageChange, parser, onToggleParser }) {
+export default function PreviewStage({ blocks, pageBlocks, changed, page, pageCount, onPageChange, parser, onToggleParser }) {
   return (
     <main className="stage">
       <div className="stage-bar no-print">
@@ -18,7 +18,7 @@ export default function PreviewStage({ blocks, pageBlocks, page, pageCount, onPa
         {parser ? (
           <ParserView blocks={blocks} />
         ) : (
-          <CvSheet blocks={pageBlocks} label={`CV preview, page ${page + 1} of ${pageCount}`} />
+          <CvSheet blocks={pageBlocks} changed={changed} label={`CV preview, page ${page + 1} of ${pageCount}`} />
         )}
       </div>
       {!parser && (

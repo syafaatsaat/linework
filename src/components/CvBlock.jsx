@@ -1,9 +1,19 @@
 // Renders one block from buildBlocks(). Markup follows the ATS rules: plain
 // headings, real lists, no tables or columns.
-export default function CvBlock({ block }) {
+//
+// The preview sheet also passes `changed` (play the "just edited" highlight)
+// and `transitionName` (its view-transition-name, so reordering animates).
+// The hidden print copy passes neither.
+export default function CvBlock({ block, changed = false, transitionName }) {
+  const wrapper = (kind) => ({
+    className: `cv-block cv-block--${kind}${changed ? ' cv-block--changed' : ''}`,
+    style: transitionName ? { viewTransitionName: transitionName } : undefined,
+    'data-blk': true,
+  })
+
   if (block.kind === 'header') {
     return (
-      <div className="cv-block cv-block--header" data-blk>
+      <div {...wrapper('header')}>
         <header className="cv-header">
           <h1 className="cv-name">{block.name}</h1>
           {block.contact && <p className="cv-contact">{block.contact}</p>}
@@ -15,7 +25,7 @@ export default function CvBlock({ block }) {
 
   if (block.kind === 'heading') {
     return (
-      <div className="cv-block cv-block--heading" data-blk>
+      <div {...wrapper('heading')}>
         <h2 className="cv-heading">{block.label}</h2>
       </div>
     )
@@ -23,7 +33,7 @@ export default function CvBlock({ block }) {
 
   const { primary, meta, secondary, lead, body, bullets } = block
   return (
-    <div className="cv-block cv-block--item" data-blk>
+    <div {...wrapper('item')}>
       {primary && (
         <div className="cv-item-head">
           <h3 className="cv-item-title">{primary}</h3>

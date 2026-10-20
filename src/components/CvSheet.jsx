@@ -9,7 +9,7 @@ const A4_HEIGHT = 297 * PX_PER_MM
 // One A4 page of the preview. The page is laid out at true A4 size with the
 // print margins, then scaled to fit its container, so it wraps exactly like
 // the printed PDF.
-export default function CvSheet({ blocks, label }) {
+export default function CvSheet({ blocks, changed, label }) {
   const [frame, setFrame] = useState(null)
   const [scale, setScale] = useState(1)
 
@@ -31,7 +31,12 @@ export default function CvSheet({ blocks, label }) {
     >
       <article className="cv cv-sheet" style={{ transform: `scale(${scale})` }} aria-label={label}>
         {blocks.map((block) => (
-          <CvBlock key={block.id} block={block} />
+          <CvBlock
+            key={block.id}
+            block={block}
+            changed={changed?.has(block.id)}
+            transitionName={`cv-${block.id}`}
+          />
         ))}
       </article>
     </div>

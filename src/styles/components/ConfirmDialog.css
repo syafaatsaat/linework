@@ -11,7 +11,41 @@
 }
 
 .confirm::backdrop {
-  background: rgba(5, 12, 24, 0.55);
+  background-color: rgba(5, 12, 24, 0.55);
+}
+
+/* Fade and scale in on showModal(), out on close(). Pure CSS: @starting-style
+   gives the entry state, and allow-discrete keeps the dialog (and its
+   backdrop) on screen until the exit transition ends. Browsers without
+   these features just show and hide it. */
+.confirm,
+.confirm::backdrop {
+  transition:
+    opacity 160ms ease-out,
+    transform 160ms ease-out,
+    background-color 160ms ease-out,
+    overlay 160ms allow-discrete,
+    display 160ms allow-discrete;
+}
+
+.confirm:not([open]) {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.confirm:not([open])::backdrop {
+  background-color: rgba(5, 12, 24, 0);
+}
+
+@starting-style {
+  .confirm[open] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  .confirm[open]::backdrop {
+    background-color: rgba(5, 12, 24, 0);
+  }
 }
 
 .confirm-title {

@@ -5,7 +5,7 @@ import ParserToggle from './ParserToggle.jsx'
 import ParserView from './ParserView.jsx'
 
 // The real A4 page scaled to the screen width (not reflowed).
-export default function MobilePreview({ blocks, pageBlocks, page, pageCount, onPageChange, parser, onToggleParser }) {
+export default function MobilePreview({ blocks, pageBlocks, changed, page, pageCount, onPageChange, parser, onToggleParser }) {
   return (
     <>
       <main className="m-main m-preview">
@@ -17,7 +17,7 @@ export default function MobilePreview({ blocks, pageBlocks, page, pageCount, onP
           <ParserView blocks={blocks} />
         ) : (
           <>
-            <CvSheet blocks={pageBlocks} label={`CV preview, page ${page + 1} of ${pageCount}`} />
+            <CvSheet blocks={pageBlocks} changed={changed} label={`CV preview, page ${page + 1} of ${pageCount}`} />
             <PageWarning count={pageCount} />
           </>
         )}

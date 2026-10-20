@@ -13,7 +13,8 @@ export default function SectionTab({ sectionKey, position, status, active, onSel
     disabled: pinned,
   })
 
-  const style = { transform: CSS.Translate.toString(transform), transition }
+  // The view-transition-name lets Earlier/Later moves glide (lib/motion.js).
+  const style = { transform: CSS.Translate.toString(transform), transition, viewTransitionName: `tab-${sectionKey}` }
   const className = ['tab', active && 'tab--active', isDragging && 'tab--dragging', pinned && 'tab--pinned']
     .filter(Boolean)
     .join(' ')
