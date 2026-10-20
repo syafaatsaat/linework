@@ -13,7 +13,7 @@ export default function ThemeToggle({ theme, onToggle, compact = false }) {
       className={compact ? 'btn-icon' : 'btn-ghost'}
       aria-label="Dark mode"
       aria-pressed={dark}
-      onClick={onToggle}
+      onClick={(e) => onToggle(e.currentTarget)}
     >
       {dark ? <SunIcon size={size} /> : <MoonIcon size={size} />}
       {!compact && <span aria-hidden="true">{dark ? 'Light' : 'Dark'}</span>}

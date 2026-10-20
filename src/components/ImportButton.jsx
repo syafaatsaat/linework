@@ -20,7 +20,8 @@ function foundItems({ order, committed }) {
 }
 
 // "Import CV": pick a PDF or DOCX, read it, then confirm before replacing the CV.
-export default function ImportButton({ onImport, hasData, className, label = 'Import' }) {
+// `onReadingChange(bool)` lets the preview show its scan line while a file is read.
+export default function ImportButton({ onImport, onReadingChange, hasData, className, label = 'Import' }) {
   const input = useRef(null)
   const [state, setState] = useState({ status: 'idle' })
   const close = () => setState({ status: 'idle' })
@@ -30,6 +31,7 @@ export default function ImportButton({ onImport, hasData, className, label = 'Im
     e.target.value = '' // so choosing the same file again still fires change
     if (!file) return
     setState({ status: 'reading' })
+    onReadingChange?.(true)
     try {
       const { readCvFile, ImportError } = await import('../import/readCvFile.js')
       try {
@@ -41,6 +43,8 @@ export default function ImportButton({ onImport, hasData, className, label = 'Im
     } catch (error) {
       console.error(error)
       setState({ status: 'error', message: 'Something went wrong reading that file. Try again, or try the other format.' })
+    } finally {
+      onReadingChange?.(false)
     }
   }
 

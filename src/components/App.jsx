@@ -22,6 +22,7 @@ export default function App() {
   const [theme, toggleTheme] = useTheme()
   const [parser, setParser] = useState(false)
   const [requestedPage, setPage] = useState(0)
+  const [reading, setReading] = useState(false) // an import is reading a file
   const mobile = useMediaQuery(MOBILE_QUERY)
 
   // Reordering animates: tabs, chips, sheet rows and preview blocks glide to
@@ -60,6 +61,7 @@ export default function App() {
       blocks,
       pageBlocks,
       changed,
+      scanning: reading,
       page,
       pageCount: pages.length,
       // Prev/Next slides the page in the direction of travel (lib/motion.js).
@@ -75,6 +77,7 @@ export default function App() {
     },
     importCv: {
       hasData,
+      setReading,
       run: (result) => {
         actions.importCv({ ...result.data, review: result.review })
         setPage(0)

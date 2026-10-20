@@ -6,7 +6,7 @@ import ResetButton from './ResetButton.jsx'
 
 // Contents of the mobile "Sections" sheet: up/down buttons per row to set
 // the CV order, chips to add optional sections, then Import CV and Reset CV.
-export default function SectionsSheet({ order, active, onMove, onAdd, onReset, onImport, hasData }) {
+export default function SectionsSheet({ order, active, onMove, onAdd, onReset, onImport, onReadingChange, hasData }) {
   const list = useRef(null)
   const [moved, setMoved] = useState(null) // { key, dir } of the last move
   const addable = OPTIONAL_SECTIONS.filter((key) => !order.includes(key))
@@ -85,7 +85,7 @@ export default function SectionsSheet({ order, active, onMove, onAdd, onReset, o
         </>
       )}
       <div className="sheet-footer">
-        <ImportButton onImport={onImport} hasData={hasData} className="btn-accent-link" label="Import CV" />
+        <ImportButton onImport={onImport} onReadingChange={onReadingChange} hasData={hasData} className="btn-accent-link" label="Import CV" />
         <ResetButton onReset={onReset} className="btn-danger-link" label="Reset CV" />
       </div>
     </>

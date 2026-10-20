@@ -14,7 +14,12 @@ export default function AppHeader({ theme, onToggleTheme, onReset, importCv, onE
           <span className="logo-text">linework/cv</span>
         </div>
         <div className="header-actions">
-          <ImportButton onImport={importCv.run} hasData={importCv.hasData} className="btn-ghost" />
+          <ImportButton
+            onImport={importCv.run}
+            onReadingChange={importCv.setReading}
+            hasData={importCv.hasData}
+            className="btn-ghost"
+          />
           <ResetButton onReset={onReset} className="btn-ghost" />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <ExportButtons onPdf={onExportPdf} onDocx={onExportDocx} />

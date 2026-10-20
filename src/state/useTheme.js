@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { revealTheme } from '../lib/motion.js'
 import { loadJSON, saveText } from '../lib/storage.js'
 
 // Must match the pre-paint script in index.html.
@@ -34,9 +35,15 @@ export function useTheme() {
     document.documentElement.dataset.theme = theme
   }, [theme])
 
-  const toggle = () => {
+  // `origin` is the toggle button: the new theme is revealed from it.
+  const toggle = (origin) => {
     const next = theme === 'dark' ? 'light' : 'dark'
-    setChosen(next)
+    revealTheme(origin, () => {
+      setChosen(next)
+      // Set it here too, not just in the effect above, so the transition's
+      // "after" snapshot already has the new theme.
+      document.documentElement.dataset.theme = next
+    })
     saveText(THEME_KEY, JSON.stringify(next))
   }
 

@@ -20,6 +20,7 @@ export default function DesktopLayout({ cv, preview, theme, exports, reset, impo
           blocks={preview.blocks}
           pageBlocks={preview.pageBlocks}
           changed={preview.changed}
+          scanning={preview.scanning}
           page={preview.page}
           pageCount={preview.pageCount}
           onPageChange={preview.goToPage}

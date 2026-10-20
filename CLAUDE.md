@@ -158,12 +158,9 @@ Built:
 | Edit ↔ Submit | The incoming form or summary fades up into place; summary rows arrive one after another (45 ms apart, capped at 360 ms). Only plays when the panel toggles; switching tabs stays instant. | `SectionPanel.jsx` (toggle detection), `SectionPanel.css`, `SubmittedSummary.css` |
 | Page turns | Prev/Next (desktop and mobile) slides the A4 page: the old page fades out toward the side you're leaving and the new one fades in from the other (~220 ms). During a turn the blocks drop their own transition names (`html[data-page-turn]`) so the page moves as one piece. | `turnPage()` in `src/lib/motion.js`, `goToPage` in `App.jsx`, page-turn rules in `motion.css` |
 | Validation feedback | On every blocked submit the alert slides down into view and each invalid field pulses once with a warning ring. A reducer `attempt` counter sets the form's `data-attempt` (odd/even), and alternating between two identical keyframes makes the animation replay; typing doesn't re-trigger it. | `attempt` in `cvState.js`, `ValidationAlert.css`, `Field.css` |
+| Theme switch reveal | Switching light/dark spreads the new theme out in a circle from the toggle button (~450 ms, radius to the furthest corner). During the reveal no element keeps its own view-transition-name (`html[data-theme-reveal]`), so the page is revealed as one image. `useTheme` sets `data-theme` inside the transition so the "after" snapshot already has the new theme. | `revealTheme()` in `src/lib/motion.js`, `useTheme.js`, reveal rules in `motion.css` |
+| Import "scan" | While Import CV is reading a file, a blueprint scan line with a soft glow sweeps down the A4 preview, repeating until the read finishes. It's an overlay on the sheet frame, not the CV, and is hidden (not frozen) under reduced motion. Fast reads may only show a flash; there's no artificial delay. | `onReadingChange` in `ImportButton.jsx`, `reading` state in `App.jsx`, `.cv-sheet-frame--scanning` in `CvSheet.css` |
 | Drafting lines | The "210 mm" dimension line draws in sequence (arrow, rule, label, rule, arrow) when the preview appears. On the preview sheet, each heading rule draws left to right, 80 ms after the one above, whenever a heading appears (load, new section, page turn). The sheet swaps the heading border for an identical 1px line so it can animate; the print copy keeps the real border. | `DimensionLine.css`, `CvSheet.jsx`/`CvBlock.jsx` (`drawDelay`), `CvSheet.css` |
-
-Ideas not built yet:
-
-- **Theme switch reveal:** light/dark spreads as a circle from the toggle via a View Transition.
-- **Import "scan":** a blueprint scan line sweeps over the sheet while a file is being read.
 
 ## Design references (`/design`)
 

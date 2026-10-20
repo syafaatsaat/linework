@@ -43,6 +43,7 @@ export default function MobileLayout({ cv, preview, theme, exports, reset, impor
             blocks={preview.blocks}
             pageBlocks={preview.pageBlocks}
             changed={preview.changed}
+            scanning={preview.scanning}
             page={preview.page}
             pageCount={preview.pageCount}
             onPageChange={preview.goToPage}
@@ -61,6 +62,7 @@ export default function MobileLayout({ cv, preview, theme, exports, reset, impor
             onAdd={cv.actions.addSection}
             onReset={resetCv}
             onImport={importFile}
+            onReadingChange={importCv.setReading}
             hasData={importCv.hasData}
           />
         </BottomSheet>

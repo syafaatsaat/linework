@@ -40,3 +40,28 @@ export function turnPage(direction, update) {
   })
   return transition.updateCallbackDone
 }
+
+// The theme switch spreads out in a circle from `origin` (the toggle button).
+// Sets the circle's centre and radius as CSS variables and flags the root so
+// motion.css animates the whole page as one image (no per-element names).
+export function revealTheme(origin, update) {
+  if (!canTransition() || !origin) {
+    update()
+    return Promise.resolve()
+  }
+  const root = document.documentElement
+  const box = origin.getBoundingClientRect()
+  const x = box.left + box.width / 2
+  const y = box.top + box.height / 2
+  // Far enough to reach the furthest corner of the viewport.
+  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
+  root.style.setProperty('--reveal-x', `${x}px`)
+  root.style.setProperty('--reveal-y', `${y}px`)
+  root.style.setProperty('--reveal-r', `${radius}px`)
+  root.dataset.themeReveal = ''
+  const transition = document.startViewTransition(() => flushSync(update))
+  transition.finished.finally(() => {
+    delete root.dataset.themeReveal
+  })
+  return transition.updateCallbackDone
+}
