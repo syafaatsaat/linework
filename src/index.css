@@ -192,8 +192,42 @@ textarea::placeholder {
   font-weight: 700;
 }
 
+.export {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
 .export-group {
   display: flex;
+}
+
+.btn-split-start {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.btn-split-end {
+  min-height: 44px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ink);
+  border: var(--border) solid var(--solid);
+  border-left: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.export-error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warn);
 }
 
 .btn-accent-outline {

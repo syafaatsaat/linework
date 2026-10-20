@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { buildBlocks } from '../cv/blocks.js'
+import { exportDocx } from '../cv/exportDocx.js'
 import { printPdf } from '../cv/printPdf.js'
 import { useCv } from '../state/useCv.js'
 import AppHeader from './AppHeader.jsx'
@@ -13,15 +14,17 @@ export default function App() {
 
   const blocks = useMemo(() => buildBlocks(submitted), [submitted])
 
+  const name = submitted.committed.general[0]?.name
+
   const exportPdf = () => {
     // Leave parser view before the print dialog opens, so print matches the design.
     flushSync(() => setParser(false))
-    printPdf(submitted.committed.general[0]?.name)
+    printPdf(name)
   }
 
   return (
     <div className="app">
-      <AppHeader onExportPdf={exportPdf} />
+      <AppHeader onExportPdf={exportPdf} onExportDocx={() => exportDocx(blocks, name)} />
       <div className="workspace">
         <Editor state={state} actions={actions} />
         <PreviewStage blocks={blocks} parser={parser} onToggleParser={() => setParser(!parser)} />
