@@ -11,3 +11,10 @@
   font-size: 14px;
   font-weight: 700;
 }
+
+/* While editing it's the Submit button: filled, like the desktop toggle.
+   Needs the extra class weight because this file loads after SubmitToggle.css. */
+.m-bar-main.btn-toggle--on {
+  background: var(--accent);
+  color: var(--on-accent);
+}
