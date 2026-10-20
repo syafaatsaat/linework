@@ -59,3 +59,32 @@
 .m-app .field select {
   font-size: 16px;
 }
+
+/* Invalid fields pulse once per blocked submit (same odd/even replay trick as
+   ValidationAlert.css). Fields that become invalid while typing get one pulse
+   too; fields that stay invalid don't repeat until the next submit. */
+[data-attempt='odd'] .field [aria-invalid='true'] {
+  animation: field-pulse-odd 650ms ease-out;
+}
+
+[data-attempt='even'] .field [aria-invalid='true'] {
+  animation: field-pulse-even 650ms ease-out;
+}
+
+@keyframes field-pulse-odd {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--warn) 0%, transparent);
+  }
+}
+
+@keyframes field-pulse-even {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--warn) 0%, transparent);
+  }
+}

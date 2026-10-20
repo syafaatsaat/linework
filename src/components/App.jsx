@@ -5,7 +5,7 @@ import { exportDocx } from '../cv/exportDocx.js'
 import { printPdf } from '../cv/printPdf.js'
 import { useChangedBlocks } from '../cv/useChangedBlocks.js'
 import { usePagination } from '../cv/usePagination.js'
-import { withViewTransition } from '../lib/motion.js'
+import { turnPage, withViewTransition } from '../lib/motion.js'
 import { useMediaQuery } from '../lib/useMediaQuery.js'
 import { useCv } from '../state/useCv.js'
 import { useTheme } from '../state/useTheme.js'
@@ -62,7 +62,8 @@ export default function App() {
       changed,
       page,
       pageCount: pages.length,
-      setPage,
+      // Prev/Next slides the page in the direction of travel (lib/motion.js).
+      goToPage: (target) => turnPage(target > page ? 'next' : 'prev', () => setPage(target)),
       parser,
       toggleParser: () => setParser(!parser),
     },

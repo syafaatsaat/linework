@@ -11,8 +11,9 @@ export default function PageNav({ page, count, onChange, compact = false }) {
         aria-label="Previous page"
         disabled={page <= 0}
         onClick={(e) => {
-          onChange(page - 1)
-          keepFocusInGroup(e.currentTarget)
+          const button = e.currentTarget
+          // Page turns run in a View Transition; check focus after the update.
+          Promise.resolve(onChange(page - 1)).then(() => keepFocusInGroup(button))
         }}
       >
         <ChevronLeft size={compact ? 18 : 16} />
@@ -27,8 +28,8 @@ export default function PageNav({ page, count, onChange, compact = false }) {
         aria-label="Next page"
         disabled={page >= count - 1}
         onClick={(e) => {
-          onChange(page + 1)
-          keepFocusInGroup(e.currentTarget)
+          const button = e.currentTarget
+          Promise.resolve(onChange(page + 1)).then(() => keepFocusInGroup(button))
         }}
       >
         {!compact && 'Next'}

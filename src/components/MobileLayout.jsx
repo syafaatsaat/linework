@@ -45,7 +45,7 @@ export default function MobileLayout({ cv, preview, theme, exports, reset, impor
             changed={preview.changed}
             page={preview.page}
             pageCount={preview.pageCount}
-            onPageChange={preview.setPage}
+            onPageChange={preview.goToPage}
             parser={preview.parser}
             onToggleParser={preview.toggleParser}
           />

@@ -14,7 +14,7 @@ import { SECTION_ERROR_ID, SECTION_FORM_ID } from './formIds.js'
 // submit → Edit button, or the first invalid field; cancel → Edit button;
 // add/remove entry → the new entry's first field / the add button;
 // remove section → the next section's title.
-export default function SectionPanel({ sectionKey, position, count, section, errors, actions, compact = false }) {
+export default function SectionPanel({ sectionKey, position, count, section, errors, attempt = 0, actions, compact = false }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
 
@@ -60,13 +60,16 @@ export default function SectionPanel({ sectionKey, position, count, section, err
   }
 
   const move = (to, e) => {
-    actions.move(sectionKey, to)
-    keepFocusInGroup(e.currentTarget)
+    const button = e.currentTarget
+    // move runs in a View Transition; check focus once the DOM has updated.
+    Promise.resolve(actions.move(sectionKey, to)).then(() => keepFocusInGroup(button))
   }
 
   return (
     <form
       id={SECTION_FORM_ID}
+      // Alternates per blocked submit so the error animation replays (ValidationAlert.css, Field.css).
+      data-attempt={attempt % 2 ? 'odd' : 'even'}
       className={compact ? 'panel panel--compact' : 'panel'}
       onSubmit={submit}
       noValidate

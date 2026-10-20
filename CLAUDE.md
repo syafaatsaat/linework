@@ -144,6 +144,7 @@ Rules for every animation:
 - `prefers-reduced-motion: reduce` makes everything instant (`src/styles/motion.css`, plus `prefersReducedMotion()` in `src/lib/motion.js` for JS-driven motion).
 - The CV output never animates: the hidden print copy (`CvFlow`), the PDF and the DOCX are untouched. Preview-only effects go on `.cv-sheet` or get props that only `CvSheet` passes to `CvBlock`.
 - No animation library: CSS transitions/keyframes, plus the View Transitions API where it helps. Unsupported browsers just update instantly.
+- Focus logic that depends on a View Transition's update waits for it: `withViewTransition()` and `turnPage()` return the transition's `updateCallbackDone` promise, because the browser applies the update a frame later.
 - Entry animations use `animation-fill-mode: backwards`, not `both`, so nothing stays applied after they end (a lingering fill kept parts of the sheet on separate compositor layers and changed text rendering).
 
 Built:
@@ -155,12 +156,12 @@ Built:
 | Bottom sheets | Slide up with a backdrop fade. Closing by the user (Done, backdrop, Escape) plays the slide down before unmounting; closing after an action (import, export) is instant. | `BottomSheet.jsx`, `BottomSheet.css` |
 | Confirm dialog | Fades and scales in on `showModal()` and out on `close()`, in pure CSS (`@starting-style` + `transition-behavior: allow-discrete`). | `ConfirmDialog.css` |
 | Edit ↔ Submit | The incoming form or summary fades up into place; summary rows arrive one after another (45 ms apart, capped at 360 ms). Only plays when the panel toggles; switching tabs stays instant. | `SectionPanel.jsx` (toggle detection), `SectionPanel.css`, `SubmittedSummary.css` |
+| Page turns | Prev/Next (desktop and mobile) slides the A4 page: the old page fades out toward the side you're leaving and the new one fades in from the other (~220 ms). During a turn the blocks drop their own transition names (`html[data-page-turn]`) so the page moves as one piece. | `turnPage()` in `src/lib/motion.js`, `goToPage` in `App.jsx`, page-turn rules in `motion.css` |
+| Validation feedback | On every blocked submit the alert slides down into view and each invalid field pulses once with a warning ring. A reducer `attempt` counter sets the form's `data-attempt` (odd/even), and alternating between two identical keyframes makes the animation replay; typing doesn't re-trigger it. | `attempt` in `cvState.js`, `ValidationAlert.css`, `Field.css` |
 | Drafting lines | The "210 mm" dimension line draws in sequence (arrow, rule, label, rule, arrow) when the preview appears. On the preview sheet, each heading rule draws left to right, 80 ms after the one above, whenever a heading appears (load, new section, page turn). The sheet swaps the heading border for an identical 1px line so it can animate; the print copy keeps the real border. | `DimensionLine.css`, `CvSheet.jsx`/`CvBlock.jsx` (`drawDelay`), `CvSheet.css` |
 
 Ideas not built yet:
 
-- **Page turns:** Prev/Next slides the A4 page left or right.
-- **Validation feedback:** the alert slides into view and invalid fields pulse once (avoid a shake).
 - **Theme switch reveal:** light/dark spreads as a circle from the toggle via a View Transition.
 - **Import "scan":** a blueprint scan line sweeps over the sheet while a file is being read.
 

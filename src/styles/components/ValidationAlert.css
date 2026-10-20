@@ -18,3 +18,28 @@
   font-size: 14px;
   font-weight: 600;
 }
+
+/* Slides into view on every blocked submit. Two identically defined
+   keyframes alternate with the form's data-attempt (odd/even): changing the
+   animation name is what makes the browser replay it. */
+[data-attempt='odd'] .alert {
+  animation: alert-in-odd 220ms cubic-bezier(0.2, 0, 0, 1) backwards;
+}
+
+[data-attempt='even'] .alert {
+  animation: alert-in-even 220ms cubic-bezier(0.2, 0, 0, 1) backwards;
+}
+
+@keyframes alert-in-odd {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes alert-in-even {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}

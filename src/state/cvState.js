@@ -13,6 +13,7 @@ export const STORAGE_KEY = 'linework:cv:v1'
 //   active:   key of the section shown in the editor
 //   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean, review: boolean } }
 //   errors:   what blocked the last submit of the active section (see validateRows)
+//   attempt:  counts blocked submits, so the UI can replay its error animation
 //
 // `committed` is what the preview and exports read. `draft` is what the form
 // edits. Submit copies draft → committed; Edit and Cancel copy committed → draft.
@@ -70,7 +71,7 @@ function buildState(saved) {
   for (const key of order) {
     sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]), review.includes(key))
   }
-  return { order, active: 'general', sections, errors: [] }
+  return { order, active: 'general', sections, errors: [], attempt: 0 }
 }
 
 export function createInitialState() {
@@ -136,7 +137,7 @@ export function cvReducer(state, action) {
       const { key } = action
       const errors = validateRows(key, state.sections[key].draft)
       if (errors.length) {
-        return { ...state, errors }
+        return { ...state, errors, attempt: state.attempt + 1 }
       }
       const committed = clone(state.sections[key].draft)
       return { ...updateSection(state, key, { committed, editing: false, review: false }), errors: [] }

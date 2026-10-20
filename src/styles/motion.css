@@ -13,6 +13,61 @@
   animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Page turns (turnPage in lib/motion.js). While html[data-page-turn] is set,
+   the sheet moves as one piece: its blocks drop their own names (the
+   !important beats their inline style) and the sheet takes "cv-page". */
+:root[data-page-turn] .cv-sheet .cv-block {
+  view-transition-name: none !important;
+}
+
+:root[data-page-turn] .cv-sheet {
+  view-transition-name: cv-page;
+}
+
+:root[data-page-turn='next']::view-transition-old(cv-page) {
+  animation: page-out-left 200ms ease-in both;
+}
+
+:root[data-page-turn='next']::view-transition-new(cv-page) {
+  animation: page-in-right 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+:root[data-page-turn='prev']::view-transition-old(cv-page) {
+  animation: page-out-right 200ms ease-in both;
+}
+
+:root[data-page-turn='prev']::view-transition-new(cv-page) {
+  animation: page-in-left 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@keyframes page-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes page-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes page-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes page-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
 /* Reduced motion: everything happens instantly. The !important also beats
    inline transitions (dnd-kit's tab drag). */
 @media (prefers-reduced-motion: reduce) {

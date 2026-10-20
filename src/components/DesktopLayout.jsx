@@ -22,7 +22,7 @@ export default function DesktopLayout({ cv, preview, theme, exports, reset, impo
           changed={preview.changed}
           page={preview.page}
           pageCount={preview.pageCount}
-          onPageChange={preview.setPage}
+          onPageChange={preview.goToPage}
           parser={preview.parser}
           onToggleParser={preview.toggleParser}
         />
