@@ -7,9 +7,9 @@ function summarize(view) {
   return { title: view.secondary || '—', detail: view.meta || '' }
 }
 
-export default function SubmittedSummary({ type, rows }) {
+export default function SubmittedSummary({ type, rows, verb = 'Press' }) {
   if (rows.length === 0) {
-    return <p className="summary-empty">Nothing submitted yet. Press Edit to add entries.</p>
+    return <p className="summary-empty">Nothing submitted yet. {verb} Edit to add entries.</p>
   }
 
   return (

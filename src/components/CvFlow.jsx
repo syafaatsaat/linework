@@ -1,13 +1,14 @@
 import CvBlock from './CvBlock.jsx'
 import './CvSheet.css'
 
-// Every block at full page width, invisible on screen. The paginator measures
-// block heights here, and it's the copy that prints, with the browser doing
-// the page breaks.
+// Every block at A4 print width, invisible on screen and always mounted.
+// usePagination measures block heights here (and the page height from the
+// probe), and it's the copy that prints, with the browser doing page breaks.
 export default function CvFlow({ blocks, flowRef }) {
   return (
-    <div className="cv-flow-clip">
-      <div ref={flowRef} className="cv cv-flow" aria-hidden="true">
+    <div ref={flowRef} className="cv-flow-clip">
+      <div className="cv cv-page-probe" aria-hidden="true" />
+      <div className="cv cv-flow" aria-hidden="true">
         {blocks.map((block) => (
           <CvBlock key={block.id} block={block} />
         ))}

@@ -37,11 +37,12 @@
   transform-origin: 0 0;
 }
 
-/* The printable width of A4, out of sight. The clip keeps its full height
-   from stretching the page scroll. */
+/* The printable width of A4, out of sight. Fixed to the viewport and clipped
+   so its full height never adds page scroll, whichever layout is showing. */
 .cv-flow-clip {
-  position: absolute;
+  position: fixed;
   inset: 0;
+  z-index: -1;
   overflow: hidden;
   visibility: hidden;
   pointer-events: none;
@@ -50,6 +51,13 @@
 .cv-flow {
   width: 210mm;
   padding: 0 var(--page-margin-x);
+}
+
+/* Its height is the usable page height the paginator packs into. */
+.cv-page-probe {
+  position: absolute;
+  width: 1px;
+  height: calc(297mm - 2 * var(--page-margin-y));
 }
 
 .cv-block--heading {
@@ -136,6 +144,10 @@
     position: static;
     overflow: visible;
     visibility: visible;
+  }
+
+  .cv-page-probe {
+    display: none;
   }
 
   /* Block layout fragments across printed pages more reliably than flex. */

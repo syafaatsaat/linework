@@ -1,9 +1,13 @@
 import { SECTION_TYPES } from '../sections/types.js'
 import EntryFieldset from './EntryFieldset.jsx'
 import SubmittedSummary from './SubmittedSummary.jsx'
+import SubmitToggle from './SubmitToggle.jsx'
 import ValidationAlert from './ValidationAlert.jsx'
+import { SECTION_FORM_ID } from './formIds.js'
 
-export default function SectionPanel({ sectionKey, position, count, section, missing, actions }) {
+// Compact is the mobile panel: Submit/Edit live in the bottom bar and order
+// changes in the Reorder sheet, so the panel drops those controls.
+export default function SectionPanel({ sectionKey, position, count, section, missing, actions, compact = false }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
 
@@ -13,7 +17,13 @@ export default function SectionPanel({ sectionKey, position, count, section, mis
   }
 
   return (
-    <form className="panel" onSubmit={submit} noValidate aria-labelledby={`${sectionKey}-title`}>
+    <form
+      id={SECTION_FORM_ID}
+      className={compact ? 'panel panel--compact' : 'panel'}
+      onSubmit={submit}
+      noValidate
+      aria-labelledby={`${sectionKey}-title`}
+    >
       <div className="panel-head">
         <div>
           <p className="mono-meta">
@@ -34,31 +44,13 @@ export default function SectionPanel({ sectionKey, position, count, section, mis
               Cancel
             </button>
           )}
-          {/* While editing, this is the form's submit button, so Enter in an input submits too.
-              Distinct keys stop React reusing one element and flipping its type mid-click, and
-              preventDefault stops the browser from treating the Edit click as a submit once the
-              re-render has already swapped in the Submit button. */}
-          {editing ? (
-            <button key="submit" type="submit" className="btn-toggle btn-toggle--on">
-              Submit
-            </button>
-          ) : (
-            <button
-              key="edit"
-              type="button"
-              className="btn-toggle"
-              onClick={(e) => {
-                e.preventDefault()
-                actions.edit(sectionKey)
-              }}
-            >
-              Edit
-            </button>
+          {!compact && (
+            <SubmitToggle editing={editing} onEdit={() => actions.edit(sectionKey)} className="btn-toggle" />
           )}
         </div>
       </div>
 
-      {!type.pinned && (
+      {!compact && !type.pinned && (
         <div className="panel-position">
           <span>POSITION ON CV</span>
           {/* Accessible fallback for dragging the tabs. Position 1 belongs to General. */}
@@ -108,7 +100,7 @@ export default function SectionPanel({ sectionKey, position, count, section, mis
           )}
         </div>
       ) : (
-        <SubmittedSummary type={type} rows={committed} />
+        <SubmittedSummary type={type} rows={committed} verb={compact ? 'Tap' : 'Press'} />
       )}
     </form>
   )

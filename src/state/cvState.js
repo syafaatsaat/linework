@@ -78,11 +78,16 @@ function updateSection(state, key, patch) {
   }
 }
 
-// Throw away unsaved edits in a section, leaving its editing flag alone.
+// Cancel, or leaving a section: throw away unsaved edits and fall back to the
+// submitted summary. A section with nothing submitted stays in editing, since
+// there's no summary to show.
 function discardDraft(state, key) {
   const section = state.sections[key]
   if (!section) return state
-  return updateSection(state, key, { draft: draftFrom(key, section.committed) })
+  return updateSection(state, key, {
+    draft: draftFrom(key, section.committed),
+    editing: section.committed.length === 0,
+  })
 }
 
 export function cvReducer(state, action) {
@@ -127,17 +132,8 @@ export function cvReducer(state, action) {
       return updateSection(state, action.key, { draft: draftFrom(action.key, committed), editing: true })
     }
 
-    case 'cancel': {
-      const { committed } = state.sections[action.key]
-      return {
-        ...updateSection(state, action.key, {
-          draft: draftFrom(action.key, committed),
-          // Nothing submitted yet means there's no summary to fall back to.
-          editing: committed.length === 0,
-        }),
-        missing: [],
-      }
-    }
+    case 'cancel':
+      return { ...discardDraft(state, action.key), missing: [] }
 
     case 'addSection': {
       const { key } = action

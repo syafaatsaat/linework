@@ -8,9 +8,9 @@ const A4_WIDTH = 210 * PX_PER_MM
 const A4_HEIGHT = 297 * PX_PER_MM
 
 // One A4 page of the preview. The page is laid out at true A4 size with the
-// print margins, then scaled to fit, so it wraps and paginates exactly like
-// the printed PDF. The paginator sizes pages from the unscaled sheet.
-export default function CvSheet({ blocks, sheetRef, label }) {
+// print margins, then scaled to fit its container, so it wraps exactly like
+// the printed PDF.
+export default function CvSheet({ blocks, label }) {
   const [frame, setFrame] = useState(null)
   const [scale, setScale] = useState(1)
 
@@ -30,7 +30,7 @@ export default function CvSheet({ blocks, sheetRef, label }) {
       className="cv-sheet-frame no-print"
       style={{ height: `calc(${A4_HEIGHT * scale}px + 2 * var(--border))` }}
     >
-      <article ref={sheetRef} className="cv cv-sheet" style={{ transform: `scale(${scale})` }} aria-label={label}>
+      <article className="cv cv-sheet" style={{ transform: `scale(${scale})` }} aria-label={label}>
         {blocks.map((block) => (
           <CvBlock key={block.id} block={block} />
         ))}
