@@ -1,0 +1,34 @@
+/* DimensionLine component. */
+
+.dimension {
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.dimension-rule {
+  flex: 1;
+  height: 1.5px;
+  background: var(--accent);
+}
+
+.dimension-label {
+  padding: 0 10px;
+}
+
+.dimension-arrow {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.dimension-arrow--left {
+  border-right: 9px solid var(--accent);
+}
+
+.dimension-arrow--right {
+  border-left: 9px solid var(--accent);
+}

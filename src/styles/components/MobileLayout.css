@@ -1,0 +1,33 @@
+/* MobileLayout component. */
+
+.m-app {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.m-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.m-main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 16px 16px;
+}
+
+.m-bar,
+.page-nav--bar {
+  flex: none;
+  margin: 0;
+  padding: 10px 16px calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border-top: var(--border) solid var(--strong);
+}

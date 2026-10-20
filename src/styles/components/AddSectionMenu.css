@@ -1,0 +1,27 @@
+/* AddSectionMenu component. */
+
+.add-menu {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--panel);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+}
+
+.add-menu-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-option {
+  min-height: 44px;
+  padding: 0 16px;
+  background: transparent;
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+}

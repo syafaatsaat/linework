@@ -1,0 +1,13 @@
+/* CharCounter component. */
+
+.counter {
+  margin: 0;
+  align-self: flex-end;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.counter--warn {
+  color: var(--warn);
+}

@@ -1,0 +1,81 @@
+/* Theme tokens. Light is the default; dark applies when the OS prefers it,
+   unless the user picked a theme (useTheme sets data-theme on <html>). */
+:root {
+  --bg: #f4f7fb;
+  --grid-major: rgba(30, 91, 184, 0.16);
+  --grid-minor: rgba(30, 91, 184, 0.07);
+  --ink: #0b2a5b;
+  --muted: #3d5a86;
+  --line: #9db4d6;
+  --strong: #0b2a5b;
+  --accent: #1e5bb8;
+  --on-accent: #ffffff;
+  --panel: #ffffff;
+  --input: #ffffff;
+  --solid: #0b2a5b;
+  --on-solid: #ffffff;
+  --warn: #9a4a00;
+  /* Darker than the mockup's #7d8fad (3.3:1 on white) to reach 4.5:1. */
+  --placeholder: #687790;
+  --on-warn: #ffffff;
+  --row-hi: #eaf1fb;
+  --focus: #4a80de;
+  --sheet-shadow: 10px 10px 0 rgba(30, 91, 184, 0.18);
+
+  --font-ui: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+  --border: 1.5px;
+  --radius: 4px;
+
+  color-scheme: light;
+}
+
+/* The same dark values twice: once for the OS preference, once for an explicit
+   choice. CSS can't share one declaration block between the two selectors. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0a1424;
+    --grid-major: rgba(120, 165, 235, 0.14);
+    --grid-minor: rgba(120, 165, 235, 0.05);
+    --ink: #dce7f7;
+    --muted: #9db2d3;
+    --line: #3a5682;
+    --strong: #7fa3db;
+    --accent: #7faef5;
+    --on-accent: #0a1424;
+    --panel: #0f1c31;
+    --input: #0b1628;
+    --solid: #dce7f7;
+    --on-solid: #0a1424;
+    --warn: #f2b544;
+    --placeholder: #7d8fad;
+    --on-warn: #0a1424;
+    --row-hi: #16294a;
+    --sheet-shadow: 10px 10px 0 rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0a1424;
+  --grid-major: rgba(120, 165, 235, 0.14);
+  --grid-minor: rgba(120, 165, 235, 0.05);
+  --ink: #dce7f7;
+  --muted: #9db2d3;
+  --line: #3a5682;
+  --strong: #7fa3db;
+  --accent: #7faef5;
+  --on-accent: #0a1424;
+  --panel: #0f1c31;
+  --input: #0b1628;
+  --solid: #dce7f7;
+  --on-solid: #0a1424;
+  --warn: #f2b544;
+  --placeholder: #7d8fad;
+  --on-warn: #0a1424;
+  --row-hi: #16294a;
+  --sheet-shadow: 10px 10px 0 rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}

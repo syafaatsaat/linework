@@ -9,7 +9,7 @@ import '@fontsource/hanken-grotesk/700.css'
 import '@fontsource/space-mono/400.css'
 import '@fontsource/space-mono/700.css'
 import App from './components/App.jsx'
-import './index.css'
+import './styles/index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

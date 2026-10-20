@@ -1,0 +1,42 @@
+/* ExportSheet component. */
+
+.export-choice {
+  min-height: 76px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: transparent;
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.export-choice--primary {
+  background: var(--solid);
+  color: var(--on-solid);
+  border-color: var(--solid);
+}
+
+.export-choice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.export-choice-title {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.export-choice-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.export-choice--primary .export-choice-sub {
+  color: inherit;
+  opacity: 0.85;
+}

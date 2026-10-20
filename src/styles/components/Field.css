@@ -1,0 +1,61 @@
+/* Field component. */
+
+.field {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field--half {
+  grid-column: auto;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input);
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
+.field input,
+.field select {
+  min-height: 46px;
+}
+
+.field textarea {
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.field [aria-invalid='true'] {
+  border-color: var(--warn);
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Half a phone-width row is too narrow for two selects: give dates a full row. */
+.m-app .field--month {
+  grid-column: 1 / -1;
+}
+
+/* 16px inputs stop iOS zooming in on focus. */
+.m-app .field input,
+.m-app .field textarea,
+.m-app .field select {
+  font-size: 16px;
+}

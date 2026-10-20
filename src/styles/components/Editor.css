@@ -1,0 +1,13 @@
+/* Editor component. */
+
+.editor {
+  flex: 1 1 440px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.editor-hint {
+  margin-top: -4px;
+}

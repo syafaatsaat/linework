@@ -1,0 +1,172 @@
+/* Button styles shared across components. */
+
+.btn-link {
+  min-height: 44px;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.btn-outline {
+  min-height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.btn-add {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 16px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) dashed var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.btn-ghost {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.btn-danger {
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--warn);
+  color: var(--on-warn);
+  border: var(--border) solid var(--warn);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: var(--border) solid var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-accent-link {
+  min-height: 44px;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.btn-danger-link {
+  min-height: 44px;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  color: var(--warn);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.btn-solid {
+  min-height: 44px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--solid);
+  color: var(--on-solid);
+  border: var(--border) solid var(--solid);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-accent-outline {
+  min-height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) solid var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-small {
+  min-height: 44px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--ink);
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  border-radius: var(--radius);
+}
+
+.btn-icon-box {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: var(--panel);
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+}
+
+.btn-icon-line {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--ink);
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+}

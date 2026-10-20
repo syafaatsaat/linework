@@ -1,0 +1,13 @@
+/* MobileEditBar component. */
+
+.m-bar-main {
+  flex: 1;
+  height: 48px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) solid var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+}

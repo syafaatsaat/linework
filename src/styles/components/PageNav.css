@@ -1,0 +1,25 @@
+/* PageNav component. */
+
+.page-nav {
+  width: 100%;
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-count {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.page-nav--bar {
+  max-width: none;
+  justify-content: space-between;
+}
+
+.page-nav--bar .page-count {
+  font-size: 14px;
+}

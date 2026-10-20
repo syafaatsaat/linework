@@ -1,0 +1,42 @@
+/* MobileHeader component. */
+
+.m-header {
+  flex: none;
+  height: 56px;
+  padding: 0 8px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border-bottom: 2px solid var(--strong);
+}
+
+.logo--compact {
+  gap: 10px;
+}
+
+.logo--compact .logo-text {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.m-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.m-export-btn {
+  height: 44px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--solid);
+  color: var(--on-solid);
+  border: 0;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}

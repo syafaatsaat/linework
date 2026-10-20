@@ -1,0 +1,28 @@
+/* SubmittedSummary component. */
+
+.summary {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary li {
+  padding: 10px 0;
+  border-top: 1px dashed var(--line);
+}
+
+.summary-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary-detail {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.summary-empty {
+  margin: 0;
+  color: var(--muted);
+}

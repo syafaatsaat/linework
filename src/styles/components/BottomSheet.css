@@ -1,0 +1,82 @@
+/* BottomSheet component. */
+
+.sheet-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  background: rgba(5, 12, 24, 0.55);
+  border: 0;
+}
+
+.sheet {
+  position: relative;
+  max-height: 78%;
+  overflow-y: auto;
+  padding: 10px 16px calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--panel);
+  color: var(--ink);
+  border-top: 2px solid var(--strong);
+  border-radius: 12px 12px 0 0;
+}
+
+.sheet-grip {
+  align-self: center;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sheet-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.sheet-done {
+  min-height: 44px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--accent);
+  border: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sheet-text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.sheet-subhead {
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.sheet-footer {
+  margin-top: 4px;
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px dashed var(--line);
+}

@@ -1,0 +1,9 @@
+/* PageWarning component. */
+
+.page-warn {
+  margin: 0;
+  max-width: 620px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warn);
+}

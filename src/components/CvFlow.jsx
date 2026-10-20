@@ -1,5 +1,4 @@
 import CvBlock from './CvBlock.jsx'
-import './CvSheet.css'
 
 // Every block at A4 print width, invisible on screen and always mounted.
 // usePagination measures block heights here (and the page height from the

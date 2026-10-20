@@ -1,0 +1,18 @@
+/* Print: strip the app, keep the CV. Page size, margins and break rules live in components/CvSheet.css. */
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Only the CV flow prints. Hiding the whole layout, not just its controls,
+     stops its padding and the mobile shell's full-screen height from pushing
+     the CV down the page or adding a blank page. */
+  #root > :not(.cv-flow-clip) {
+    display: none !important;
+  }
+}

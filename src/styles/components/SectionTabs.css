@@ -1,0 +1,99 @@
+/* SectionTabs component. */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* The tile is a plain box; the select button fills it and the ⠿ handle sits
+   over its top-left corner. */
+.tab {
+  position: relative;
+  flex: 1 1 120px;
+  min-height: 60px;
+  display: flex;
+  background: var(--panel);
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  cursor: grab;
+  touch-action: manipulation;
+}
+
+.tab--pinned {
+  cursor: default;
+}
+
+.tab--active {
+  background: var(--solid);
+  color: var(--on-solid);
+}
+
+.tab--dragging {
+  z-index: 1;
+  opacity: 0.6;
+  cursor: grabbing;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.tab-select {
+  flex: 1;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  cursor: inherit;
+}
+
+/* Leave room for the handle in front of the number. */
+.tab:not(.tab--pinned) .tab-meta {
+  padding-left: 16px;
+}
+
+.tab-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.tab-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tab-handle {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  border-radius: 2px;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.85;
+  cursor: grab;
+}
+
+.tab-add {
+  flex: 1 1 120px;
+  min-height: 60px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--accent);
+  border: var(--border) dashed var(--accent);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}

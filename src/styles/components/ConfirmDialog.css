@@ -1,0 +1,51 @@
+/* ConfirmDialog component. */
+
+.confirm {
+  width: min(420px, calc(100% - 32px));
+  padding: 22px 24px 20px;
+  background: var(--panel);
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+  box-shadow: 8px 8px 0 var(--accent);
+}
+
+.confirm::backdrop {
+  background: rgba(5, 12, 24, 0.55);
+}
+
+.confirm-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.confirm-body p {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.confirm-list {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.confirm-list--notes {
+  color: var(--warn);
+}
+
+.confirm-warn {
+  font-weight: 600;
+  color: var(--warn) !important;
+}
+
+.confirm-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}

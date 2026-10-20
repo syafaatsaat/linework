@@ -1,6 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
 import CvBlock from './CvBlock.jsx'
-import './CvSheet.css'
 
 // CSS px per mm at the 96 dpi reference.
 const PX_PER_MM = 96 / 25.4

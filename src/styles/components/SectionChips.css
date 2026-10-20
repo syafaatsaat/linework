@@ -1,0 +1,74 @@
+/* SectionChips component. */
+
+.m-chip-row {
+  flex: none;
+  padding: 12px 16px 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Section chips scroll under the pinned Sections chip; the fade at the right edge shows there's more.
+   scroll-padding keeps a chip scrolled into view clear of the fade, and the
+   ::after spacer gives the last chip room to scroll past it (end padding on
+   a scroll container isn't reliably scrollable). */
+.m-chips {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scroll-padding-inline-end: 24px;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}
+
+.m-chips::after {
+  content: '';
+  flex: none;
+  width: 18px;
+}
+
+.m-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: none;
+  min-height: 44px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel);
+  color: var(--ink);
+  border: var(--border) solid var(--strong);
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--solid);
+  color: var(--on-solid);
+}
+
+.chip-mark {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.chip--sections,
+.chip--add {
+  background: transparent;
+  color: var(--accent);
+  border-style: dashed;
+  border-color: var(--accent);
+}
+
+.chip--sections {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
