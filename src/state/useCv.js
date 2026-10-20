@@ -28,6 +28,7 @@ export function useCv() {
       addSection: (key) => dispatch({ type: 'addSection', key }),
       removeSection: (key) => dispatch({ type: 'removeSection', key }),
       move: (key, to) => dispatch({ type: 'move', key, to }),
+      reset: () => dispatch({ type: 'reset' }),
     }),
     [],
   )

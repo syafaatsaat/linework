@@ -46,6 +46,11 @@ export default function App() {
       toggleParser: () => setParser(!parser),
     },
     theme: { value: theme, toggle: toggleTheme },
+    reset: () => {
+      actions.reset()
+      setPage(0)
+      setParser(false)
+    },
     exports: {
       pdf: () => {
         // Leave parser view (and flush any closing sheet) before the print dialog opens.

@@ -54,14 +54,18 @@ function sanitizeOrder(order) {
   return ['general', ...merged.filter((key) => key !== 'general')]
 }
 
-export function createInitialState() {
-  const saved = loadJSON(STORAGE_KEY)
+// From a saved snapshot, or a blank CV in the default order when there's none.
+function buildState(saved) {
   const order = sanitizeOrder(saved?.order)
   const sections = {}
   for (const key of order) {
     sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]))
   }
   return { order, active: 'general', sections, missing: [] }
+}
+
+export function createInitialState() {
+  return buildState(loadJSON(STORAGE_KEY))
 }
 
 // Only committed data and order persist; unsaved drafts are discarded on reload.
@@ -168,6 +172,9 @@ export function cvReducer(state, action) {
       order.splice(to, 0, action.key)
       return { ...state, order }
     }
+
+    case 'reset':
+      return buildState(null)
 
     default:
       return state

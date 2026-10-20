@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { OPTIONAL_SECTIONS, SECTION_TYPES } from '../sections/types.js'
 import { ChevronDown, ChevronUp } from './Icons.jsx'
+import ResetButton from './ResetButton.jsx'
 
 // Contents of the mobile "Sections" sheet: up/down buttons per row to set
-// the CV order, then chips to add optional sections.
-export default function SectionsSheet({ order, active, onMove, onAdd }) {
+// the CV order, chips to add optional sections, and Reset CV at the bottom.
+export default function SectionsSheet({ order, active, onMove, onAdd, onReset }) {
   const list = useRef(null)
   const [moved, setMoved] = useState(null) // { key, dir } of the last move
   const addable = OPTIONAL_SECTIONS.filter((key) => !order.includes(key))
@@ -77,6 +78,9 @@ export default function SectionsSheet({ order, active, onMove, onAdd }) {
           </div>
         </>
       )}
+      <div className="sheet-footer">
+        <ResetButton onReset={onReset} className="btn-danger-link" label="Reset CV" />
+      </div>
     </>
   )
 }
