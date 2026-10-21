@@ -23,7 +23,7 @@ export default function ResetButton({ onReset, className, label = 'Reset' }) {
         }}
       >
         <p>This clears every section and restores the default section order.</p>
-        <p>Export a PDF or DOCX first if you might want this version later.</p>
+        <p>Back up first if you might want this version later.</p>
       </ConfirmDialog>
     </>
   )

@@ -96,3 +96,13 @@ for (const view of ['edit', 'preview']) {
     expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`)).toEqual([])
   })
 }
+
+test('the Sections sheet has Back up CV', async ({ page }) => {
+  await open(page, sample)
+  await page.getByRole('button', { name: 'Sections: reorder or add' }).click()
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('dialog', { name: 'Sections' }).getByRole('button', { name: 'Back up CV' }).click(),
+  ])
+  expect(download.suggestedFilename()).toMatch(/^Ada_Tan_CV_backup_.*\.json$/)
+})

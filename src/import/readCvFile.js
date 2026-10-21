@@ -1,3 +1,4 @@
+import { fromBackup } from '../cv/backup.js'
 import { parseCv } from './parseCv.js'
 import { readDocx } from './readDocx.js'
 
@@ -10,16 +11,18 @@ function kindOf(file) {
   const name = file.name.toLowerCase()
   if (file.type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf'
   if (name.endsWith('.docx')) return 'docx'
+  if (name.endsWith('.json') || file.type === 'application/json') return 'backup'
   if (name.endsWith('.doc')) {
     throw new ImportError('Old Word (.doc) files can’t be read. Save it as .docx or PDF and try again.')
   }
-  throw new ImportError('Choose a PDF or Word (.docx) file.')
+  throw new ImportError('Choose a PDF, a Word (.docx) file or a Linework backup (.json).')
 }
 
 // Returns { data: { order, committed }, review: [sectionKey], notes: [string], exact }.
 export async function readCvFile(file) {
   const kind = kindOf(file)
   if (file.size > MAX_BYTES) throw new ImportError('That file is over 10 MB. A CV should be much smaller.')
+  if (kind === 'backup') return readBackup(file)
   const buffer = await file.arrayBuffer()
 
   let lines
@@ -52,4 +55,18 @@ export async function readCvFile(file) {
     )
   }
   return { ...parseCv(lines), exact: false }
+}
+
+// A Linework backup restores exactly, including sections still flagged for checking.
+async function readBackup(file) {
+  try {
+    const { review = [], ...data } = fromBackup(await file.text())
+    return { data, review, notes: [], exact: true, source: 'backup' }
+  } catch (error) {
+    throw new ImportError(
+      error.message === 'newer-version'
+        ? 'That backup was made by a newer version of Linework. Reload the page and try again.'
+        : 'That file isn’t a Linework backup.',
+    )
+  }
 }

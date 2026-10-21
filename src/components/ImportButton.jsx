@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { SECTION_TYPES } from '../sections/types.js'
 import ConfirmDialog from './ConfirmDialog.jsx'
 
-const ACCEPT = '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+const ACCEPT = '.pdf,.docx,.json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/json'
 
 // What the import found, for the confirm dialog.
 function foundItems({ order, committed }) {
@@ -79,7 +79,11 @@ export default function ImportButton({ onImport, onReadingChange, hasData, class
       >
         {result && (
           <>
-            <p>{result.exact ? 'This is a Linework export, so everything comes back exactly.' : 'Found:'}</p>
+            <p>
+              {result.exact
+                ? `This is a Linework ${result.source === 'backup' ? 'backup' : 'export'}, so everything comes back exactly.`
+                : 'Found:'}
+            </p>
             {!result.exact && (
               <ul className="confirm-list">
                 {foundItems(result.data).map((item) => (

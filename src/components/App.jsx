@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { flushSync } from 'react-dom'
+import { downloadBackup } from '../cv/backup.js'
 import { buildBlocks } from '../cv/blocks.js'
 import { exportDocx } from '../cv/exportDocx.js'
 import { printPdf } from '../cv/printPdf.js'
@@ -93,6 +94,7 @@ export default function App() {
         printPdf(name)
       },
       docx: () => exportDocx(blocks, name, { order: submitted.order, committed: submitted.committed }),
+      backup: () => downloadBackup(submitted, name),
     },
   }
 

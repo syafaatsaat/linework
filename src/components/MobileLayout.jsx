@@ -61,6 +61,7 @@ export default function MobileLayout({ cv, preview, theme, exports, reset, impor
             onMove={cv.actions.move}
             onAdd={cv.actions.addSection}
             onReset={resetCv}
+            onBackup={exports.backup}
             onImport={importFile}
             onReadingChange={importCv.setReading}
             hasData={importCv.hasData}

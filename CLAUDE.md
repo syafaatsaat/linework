@@ -103,6 +103,12 @@ A "Job match" toggle beside "Parser view" swaps the sheet for a panel where you 
 - **Desktop:** a split button `[Export PDF][DOCX]` in the header. **Mobile:** an "Export" button opens a bottom sheet with two large choices (PDF: "Best for most applications"; DOCX: "For job portals that ask for a Word file").
 - Known limitation: on iOS, print-to-PDF takes several taps. If mobile users matter, add a server-side PDF route later (headless Chromium rendering the same view).
 
+## Backup and restore
+
+- **Back up** (desktop header; "Back up CV" in the mobile Sections sheet) downloads `First_Last_CV_backup_YYYY-MM-DD.json`. It holds the saved CV (order, committed data and import "check" flags) in a small envelope: `{ format: 'linework-backup', version: 1, savedAt, cv }` (`src/cv/backup.js`).
+- **Restore** goes through Import, which accepts `.json` backups as well as PDF and DOCX, and restores them exactly. Other JSON files and backups from a newer version are rejected with a message. Import's Undo covers a restore too.
+- Downloads (DOCX and backup) share `downloadBlob()` in `src/lib/download.js`.
+
 ## Layout
 
 **Desktop (≥ ~960px):** header (logo `linework/cv`, theme toggle, export) → two columns: editor (`flex: 1 1 440px`) and preview stage (`flex: 999 1 560px`, sheet max-width 620px). Both columns wrap to stacked on narrower screens.
@@ -189,7 +195,7 @@ Built:
 
 - `npm test`: Vitest unit tests in `tests/unit` (format helpers, validation, reducer, block builder, parser text, pagination, DOCX structure and embedded data, import parser).
 - `npm run test:e2e`: Playwright tests in `tests/e2e` against the production build (`vite preview`). There are two projects: `desktop` (1280×900) and `mobile` (Pixel 7, `*mobile*` files only). They run with reduced motion so View Transitions don't add timing noise; `entries.spec.js` has one test with motion on.
-  - They cover editing flows, writing hints, undo, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
+  - They cover editing flows, backup and restore, writing hints, undo, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
   - `open(page, data)` in `tests/e2e/helpers.js` seeds localStorage. The shared sample CV is in `tests/fixtures.js`.
 - `npm run test:all` runs lint, unit and browser tests. CI (`.github/workflows/ci.yml`) runs lint, unit tests, build and browser tests on every push and PR.
 
@@ -230,11 +236,10 @@ Candidates for future work, roughly by value. None of these are started.
 **Keeping work safe**
 
 3. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
-4. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
 
 **Engineering**
 
-5. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
-6. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+4. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
+5. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
 
 Suggested next: 2 (gap detection).

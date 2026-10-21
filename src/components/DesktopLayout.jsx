@@ -13,6 +13,7 @@ export default function DesktopLayout({ cv, preview, theme, exports, reset, impo
         importCv={importCv}
         onExportPdf={exports.pdf}
         onExportDocx={exports.docx}
+        onBackup={exports.backup}
       />
       <div className="workspace">
         <Editor state={cv.state} actions={cv.actions} />
