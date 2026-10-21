@@ -199,6 +199,13 @@ Built:
   - `open(page, data)` in `tests/e2e/helpers.js` seeds localStorage. The shared sample CV is in `tests/fixtures.js`.
 - `npm run test:all` runs lint, unit and browser tests. CI (`.github/workflows/ci.yml`) runs lint, unit tests, build and browser tests on every push and PR.
 
+## Deployment
+
+- Live at https://linework-delta.vercel.app/, deployed by Vercel from `main` (Vite preset: `npm run build`, serving `dist/`). There's no `vercel.json`; the app has no client-side routes, so it needs no rewrites.
+- Vercel deploys independently of CI, so a push can go live even if the GitHub Actions tests fail.
+- Saved CVs live in each visitor's localStorage for that exact origin. Preview deployments have their own empty storage, and a domain change would strand existing users' data (they'd need Back up → Import).
+- Link previews: `<meta>` description and Open Graph / Twitter tags in `index.html`, with `public/og-image.png` (1200×630). `docs/screenshot.png` is the README screenshot. Both show the "Ada Tan" sample CV; retake them after visible UI changes.
+
 ## Design references (`/design`)
 
 The mockups are in a custom canvas format (`.dc.html`: HTML templates with `{{holes}}` and a `class Component extends DCLogic` logic block). They won't run on their own. Use them for exact markup structure, copy, spacing and behaviour:
@@ -239,7 +246,6 @@ Candidates for future work, roughly by value. None of these are started.
 
 **Engineering**
 
-4. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
-5. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+4. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
 
 Suggested next: 2 (gap detection).
