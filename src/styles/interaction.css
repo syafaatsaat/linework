@@ -1,0 +1,219 @@
+/* Hover, press and confirmation feedback for every button. Loaded after the
+   component styles so these states win.
+
+   - Hover tints use an inset box-shadow rather than a background, so they
+     sit on top of whatever the button's background is (panel, grid, toast)
+     and fade smoothly.
+   - Hover only applies with a real pointer (@media (hover: hover)), so taps
+     on touch screens don't leave buttons stuck looking hovered.
+   - Primary actions get an offset "stamp" shadow, like the A4 sheet's, and
+     pressing pushes the button down into it.
+   - Under reduced motion, motion.css makes all of this instant. */
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* The tabs keep their grab cursor (SectionTabs.css). */
+.tab-select:not(:disabled) {
+  cursor: inherit;
+}
+
+button,
+.tab {
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 120ms ease-out,
+    text-decoration-color 150ms ease-out;
+}
+
+/* Tinted on hover: start from a transparent tint of the same shape, so only
+   its colour animates. */
+:is(
+    .btn-outline,
+    .btn-ghost,
+    .btn-small,
+    .btn-icon,
+    .btn-icon-line,
+    .btn-icon-box,
+    .btn-option,
+    .btn-split-end,
+    .btn-accent-outline,
+    .btn-add,
+    .tab-add,
+    .btn-toggle:not(.btn-toggle--on),
+    .m-bar-main:not(.btn-toggle--on),
+    .chip:not([aria-pressed='true']),
+    .m-switch button:not([aria-pressed='true']),
+    .export-choice:not(.export-choice--primary),
+    .sheet-done,
+    .tab:not(.tab--active)
+  ) {
+  box-shadow: inset 0 0 0 999px transparent;
+}
+
+/* Offset "stamp" shadow on primary actions. The desktop Export split button
+   moves as one piece, so the shadow is on its group. */
+:is(.export-group, .btn-toggle--on, .btn-primary, .btn-danger, .m-export-btn, .export-choice--primary) {
+  box-shadow: 3px 3px 0 var(--btn-shadow);
+}
+
+.export-group {
+  border-radius: var(--radius);
+  transition:
+    box-shadow 150ms ease-out,
+    transform 120ms ease-out;
+}
+
+@media (hover: hover) {
+  /* Outline buttons: a faint tint and an accent border. */
+  :is(
+      .btn-outline,
+      .btn-ghost,
+      .btn-small,
+      .btn-icon-line,
+      .btn-icon-box,
+      .btn-option,
+      .btn-split-end,
+      .export-choice:not(.export-choice--primary),
+      .tab:not(.tab--active, .tab--dragging)
+    ):not(:disabled):hover {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 999px var(--hover);
+  }
+
+  /* Accent and dashed buttons, chips and the view switch: the tint alone. */
+  :is(
+      .btn-accent-outline,
+      .btn-add,
+      .tab-add,
+      .btn-toggle:not(.btn-toggle--on),
+      .m-bar-main:not(.btn-toggle--on),
+      .chip:not([aria-pressed='true']),
+      .m-switch button:not([aria-pressed='true']),
+      .sheet-done
+    ):not(:disabled):hover {
+    box-shadow: inset 0 0 0 999px var(--hover);
+  }
+
+  /* Icon-only buttons can sit on any background (the undo toast is dark in
+     light mode), so their tint is drawn from their own text colour. */
+  .btn-icon:not(:disabled):hover {
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor 14%, transparent);
+  }
+
+  /* Solid buttons: their fill eases toward the page background. */
+  :is(.btn-solid, .m-export-btn, .export-choice--primary):not(:disabled):hover {
+    background-color: color-mix(in srgb, var(--solid) 86%, var(--bg));
+  }
+
+  :is(.btn-primary, .btn-toggle--on):not(:disabled):hover {
+    background-color: color-mix(in srgb, var(--accent) 86%, var(--bg));
+  }
+
+  .btn-danger:not(:disabled):hover {
+    background-color: color-mix(in srgb, var(--warn) 86%, var(--bg));
+  }
+
+  /* Text links: a heavier underline. */
+  :is(.btn-link, .btn-accent-link, .btn-danger-link, .undo-action):not(:disabled):hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .btn-link:not(:disabled):hover {
+    color: var(--ink);
+  }
+
+  /* Stamp buttons lift a little toward the light on hover... */
+  :is(.btn-toggle--on, .btn-primary, .btn-danger, .m-export-btn, .export-choice--primary):not(:disabled):hover,
+  .export-group:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--btn-shadow);
+  }
+
+  /* ...and icons hint at what the button does. */
+  :is(.page-nav button:first-child, .editor-nav button:first-child):not(:disabled):hover :is(svg, .arrow),
+  .arrow--left:is(button:not(:disabled):hover *) {
+    transform: translateX(-2px);
+  }
+
+  :is(.page-nav button:last-child, .editor-nav button:last-child):not(:disabled):hover :is(svg, .arrow),
+  .arrow--right:is(button:not(:disabled):hover *) {
+    transform: translateX(2px);
+  }
+
+  .arrow--up:is(button:not(:disabled):hover *) {
+    transform: translateY(-2px);
+  }
+
+  .arrow--down:is(button:not(:disabled):hover *),
+  :is(.export-group button, .m-export-btn, .export-choice):not(:disabled):hover svg {
+    transform: translateY(2px);
+  }
+
+  .theme-toggle:hover svg {
+    transform: rotate(-20deg);
+  }
+}
+
+/* Moving parts inside buttons. */
+button svg,
+.arrow {
+  display: inline-block;
+  transition: transform 150ms ease-out;
+}
+
+/* Press: everything dips a pixel; stamp buttons push down into their shadow.
+   (Not the full-screen sheet backdrop, nor the tab drag handle.) */
+button:not(:disabled, .sheet-backdrop, .tab-handle):active {
+  transform: translateY(1px);
+}
+
+:is(.btn-toggle--on, .btn-primary, .btn-danger, .m-export-btn, .export-choice--primary):not(:disabled):active,
+.export-group:has(button:not(:disabled):active) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--btn-shadow);
+}
+
+.export-group button:active {
+  transform: none;
+}
+
+/* "✓ Saved" after a download: both labels share one grid cell, so the
+   button keeps the width of the longer one and nothing around it shifts. */
+.flash-label {
+  display: inline-grid;
+}
+
+.flash-label > * {
+  grid-area: 1 / 1;
+}
+
+.flash-label > [data-hidden] {
+  visibility: hidden;
+}
+
+.flash-in {
+  animation: flash-in 200ms ease-out backwards;
+}
+
+/* The check that pops in on the Edit button right after a submit. */
+.toggle-check {
+  display: inline-block;
+  margin-right: 6px;
+  animation: flash-in 200ms ease-out backwards;
+}
+
+@keyframes flash-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}

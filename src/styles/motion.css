@@ -92,6 +92,14 @@
   }
 }
 
+/* The theme reveal snapshots the page right after the theme changes; a
+   colour transition still running would put old-theme buttons in that
+   snapshot. */
+:root[data-theme-reveal] *,
+:root[data-theme-reveal] *::before {
+  transition: none !important;
+}
+
 /* Reduced motion: everything happens instantly. The !important also beats
    inline transitions (dnd-kit's tab drag). */
 @media (prefers-reduced-motion: reduce) {

@@ -4,7 +4,7 @@ import SectionChips from './SectionChips.jsx'
 import SectionPanel from './SectionPanel.jsx'
 
 export default function MobileEditView({ state, actions, onOpenSections }) {
-  const { order, active, sections, errors, attempt } = state
+  const { order, active, sections, errors, attempt, submits } = state
   const main = useRef(null)
 
   // A new section starts at the top of the form, not wherever the last one was scrolled.
@@ -32,6 +32,7 @@ export default function MobileEditView({ state, actions, onOpenSections }) {
         order={order}
         active={active}
         editing={sections[active].editing}
+        submits={submits}
         onSelect={actions.select}
         onEdit={() => actions.edit(active)}
       />

@@ -1,10 +1,14 @@
+import { useAsyncAction } from '../lib/useAsyncAction.js'
 import ExportButtons from './ExportButtons.jsx'
+import FlashLabel from './FlashLabel.jsx'
 import ImportButton from './ImportButton.jsx'
 import { LogoIcon } from './Icons.jsx'
 import ResetButton from './ResetButton.jsx'
 import ThemeToggle from './ThemeToggle.jsx'
 
 export default function AppHeader({ theme, onToggleTheme, onReset, importCv, onExportPdf, onExportDocx, onBackup }) {
+  const backup = useAsyncAction(onBackup)
+
   return (
     <header className="app-header no-print">
       <h1 className="sr-only">Linework CV builder</h1>
@@ -21,9 +25,12 @@ export default function AppHeader({ theme, onToggleTheme, onReset, importCv, onE
             className="btn-ghost"
           />
           {/* Restoring goes through Import, which reads backup files too. */}
-          <button type="button" className="btn-ghost" onClick={onBackup}>
-            Back up
+          <button type="button" className="btn-ghost" onClick={backup.run}>
+            <FlashLabel on={backup.done} label="Back up" done="✓ Saved" />
           </button>
+          <p className="sr-only" role="status">
+            {backup.done ? 'Backup saved to your downloads.' : ''}
+          </p>
           <ResetButton onReset={onReset} className="btn-ghost" />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <ExportButtons onPdf={onExportPdf} onDocx={onExportDocx} />

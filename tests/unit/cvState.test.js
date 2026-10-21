@@ -57,6 +57,13 @@ describe('draft and committed', () => {
     expect(state.attempt).toBe(1)
   })
 
+  it('counts successful submits only', () => {
+    const blocked = run([{ type: 'submit', key: 'general' }])
+    expect(blocked.submits).toBe(0)
+    const ok = run([...fill('general', { name: 'Ada', email: 'a@b.co', phone: '1' }), { type: 'submit', key: 'general' }])
+    expect(ok.submits).toBe(1)
+  })
+
   it('submit commits the draft', () => {
     const state = run([
       ...fill('general', { name: 'Ada', email: 'a@b.co', phone: '123' }),

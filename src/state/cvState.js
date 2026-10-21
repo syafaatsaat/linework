@@ -14,6 +14,7 @@ export const STORAGE_KEY = 'linework:cv:v1'
 //   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean, review: boolean } }
 //   errors:   what blocked the last submit of the active section (see validateRows)
 //   attempt:  counts blocked submits, so the UI can replay its error animation
+//   submits:  counts successful submits, so the Edit button can confirm one
 //   undo:     { message, snapshot } after a removal, reset or import, or null
 //
 // `committed` is what the preview and exports read. `draft` is what the form
@@ -72,7 +73,7 @@ function buildState(saved) {
   for (const key of order) {
     sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]), review.includes(key))
   }
-  return { order, active: 'general', sections, errors: [], attempt: 0, undo: null }
+  return { order, active: 'general', sections, errors: [], attempt: 0, submits: 0, undo: null }
 }
 
 export function createInitialState() {
@@ -164,7 +165,11 @@ function reduce(state, action) {
         return { ...state, errors, attempt: state.attempt + 1 }
       }
       const committed = clone(state.sections[key].draft)
-      return { ...updateSection(state, key, { committed, editing: false, review: false }), errors: [] }
+      return {
+        ...updateSection(state, key, { committed, editing: false, review: false }),
+        errors: [],
+        submits: (state.submits ?? 0) + 1,
+      }
     }
 
     case 'edit': {

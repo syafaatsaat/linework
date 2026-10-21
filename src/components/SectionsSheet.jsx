@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { useAsyncAction } from '../lib/useAsyncAction.js'
 import { OPTIONAL_SECTIONS, SECTION_TYPES } from '../sections/types.js'
+import FlashLabel from './FlashLabel.jsx'
 import { ChevronDown, ChevronUp } from './Icons.jsx'
 import ImportButton from './ImportButton.jsx'
 import ResetButton from './ResetButton.jsx'
@@ -8,6 +10,7 @@ import ResetButton from './ResetButton.jsx'
 // the CV order, chips to add optional sections, then Import CV and Reset CV.
 export default function SectionsSheet({ order, active, onMove, onAdd, onReset, onBackup, onImport, onReadingChange, hasData }) {
   const list = useRef(null)
+  const backup = useAsyncAction(onBackup)
   const [moved, setMoved] = useState(null) // { key, dir } of the last move
   const addable = OPTIONAL_SECTIONS.filter((key) => !order.includes(key))
 
@@ -86,9 +89,12 @@ export default function SectionsSheet({ order, active, onMove, onAdd, onReset, o
       )}
       <div className="sheet-footer">
         <ImportButton onImport={onImport} onReadingChange={onReadingChange} hasData={hasData} className="btn-accent-link" label="Import CV" />
-        <button type="button" className="btn-accent-link" onClick={onBackup}>
-          Back up CV
+        <button type="button" className="btn-accent-link" onClick={backup.run}>
+          <FlashLabel on={backup.done} label="Back up CV" done="✓ Saved" />
         </button>
+        <p className="sr-only" role="status">
+          {backup.done ? 'Backup saved to your downloads.' : ''}
+        </p>
         <ResetButton onReset={onReset} className="btn-danger-link" label="Reset CV" />
       </div>
     </>

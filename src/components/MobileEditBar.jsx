@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from './Icons.jsx'
 import SubmitToggle from './SubmitToggle.jsx'
 
 // ‹  [Submit / Edit {section}]  ›
-export default function MobileEditBar({ order, active, editing, onSelect, onEdit }) {
+export default function MobileEditBar({ order, active, editing, submits, onSelect, onEdit }) {
   const index = order.indexOf(active)
   const name = SECTION_TYPES[active].short.toLowerCase()
 
@@ -24,6 +24,7 @@ export default function MobileEditBar({ order, active, editing, onSelect, onEdit
       </button>
       <SubmitToggle
         editing={editing}
+        submits={submits}
         onEdit={onEdit}
         className="m-bar-main"
         submitLabel={`Submit ${name}`}

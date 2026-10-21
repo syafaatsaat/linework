@@ -9,7 +9,7 @@ export default function ThemeToggle({ theme, onToggle, compact = false }) {
   return (
     <button
       type="button"
-      className={compact ? 'btn-icon' : 'btn-ghost btn-ghost--icon'}
+      className={compact ? 'btn-icon theme-toggle' : 'btn-ghost btn-ghost--icon theme-toggle'}
       aria-label="Dark mode"
       aria-pressed={dark}
       onClick={(e) => onToggle(e.currentTarget)}

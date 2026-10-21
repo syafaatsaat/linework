@@ -21,6 +21,9 @@
   --row-hi: #eaf1fb;
   --focus: #4a80de;
   --sheet-shadow: 10px 10px 0 rgba(30, 91, 184, 0.18);
+  /* Hover tint for outline buttons, and the offset "stamp" shadow under primary buttons. */
+  --hover: rgba(30, 91, 184, 0.08);
+  --btn-shadow: rgba(30, 91, 184, 0.4);
 
   --font-ui: 'Hanken Grotesk', system-ui, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, monospace;
@@ -52,6 +55,8 @@
     --on-warn: #0a1424;
     --row-hi: #16294a;
     --sheet-shadow: 10px 10px 0 rgba(0, 0, 0, 0.5);
+    --hover: rgba(127, 174, 245, 0.12);
+    --btn-shadow: rgba(127, 174, 245, 0.4);
 
     color-scheme: dark;
   }
@@ -76,6 +81,8 @@
   --on-warn: #0a1424;
   --row-hi: #16294a;
   --sheet-shadow: 10px 10px 0 rgba(0, 0, 0, 0.5);
+  --hover: rgba(127, 174, 245, 0.12);
+  --btn-shadow: rgba(127, 174, 245, 0.4);
 
   color-scheme: dark;
 }

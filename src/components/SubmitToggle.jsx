@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { focusAfterRender } from '../lib/focus.js'
 import { SECTION_FORM_ID } from './formIds.js'
 
@@ -10,7 +11,26 @@ import { SECTION_FORM_ID } from './formIds.js'
 // the re-render has already swapped in the Submit button.
 //
 // data-section-toggle lets the panel return focus here after submit/cancel.
-export default function SubmitToggle({ editing, onEdit, className, submitLabel = 'Submit', editLabel = 'Edit' }) {
+const CHECK_MS = 1200
+
+// `submits` counts successful submits (cvState). When it goes up, the Edit
+// button that replaces Submit shows a ✓ for a moment. Switching sections
+// doesn't change it, so arriving at a submitted section shows no check.
+export default function SubmitToggle({ editing, onEdit, submits = 0, className, submitLabel = 'Submit', editLabel = 'Edit' }) {
+  const [seen, setSeen] = useState(submits)
+  const [check, setCheck] = useState(false)
+  // Adjusting state during render, once per new submit. Only an increase
+  // counts: Undo, reset and import can take the count back down.
+  if (seen !== submits) {
+    setSeen(submits)
+    if (submits > seen) setCheck(true)
+  }
+  useEffect(() => {
+    if (!check) return
+    const timer = setTimeout(() => setCheck(false), CHECK_MS)
+    return () => clearTimeout(timer)
+  }, [check])
+
   return editing ? (
     <button key="submit" type="submit" form={SECTION_FORM_ID} className={`${className} btn-toggle--on`} data-section-toggle>
       {submitLabel}
@@ -28,6 +48,11 @@ export default function SubmitToggle({ editing, onEdit, className, submitLabel =
         focusAfterRender(() => document.getElementById(SECTION_FORM_ID)?.querySelector('input, textarea, select'))
       }}
     >
+      {check && (
+        <span className="toggle-check" aria-hidden="true">
+          ✓
+        </span>
+      )}
       {editLabel}
     </button>
   )

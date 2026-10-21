@@ -16,7 +16,7 @@ import { SECTION_ERROR_ID, SECTION_FORM_ID } from './formIds.js'
 // add/remove entry → the new entry's first field / the add button;
 // move entry → the same button on the moved entry (or its pair at the ends);
 // remove section → the next section's title.
-export default function SectionPanel({ sectionKey, position, count, section, errors, attempt = 0, actions, compact = false }) {
+export default function SectionPanel({ sectionKey, position, count, section, errors, attempt = 0, submits = 0, actions, compact = false }) {
   const type = SECTION_TYPES[sectionKey]
   const { editing, draft, committed } = section
 
@@ -114,7 +114,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
             </button>
           )}
           {!compact && (
-            <SubmitToggle editing={editing} onEdit={() => actions.edit(sectionKey)} className="btn-toggle" />
+            <SubmitToggle editing={editing} submits={submits} onEdit={() => actions.edit(sectionKey)} className="btn-toggle" />
           )}
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
             disabled={position <= 2}
             onClick={(e) => move(position - 2, e)}
           >
-            ← Earlier
+            <span className="arrow arrow--left" aria-hidden="true">←</span> Earlier
           </button>
           <button
             type="button"
@@ -139,7 +139,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
             disabled={position >= count}
             onClick={(e) => move(position, e)}
           >
-            Later →
+            Later <span className="arrow arrow--right" aria-hidden="true">→</span>
           </button>
         </div>
       )}

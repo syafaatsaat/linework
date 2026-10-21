@@ -1,5 +1,6 @@
 import { useAsyncAction } from '../lib/useAsyncAction.js'
-import { DocxIcon, PdfIcon } from './Icons.jsx'
+import FlashLabel from './FlashLabel.jsx'
+import { CheckIcon, DocxIcon, PdfIcon } from './Icons.jsx'
 
 // Contents of the mobile "Export CV" sheet: two large choices.
 export default function ExportSheet({ pageCount, onPdf, onDocx }) {
@@ -17,12 +18,17 @@ export default function ExportSheet({ pageCount, onPdf, onDocx }) {
         </span>
       </button>
       <button type="button" className="export-choice" onClick={docx.run} disabled={docx.busy} aria-busy={docx.busy}>
-        <DocxIcon size={28} strokeWidth={1.8} />
+        {docx.done ? <CheckIcon size={28} strokeWidth={1.8} /> : <DocxIcon size={28} strokeWidth={1.8} />}
         <span className="export-choice-text">
-          <span className="export-choice-title">Word · DOCX</span>
+          <span className="export-choice-title">
+            <FlashLabel on={docx.done} label="Word · DOCX" done="Saved to Downloads" />
+          </span>
           <span className="export-choice-sub">For job portals that ask for a Word file</span>
         </span>
       </button>
+      <p className="sr-only" role="status">
+        {docx.done ? 'DOCX saved to your downloads.' : ''}
+      </p>
       {docx.failed && (
         <p className="export-error" role="alert">
           DOCX export failed. Try again.

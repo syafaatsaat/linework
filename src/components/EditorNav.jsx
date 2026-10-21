@@ -9,13 +9,14 @@ export default function EditorNav({ order, active, sections, onSelect }) {
       <button
         type="button"
         className="btn-outline"
+        aria-label="Prev section"
         disabled={index <= 0}
         onClick={(e) => {
           onSelect(order[index - 1])
           keepFocusInGroup(e.currentTarget)
         }}
       >
-        ← Prev
+        <span className="arrow" aria-hidden="true">←</span> Prev
       </button>
       <span className="mono-meta">
         {submitted} / {order.length} submitted
@@ -23,13 +24,14 @@ export default function EditorNav({ order, active, sections, onSelect }) {
       <button
         type="button"
         className="btn-outline"
+        aria-label="Next section"
         disabled={index >= order.length - 1}
         onClick={(e) => {
           onSelect(order[index + 1])
           keepFocusInGroup(e.currentTarget)
         }}
       >
-        Next →
+        Next <span className="arrow" aria-hidden="true">→</span>
       </button>
     </div>
   )

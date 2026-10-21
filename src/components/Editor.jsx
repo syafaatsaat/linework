@@ -6,7 +6,7 @@ import SectionPanel from './SectionPanel.jsx'
 import SectionTabs from './SectionTabs.jsx'
 
 export default function Editor({ state, actions }) {
-  const { order, active, sections, errors, attempt } = state
+  const { order, active, sections, errors, attempt, submits } = state
   const [adding, setAdding] = useState(false)
   const addable = OPTIONAL_SECTIONS.filter((key) => !order.includes(key))
   const menuOpen = adding && addable.length > 0
@@ -41,6 +41,7 @@ export default function Editor({ state, actions }) {
         section={sections[active]}
         errors={errors}
         attempt={attempt}
+        submits={submits}
         actions={actions}
       />
       <EditorNav order={order} active={active} sections={sections} onSelect={actions.select} />

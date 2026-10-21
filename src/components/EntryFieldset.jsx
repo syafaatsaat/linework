@@ -33,7 +33,7 @@ export default function EntryFieldset({ sectionKey, type, row, index, count, err
                 disabled={index === 0}
                 onClick={(e) => onMove(index, index - 1, e)}
               >
-                <span aria-hidden="true">↑ </span>Earlier
+                <span className="arrow arrow--up" aria-hidden="true">↑</span> Earlier
               </button>
               <button
                 type="button"
@@ -43,7 +43,7 @@ export default function EntryFieldset({ sectionKey, type, row, index, count, err
                 disabled={index === count - 1}
                 onClick={(e) => onMove(index, index + 1, e)}
               >
-                <span aria-hidden="true">↓ </span>Later
+                <span className="arrow arrow--down" aria-hidden="true">↓</span> Later
               </button>
             </div>
           )}
