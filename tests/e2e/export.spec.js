@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { expect, test } from '@playwright/test'
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs'
+import { full } from '../fixtures.js'
 import { headings, open, sample, sheet } from './helpers.js'
 
 // Text of each page as an ATS would extract it (one string per page).
@@ -63,6 +64,22 @@ test('a printed PDF imports back into the same sections', async ({ page }) => {
 
   await expect.poll(() => headings(page)).toEqual(['Summary', 'Skills', 'Work Experience', 'Education', 'Projects'])
   await expect(sheet(page).locator('.cv-item-title').first()).toHaveText('Senior Frontend Engineer')
+})
+
+test('a PDF with every section imports back into the same sections', async ({ page }) => {
+  await open(page, full)
+  const buffer = await page.pdf({ preferCSSPageSize: true })
+  await open(page)
+
+  const dialog = await importFile(page, { name: 'Ada_Tan_CV.pdf', mimeType: 'application/pdf', buffer })
+  await expect(dialog).not.toContainText('Skipped')
+  await dialog.getByRole('button', { name: 'Import' }).click()
+
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('linework:cv:v1')))
+  expect(saved.order).toEqual(full.order)
+  expect(saved.committed.volunteer).toEqual(full.committed.volunteer)
+  expect(saved.committed.awards).toEqual(full.committed.awards)
+  expect(saved.committed.publications).toEqual([{ ...full.committed.publications[0], link: 'example.com/tokens' }])
 })
 
 test('DOCX downloads as First_Last_CV.docx and imports back exactly', async ({ page }) => {

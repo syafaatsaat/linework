@@ -34,12 +34,15 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 | `projects` | Projects | Optional (add/remove) | repeatable: name, link, description |
 | `certs` | Certifications | Optional (add/remove) | repeatable: name, issuer, dateEarned |
 | `languages` | Languages | Optional (add/remove) | repeatable: language, proficiency (Native / Fluent / Professional / Conversational / Basic) |
+| `volunteer` | Volunteer Experience | Optional (add/remove) | repeatable: organization, role, description (one per line → bullets), from (month), until (month, blank = "Present") |
+| `awards` | Awards | Optional (add/remove) | repeatable: name, issuer, date, description |
+| `publications` | Publications | Optional (add/remove) | repeatable: title, publisher, date, link |
 
 `*` = required. General can't be submitted without name, email and phone. Show an inline alert naming the missing fields.
 
 - Optional general fields are labelled "(optional)". When they're blank, leave them off the CV with no empty lines or stray separators.
 - Summary: hard cap of 400 characters (`maxLength`), plus a live counter `n / 400` that turns amber at 90% and says "limit reached" at 400.
-- **Default section order:** general → skills → exp → edu → projects → (certs, languages appended when added).
+- **Default section order:** general → skills → exp → edu → projects → (optional sections appended when added).
 - Model each section as a type definition (fields + a `view(row)` function that returns display parts). Adding a new section type means adding one definition.
 
 ## Reordering
@@ -52,7 +55,7 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 ## CV output rules (ATS: do not break these)
 
 - Single column. No tables, columns, icons, images, text boxes, or headers/footers containing content.
-- Standard section headings: "Summary", "Skills", "Work Experience", "Education", "Projects", "Certifications", "Languages".
+- Standard section headings: "Summary", "Skills", "Work Experience", "Education", "Projects", "Certifications", "Languages", "Volunteer Experience", "Awards", "Publications".
 - Contact line: `email | phone | country`. Links line: `linkedin | portfolio`, shown as visible URLs with `https://` and `www.` removed.
 - Skills: `**Category:** item, item, item`. The category is bold; the skills are plain comma-separated text. Not chips or tags.
 - Responsibilities: a real `<ul><li>` bullet list, with a leading `-`, `•` or `*` removed from each line.
@@ -208,23 +211,22 @@ Candidates for future work, roughly by value. None of these are started.
 
 **Gaps in existing features**
 
-1. **More optional sections.** Volunteering, Awards and Publications are common and Import CV currently skips them (`HEADINGS.skip` in `parseCv.js`). Each is one new definition in `src/sections/types.js`, plus moving its headings out of `skip`.
-2. **US Letter page size.** The CV is A4 only. An A4/Letter choice must reach the preview sheet, pagination probe, `@page` rule and DOCX page size together.
+1. **US Letter page size.** The CV is A4 only. An A4/Letter choice must reach the preview sheet, pagination probe, `@page` rule and DOCX page size together.
 
 **Help writing a better CV**
 
-3. **Writing hints.** Non-blocking suggestions on bullets: weak openings ("Responsible for…"), no numbers or outcomes, very long bullets, repeated verbs. Never blocks Submit.
-4. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
+2. **Writing hints.** Non-blocking suggestions on bullets: weak openings ("Responsible for…"), no numbers or outcomes, very long bullets, repeated verbs. Never blocks Submit.
+3. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
 
 **Keeping work safe**
 
-5. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
-6. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
-7. **Undo.** "Removed Certifications. Undo" for removing entries, sections and reset, alongside or instead of confirm dialogs.
+4. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
+5. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
+6. **Undo.** "Removed Certifications. Undo" for removing entries, sections and reset, alongside or instead of confirm dialogs.
 
 **Engineering**
 
-8. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
-9. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+7. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
+8. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
 
-Suggested next: 3 (writing hints).
+Suggested next: 2 (writing hints).

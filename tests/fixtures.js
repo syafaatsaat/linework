@@ -38,3 +38,25 @@ export const sample = {
     projects: [{ name: 'Linework', link: 'https://github.com/ada/linework', description: 'A CV builder.' }],
   },
 }
+
+// The optional sections, for tests that need every section type.
+export const extras = {
+  volunteer: [
+    {
+      organization: 'Code for Good',
+      role: 'Volunteer Mentor',
+      description: 'Ran weekly coding workshops\nMentored 12 students',
+      from: '2019-01',
+      until: '2022-06',
+    },
+  ],
+  awards: [{ name: 'Engineering Excellence Award', issuer: 'Acme Pte Ltd', date: '2023-11', description: 'For the design system rebuild.' }],
+  publications: [
+    { title: 'Accessible Design Tokens', publisher: 'Smashing Magazine', date: '2024-04', link: 'https://www.example.com/tokens' },
+  ],
+}
+
+export const full = {
+  order: [...sample.order, 'volunteer', 'awards', 'publications'],
+  committed: { ...sample.committed, ...extras },
+}

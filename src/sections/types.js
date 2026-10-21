@@ -159,6 +159,70 @@ export const SECTION_TYPES = {
     ],
     view: (r) => ({ primary: r.language || '[Language]', meta: r.proficiency }),
   },
+
+  volunteer: {
+    label: 'Volunteer Experience',
+    short: 'Volunteering',
+    sheet: 'Volunteer Experience',
+    noun: 'role',
+    multi: true,
+    optional: true,
+    range: ['from', 'until'],
+    fields: [
+      { key: 'organization', label: 'Organisation', type: 'text', half: true, placeholder: 'e.g. Food Bank Singapore', required: true },
+      { key: 'role', label: 'Role', type: 'text', half: true, placeholder: 'e.g. Volunteer coordinator', required: true },
+      { key: 'description', label: 'What you did', type: 'textarea', placeholder: 'One point per line' },
+      { key: 'from', label: 'From', type: 'month', half: true, required: true },
+      { key: 'until', label: 'Until', type: 'month', half: true, hint: 'Leave blank if you still volunteer here.' },
+    ],
+    view: (r) => ({
+      primary: r.role || '[Role]',
+      secondary: r.organization,
+      meta: formatRange(r.from, r.until),
+      bullets: splitBullets(r.description),
+    }),
+  },
+
+  awards: {
+    label: 'Awards',
+    short: 'Awards',
+    sheet: 'Awards',
+    noun: 'award',
+    multi: true,
+    optional: true,
+    fields: [
+      { key: 'name', label: 'Award', type: 'text', placeholder: 'e.g. Dean’s List, Employee of the Year', required: true },
+      { key: 'issuer', label: 'Awarded by', type: 'text', half: true, placeholder: 'Organisation' },
+      { key: 'date', label: 'Date', type: 'month', half: true, required: true },
+      { key: 'description', label: 'Description', type: 'textarea', placeholder: 'What it recognised, in a sentence' },
+    ],
+    view: (r) => ({
+      primary: r.name || '[Award]',
+      secondary: r.issuer,
+      meta: formatMonth(r.date),
+      body: r.description,
+    }),
+  },
+
+  publications: {
+    label: 'Publications',
+    short: 'Publications',
+    sheet: 'Publications',
+    noun: 'publication',
+    multi: true,
+    optional: true,
+    fields: [
+      { key: 'title', label: 'Title', type: 'text', placeholder: 'Title of the paper, article or book', required: true },
+      { key: 'publisher', label: 'Publisher or venue', type: 'text', half: true, placeholder: 'e.g. ACM CHI, Smashing Magazine', required: true },
+      { key: 'date', label: 'Date', type: 'month', half: true, required: true },
+      { key: 'link', label: 'Link', type: 'text', placeholder: 'doi.org/… or a web address' },
+    ],
+    view: (r) => ({
+      primary: r.title || '[Title]',
+      secondary: joinParts([r.publisher, bareUrl(r.link)]),
+      meta: formatMonth(r.date),
+    }),
+  },
 }
 
 export const DEFAULT_ORDER = ['general', 'skills', 'exp', 'edu', 'projects']

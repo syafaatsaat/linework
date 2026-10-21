@@ -132,6 +132,35 @@ test.describe('sections and preview', () => {
     await expect.poll(() => headings(page)).not.toContain('Certifications')
   })
 
+  test('every optional section can be added from the menu', async ({ page }) => {
+    for (const label of ['Certifications', 'Languages', 'Volunteer Experience', 'Awards', 'Publications']) {
+      await page.getByRole('button', { name: '+ Add section' }).click()
+      await page.getByRole('button', { name: label }).click()
+      await expect(page.getByRole('heading', { name: label, level: 2 })).toBeVisible()
+    }
+    // All added: the menu has nothing left to offer.
+    await expect(page.getByRole('button', { name: '+ Add section' })).toHaveCount(0)
+    await expect(page.locator('.tab-label')).toHaveText([
+      'General', 'Skills', 'Experience', 'Education', 'Projects',
+      'Certifications', 'Languages', 'Volunteering', 'Awards', 'Publications',
+    ])
+  })
+
+  test('a volunteer role submits and prints like a job', async ({ page }) => {
+    await page.getByRole('button', { name: '+ Add section' }).click()
+    await page.getByRole('button', { name: 'Volunteer Experience' }).click()
+    await page.getByLabel('Organisation').fill('Code for Good')
+    await page.getByLabel('Role').fill('Mentor')
+    await page.getByLabel('What you did').fill('- Ran workshops')
+    await pickMonth(page, 'From', 'Jan', '2019')
+    await page.getByRole('button', { name: 'Submit', exact: true }).click()
+
+    await expect.poll(() => headings(page)).toContain('Volunteer Experience')
+    const role = sheet(page).locator('.cv-block', { hasText: 'Mentor' })
+    await expect(role.locator('.cv-meta')).toHaveText('Jan 2019 – Present')
+    await expect(role.locator('li')).toHaveText(['Ran workshops'])
+  })
+
   test('parser view shows the plain text an ATS would read', async ({ page }) => {
     await page.getByRole('button', { name: 'Parser view' }).click()
     const text = await page.locator('pre').textContent()

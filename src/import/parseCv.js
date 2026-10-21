@@ -15,9 +15,12 @@ const HEADINGS = {
   projects: ['projects', 'personal projects', 'selected projects', 'side projects', 'key projects', 'academic projects'],
   certs: ['certifications', 'certificates', 'certification', 'licenses and certifications', 'licences and certifications', 'courses and certifications', 'certifications and courses', 'courses', 'training'],
   languages: ['languages', 'language skills', 'spoken languages', 'language'],
+  volunteer: ['volunteer experience', 'volunteering', 'volunteer work', 'volunteer', 'community service', 'community involvement', 'volunteering and community'],
+  awards: ['awards', 'achievements', 'awards and achievements', 'honours and awards', 'honors and awards', 'awards and honours', 'awards and honors', 'honours', 'honors', 'scholarships', 'awards and scholarships'],
+  publications: ['publications', 'selected publications', 'papers', 'research publications', 'articles', 'publications and talks'],
   // Recognised so their content isn't mixed into the section before them,
   // but Linework has nowhere to put it.
-  skip: ['references', 'referees', 'interests', 'hobbies', 'hobbies and interests', 'volunteering', 'volunteer experience', 'volunteer work', 'awards', 'achievements', 'awards and achievements', 'honours and awards', 'publications', 'activities', 'extracurricular activities', 'leadership', 'memberships', 'additional information'],
+  skip: ['references', 'referees', 'interests', 'hobbies', 'hobbies and interests', 'activities', 'extracurricular activities', 'leadership', 'memberships', 'additional information'],
 }
 
 const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }
@@ -219,19 +222,72 @@ function headPair(head) {
   return head.length ? splitPair(head[0]) : ['', '']
 }
 
+// Jobs and volunteer roles: a title and an organisation, dates, and bullets.
+// "Acme — Senior Developer" puts the organisation first, so swap when only
+// the second part looks like a title.
+function roles(lines, titleWords) {
+  return toEntries(lines).map((e) => {
+    let [title, org] = headPair(e.head)
+    if (org && titleWords.test(org) && !titleWords.test(title)) [title, org] = [org, title]
+    return {
+      title,
+      org,
+      details: [...e.bullets, ...e.body].join('\n'),
+      from: e.range?.from ?? e.date,
+      until: e.range?.to ?? '',
+    }
+  })
+}
+
+const VOLUNTEER_ROLE = new RegExp(`${JOB_TITLE.source}|\\b(volunteer|mentor|coach|organi[sz]er|member|treasurer|secretary|chair(?:person)?|ambassador|helper|leader)s?\\b`, 'i')
+
+// A link in an entry, with emails ignored.
+const findLink = (text) => text.replace(new RegExp(EMAIL.source, 'g'), ' ').match(URL)?.[0] ?? ''
+
 const parsers = {
   exp(lines) {
+    return roles(lines, JOB_TITLE).map(({ title, org, details, from, until }) => ({
+      company: org,
+      position: title,
+      responsibilities: details,
+      from,
+      until,
+    }))
+  },
+
+  volunteer(lines) {
+    return roles(lines, VOLUNTEER_ROLE).map(({ title, org, details, from, until }) => ({
+      organization: org,
+      role: title,
+      description: details,
+      from,
+      until,
+    }))
+  },
+
+  awards(lines) {
     return toEntries(lines).map((e) => {
-      let [position, company] = headPair(e.head)
-      // "Acme — Senior Developer" puts the company first.
-      if (company && JOB_TITLE.test(company) && !JOB_TITLE.test(position)) [position, company] = [company, position]
+      // Name, then issuer; any further line, or one ending like a sentence,
+      // is a description (often too short to be read as body text).
+      const sentence = (h) => /[.!?]$/.test(h)
+      const head = e.head.filter((h) => !sentence(h))
+      const [name, issuer] = head.length > 2 ? head.slice(0, 2) : headPair(head)
+      const extra = [...head.slice(2), ...e.head.filter(sentence)]
       return {
-        company,
-        position,
-        responsibilities: [...e.bullets, ...e.body].join('\n'),
-        from: e.range?.from ?? e.date,
-        until: e.range?.to ?? '',
+        name,
+        issuer,
+        date: e.date || e.range?.to || e.range?.from || '',
+        description: [...extra, ...e.body, ...e.bullets].join(' '),
       }
+    })
+  },
+
+  publications(lines) {
+    return toEntries(lines).map((e) => {
+      const link = findLink([...e.head, ...e.body, ...e.bullets].join(' '))
+      const head = e.head.map((h) => (link ? h.replace(link, '') : h).replace(/^[\s|–—-]+|[\s|–—-]+$/g, '').trim()).filter(Boolean)
+      const [title, publisher] = headPair(head)
+      return { title, publisher, date: e.date || e.range?.to || e.range?.from || '', link }
     })
   },
 
@@ -253,7 +309,7 @@ const parsers = {
   projects(lines) {
     return toEntries(lines).map((e) => {
       const all = [...e.head, ...e.body, ...e.bullets]
-      const link = all.join(' ').replace(new RegExp(EMAIL.source, 'g'), ' ').match(URL)?.[0] ?? ''
+      const link = findLink(all.join(' '))
       const strip = (s) => (link ? s.replace(link, '') : s).replace(/^[\s|–—-]+|[\s|–—-]+$/g, '').trim()
       return {
         name: strip(e.head[0] ?? ''),

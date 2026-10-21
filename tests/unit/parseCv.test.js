@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildBlocks } from '../../src/cv/blocks.js'
 import { parseCv } from '../../src/import/parseCv.js'
-import { sample } from '../fixtures.js'
+import { full, sample } from '../fixtures.js'
 
 // Lines in the shape readDocx produces (see pdfLines.js), here built from
 // Linework's own blocks: what importing one of its exports without the
@@ -59,6 +59,32 @@ describe('parseCv', () => {
     ])
     expect(data.committed.edu).toEqual(sample.committed.edu)
     expect(data.committed.projects).toEqual([{ name: 'Linework', link: 'github.com/ada/linework', description: 'A CV builder.' }])
+  })
+
+  it('reads volunteering, awards and publications', () => {
+    const result = parseCv(blocksToLines(buildBlocks(full)))
+    expect(result.data.order).toEqual(full.order)
+    expect(result.data.committed.volunteer).toEqual(full.committed.volunteer)
+    expect(result.data.committed.awards).toEqual(full.committed.awards)
+    expect(result.data.committed.publications).toEqual([{ ...full.committed.publications[0], link: 'example.com/tokens' }])
+    expect(result.notes).toEqual([])
+  })
+
+  it('maps heading variants of the new sections and puts the role first', () => {
+    const line = (text, extra = {}) => ({ text, parts: [text], bullet: false, ...extra })
+    const result = parseCv([
+      line('Sam Lee', { title: true }),
+      line('sam@example.com | 555 0100 200'),
+      line('Community Involvement', { heading: true }),
+      { text: 'Red Cross | Volunteer 2018 - 2020', parts: ['Red Cross | Volunteer', '2018 - 2020'], bullet: false },
+      line('Honours and Awards', { heading: true }),
+      { text: 'Best Paper Award, IEEE 2021', parts: ['Best Paper Award, IEEE', '2021'], bullet: false },
+    ])
+    expect(result.data.committed.volunteer).toEqual([
+      { organization: 'Red Cross', role: 'Volunteer', description: '', from: '2018', until: '2020' },
+    ])
+    expect(result.data.committed.awards).toEqual([{ name: 'Best Paper Award', issuer: 'IEEE', date: '2021', description: '' }])
+    expect(result.notes.join(' ')).not.toMatch(/Skipped/)
   })
 
   it('recognises common heading variants and letter-spaced headings', () => {

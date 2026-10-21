@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { blocksToText, buildBlocks } from '../../src/cv/blocks.js'
 import { paginate } from '../../src/cv/paginate.js'
-import { sample } from '../fixtures.js'
+import { full, sample } from '../fixtures.js'
 
 describe('buildBlocks', () => {
   const blocks = buildBlocks(sample)
@@ -44,6 +44,24 @@ describe('buildBlocks', () => {
     const job = blocks.find((b) => b.id === 'item-exp-0')
     expect(job.bullets).toEqual(['Led the design system rebuild', 'Cut bundle size by 40%'])
     expect(job.meta).toBe('Mar 2021 – Present')
+  })
+})
+
+describe('optional sections', () => {
+  it('print with standard headings and the same entry shapes', () => {
+    const text = blocksToText(buildBlocks(full))
+    expect(text).toContain(`Volunteer Experience
+Volunteer Mentor | Jan 2019 – Jun 2022
+Code for Good
+• Ran weekly coding workshops
+• Mentored 12 students`)
+    expect(text).toContain(`Awards
+Engineering Excellence Award | Nov 2023
+Acme Pte Ltd
+For the design system rebuild.`)
+    expect(text).toContain(`Publications
+Accessible Design Tokens | Apr 2024
+Smashing Magazine | example.com/tokens`)
   })
 })
 
