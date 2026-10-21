@@ -5,6 +5,7 @@ import { exportDocx } from '../cv/exportDocx.js'
 import { printPdf } from '../cv/printPdf.js'
 import { useChangedBlocks } from '../cv/useChangedBlocks.js'
 import { usePagination } from '../cv/usePagination.js'
+import { focusAfterRender } from '../lib/focus.js'
 import { turnPage, withViewTransition } from '../lib/motion.js'
 import { useMediaQuery } from '../lib/useMediaQuery.js'
 import { useCv } from '../state/useCv.js'
@@ -12,6 +13,7 @@ import { useTheme } from '../state/useTheme.js'
 import CvFlow from './CvFlow.jsx'
 import DesktopLayout from './DesktopLayout.jsx'
 import MobileLayout from './MobileLayout.jsx'
+import UndoToast from './UndoToast.jsx'
 
 // Below this the app switches to the mobile layout. Between it and ~960px the
 // desktop columns stack.
@@ -97,6 +99,16 @@ export default function App() {
   return (
     <>
       {mobile ? <MobileLayout {...layoutProps} /> : <DesktopLayout {...layoutProps} />}
+      <UndoToast
+        undo={state.undo}
+        mobile={mobile}
+        onDismiss={actions.dismissUndo}
+        onUndo={() => {
+          actions.undo()
+          // The Undo button goes away; land on the restored section.
+          focusAfterRender(() => document.querySelector('.panel-title'))
+        }}
+      />
       <CvFlow blocks={blocks} flowRef={flowRef} />
     </>
   )

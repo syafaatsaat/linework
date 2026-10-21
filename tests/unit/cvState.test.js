@@ -192,3 +192,46 @@ describe('toStorage', () => {
     expect(toStorage(run([], toStorage(state)))).toEqual(toStorage(state))
   })
 })
+
+describe('undo', () => {
+  it('restores a removed section, entry or reset CV', () => {
+    for (const [action, message] of [
+      [{ type: 'removeSection', key: 'projects' }, 'Removed Projects.'],
+      [{ type: 'reset' }, 'Cleared your CV.'],
+    ]) {
+      const before = run([], sample)
+      const after = cvReducer(before, action)
+      expect(after.undo.message).toBe(message)
+      expect(toStorage(cvReducer(after, { type: 'undo' }))).toEqual(toStorage(before))
+    }
+
+    const editing = run([{ type: 'edit', key: 'exp' }], sample)
+    const removed = cvReducer(editing, { type: 'removeEntry', key: 'exp', index: 1 })
+    expect(removed.undo.message).toBe('Removed experience 2.')
+    expect(cvReducer(removed, { type: 'undo' }).sections.exp.draft).toEqual(editing.sections.exp.draft)
+  })
+
+  it('offers undo after an import replaces the CV', () => {
+    const imported = cvReducer(run([], sample), { type: 'import', data: { order: ['general'], committed: {} } })
+    expect(imported.undo.message).toBe('Replaced your CV with the import.')
+    expect(cvReducer(imported, { type: 'undo' }).sections.general.committed[0].name).toBe('Ada Tan')
+  })
+
+  it('expires on the next change, so later edits are never undone', () => {
+    const removed = run([{ type: 'removeSection', key: 'projects' }], sample)
+    const edited = cvReducer(removed, { type: 'edit', key: 'skills' })
+    expect(edited.undo).toBeNull()
+    expect(cvReducer(edited, { type: 'undo' })).toBe(edited)
+  })
+
+  it('survives no-op actions, and can be dismissed', () => {
+    const removed = run([{ type: 'removeSection', key: 'projects' }], sample)
+    expect(cvReducer(removed, { type: 'select', key: removed.active })).toBe(removed)
+    expect(cvReducer(removed, { type: 'dismissUndo' }).undo).toBeNull()
+  })
+
+  it('is never saved', () => {
+    const removed = run([{ type: 'removeSection', key: 'projects' }], sample)
+    expect(toStorage(removed)).not.toHaveProperty('undo')
+  })
+})

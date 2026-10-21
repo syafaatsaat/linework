@@ -22,6 +22,7 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 - **Cancel/switching away** discards unsaved changes. Keep two copies of the data: `draft` and `committed`.
 - Drafts aren't saved, so reloading or closing the tab with unsubmitted edits shows the browser's "Leave site?" prompt (`hasUnsavedChanges()` in `cvState.js`, `beforeunload` listener in `useCv.js`). Opening Edit without changing anything doesn't count.
 - The **CV preview and both exports show committed data only**.
+- **Undo:** removing an entry or a section, resetting the CV, and importing a CV show a toast ("Removed Certifications. Undo"). The reducer keeps a snapshot of the state from before the action (`state.undo`, wrapped around the main reducer in `cvState.js`). Any later change clears it, so Undo never discards newer edits. The toast (`UndoToast.jsx`) dismisses itself after 8 s, but not while it's hovered or focused. Undo isn't saved, so it's gone after a reload. Reset keeps its confirm dialog as well.
 
 ## Sections
 
@@ -166,6 +167,7 @@ Built:
 | Change highlight | On submit, new or changed blocks on the A4 preview get a fading blue highlight (~1.6 s). If the change is on another page, the preview jumps there. Blocks are compared by content, not id, so reordering sections or entries highlights nothing. | `src/cv/useChangedBlocks.js`, page jump in `App.jsx`, `.cv-block--changed` in `CvSheet.css` |
 | Entry swap | Earlier/Later on an entry swaps the two fieldsets in a View Transition. The fieldsets are positional (React keeps them and swaps their contents), so `swapWithTransition()` names the two elements by hand and swaps the names with the content. Focus follows the moved entry. | `swapWithTransition()` in `src/lib/motion.js`, `moveEntry` in `SectionPanel.jsx` |
 | Smooth reorder | Every section move (Earlier/Later, mobile ↑/↓, dropping a dragged tab) runs in a View Transition: desktop tabs (`tab-*`), Sections sheet rows (`row-*`) and preview blocks (`cv-*`) glide to their new places in 220 ms. Mobile chips are deliberately unnamed: they sit behind the open sheet and would fly over it. | `withViewTransition()` in `src/lib/motion.js`, wrapped `move` in `App.jsx`, timing in `motion.css` |
+| Undo toast | Slides up from the bottom (200 ms); sits above the mobile bottom bar. | `UndoToast.css` |
 | Bottom sheets | Slide up with a backdrop fade. Closing by the user (Done, backdrop, Escape) plays the slide down before unmounting; closing after an action (import, export) is instant. | `BottomSheet.jsx`, `BottomSheet.css` |
 | Confirm dialog | Fades and scales in on `showModal()` and out on `close()`, in pure CSS (`@starting-style` + `transition-behavior: allow-discrete`). | `ConfirmDialog.css` |
 | Edit ↔ Submit | The incoming form or summary fades up into place; summary rows arrive one after another (45 ms apart, capped at 360 ms). Only plays when the panel toggles; switching tabs stays instant. | `SectionPanel.jsx` (toggle detection), `SectionPanel.css`, `SubmittedSummary.css` |
@@ -179,7 +181,7 @@ Built:
 
 - `npm test`: Vitest unit tests in `tests/unit` (format helpers, validation, reducer, block builder, parser text, pagination, DOCX structure and embedded data, import parser).
 - `npm run test:e2e`: Playwright tests in `tests/e2e` against the production build (`vite preview`). There are two projects: `desktop` (1280×900) and `mobile` (Pixel 7, `*mobile*` files only). They run with reduced motion so View Transitions don't add timing noise; `entries.spec.js` has one test with motion on.
-  - They cover editing flows, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
+  - They cover editing flows, undo, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
   - `open(page, data)` in `tests/e2e/helpers.js` seeds localStorage. The shared sample CV is in `tests/fixtures.js`.
 - `npm run test:all` runs lint, unit and browser tests. CI (`.github/workflows/ci.yml`) runs lint, unit tests, build and browser tests on every push and PR.
 
@@ -222,11 +224,10 @@ Candidates for future work, roughly by value. None of these are started.
 
 4. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
 5. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
-6. **Undo.** "Removed Certifications. Undo" for removing entries, sections and reset, alongside or instead of confirm dialogs.
 
 **Engineering**
 
-7. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
-8. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+6. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
+7. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
 
 Suggested next: 2 (writing hints).

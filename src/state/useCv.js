@@ -45,6 +45,8 @@ export function useCv() {
       reset: () => dispatch({ type: 'reset' }),
       importCv: (data) => dispatch({ type: 'import', data }),
       markReviewed: (key) => dispatch({ type: 'markReviewed', key }),
+      undo: () => dispatch({ type: 'undo' }),
+      dismissUndo: () => dispatch({ type: 'dismissUndo' }),
     }),
     [],
   )

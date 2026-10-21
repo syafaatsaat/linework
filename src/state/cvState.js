@@ -14,6 +14,7 @@ export const STORAGE_KEY = 'linework:cv:v1'
 //   sections: { [key]: { committed: Row[], draft: Row[], editing: boolean, review: boolean } }
 //   errors:   what blocked the last submit of the active section (see validateRows)
 //   attempt:  counts blocked submits, so the UI can replay its error animation
+//   undo:     { message, snapshot } after a removal, reset or import, or null
 //
 // `committed` is what the preview and exports read. `draft` is what the form
 // edits. Submit copies draft → committed; Edit and Cancel copy committed → draft.
@@ -71,7 +72,7 @@ function buildState(saved) {
   for (const key of order) {
     sections[key] = freshSection(key, sanitizeRows(key, saved?.committed?.[key]), review.includes(key))
   }
-  return { order, active: 'general', sections, errors: [], attempt: 0 }
+  return { order, active: 'general', sections, errors: [], attempt: 0, undo: null }
 }
 
 export function createInitialState() {
@@ -116,7 +117,7 @@ function discardDraft(state, key) {
   })
 }
 
-export function cvReducer(state, action) {
+function reduce(state, action) {
   switch (action.type) {
     case 'select': {
       if (!state.sections[action.key] || action.key === state.active) return state
@@ -221,4 +222,24 @@ export function cvReducer(state, action) {
     default:
       return state
   }
+}
+
+// Actions that throw work away offer Undo, with the message the toast shows.
+const UNDOABLE = {
+  removeEntry: (state, { key, index }) => `Removed ${SECTION_TYPES[key].noun} ${index + 1}.`,
+  removeSection: (state, { key }) => `Removed ${SECTION_TYPES[key].label}.`,
+  reset: () => 'Cleared your CV.',
+  import: () => 'Replaced your CV with the import.',
+}
+
+// Undo restores the state from just before the action. Any later change
+// clears it, so Undo can never wipe out edits made after the removal.
+export function cvReducer(state, action) {
+  if (action.type === 'undo') return state.undo ? { ...state.undo.snapshot, undo: null } : state
+  if (action.type === 'dismissUndo') return state.undo ? { ...state, undo: null } : state
+
+  const next = reduce(state, action)
+  if (next === state) return state
+  const message = UNDOABLE[action.type]?.(state, action)
+  return { ...next, undo: message ? { message, snapshot: { ...state, undo: null } } : null }
 }

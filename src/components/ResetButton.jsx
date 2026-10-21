@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import ConfirmDialog from './ConfirmDialog.jsx'
 
-// "Reset CV" with a confirmation step, since it can't be undone.
+// "Reset CV" with a confirmation step, since it clears everything. Undo is
+// offered afterwards too, but only briefly and not after a reload.
 export default function ResetButton({ onReset, className, label = 'Reset' }) {
   const [confirming, setConfirming] = useState(false)
 
@@ -21,7 +22,7 @@ export default function ResetButton({ onReset, className, label = 'Reset' }) {
           onReset()
         }}
       >
-        <p>This clears every section and restores the default section order. It can't be undone.</p>
+        <p>This clears every section and restores the default section order.</p>
         <p>Export a PDF or DOCX first if you might want this version later.</p>
       </ConfirmDialog>
     </>
