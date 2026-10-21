@@ -28,3 +28,13 @@
 .stage-holder {
   position: relative;
 }
+
+/* Side by side (wide enough for both columns' flex bases, 440 + 40 gap + 560,
+   plus the workspace padding), the preview sits against the right edge so
+   it lines up with the header's export buttons, as the editor lines up with
+   the logo. Stacked, it stays centred. */
+@media (min-width: 1096px) {
+  .stage {
+    align-items: flex-end;
+  }
+}
