@@ -42,6 +42,31 @@
   border-color: var(--warn);
 }
 
+/* Writing hints: muted and accent-marked, not warn-coloured, since they never block Submit. */
+.suggestions {
+  padding: 8px 12px;
+  border-left: 2px solid var(--accent);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.suggestions-title {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.suggestions ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.suggestions li + li {
+  margin-top: 2px;
+}
+
 .field-hint {
   margin: 0;
   font-size: 13px;

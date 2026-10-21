@@ -8,6 +8,7 @@ import {
   splitBullets,
   splitList,
 } from '../lib/format.js'
+import { bulletHints } from '../lib/hints.js'
 
 export const PROFICIENCY_LEVELS = ['Native', 'Fluent', 'Professional', 'Conversational', 'Basic']
 
@@ -15,7 +16,9 @@ export const SUMMARY_MAX = 400
 
 // Section shape adds `range: [fromKey, toKey]` when an entry has a date span.
 //
-// Field shape: { key, label, type, half?, placeholder?, options?, maxLength?, required?, hint? }
+// Field shape: { key, label, type, half?, placeholder?, options?, maxLength?, required?, hint?, review? }
+// review(value) returns writing suggestions ([{ kind, message }]) shown under
+// the field as you type; they never block Submit.
 // type is one of: text, email, tel, month, textarea, select. Month values are
 // "YYYY-MM", or "YYYY" when only the year is known.
 //
@@ -76,7 +79,7 @@ export const SECTION_TYPES = {
     fields: [
       { key: 'company', label: 'Company', type: 'text', half: true, placeholder: 'Company name', required: true },
       { key: 'position', label: 'Position title', type: 'text', half: true, placeholder: 'Your role', required: true },
-      { key: 'responsibilities', label: 'Main responsibilities', type: 'textarea', placeholder: 'One responsibility per line' },
+      { key: 'responsibilities', label: 'Main responsibilities', type: 'textarea', placeholder: 'One responsibility per line', review: bulletHints },
       { key: 'from', label: 'From', type: 'month', half: true, required: true },
       { key: 'until', label: 'Until', type: 'month', half: true, hint: 'Leave blank if you still work here.' },
     ],
@@ -171,7 +174,7 @@ export const SECTION_TYPES = {
     fields: [
       { key: 'organization', label: 'Organisation', type: 'text', half: true, placeholder: 'e.g. Food Bank Singapore', required: true },
       { key: 'role', label: 'Role', type: 'text', half: true, placeholder: 'e.g. Volunteer coordinator', required: true },
-      { key: 'description', label: 'What you did', type: 'textarea', placeholder: 'One point per line' },
+      { key: 'description', label: 'What you did', type: 'textarea', placeholder: 'One point per line', review: bulletHints },
       { key: 'from', label: 'From', type: 'month', half: true, required: true },
       { key: 'until', label: 'Until', type: 'month', half: true, hint: 'Leave blank if you still volunteer here.' },
     ],

@@ -68,3 +68,22 @@ test.describe('with motion', () => {
       .toEqual(['', ''])
   })
 })
+
+test('writing hints appear as you type but never block Submit', async ({ page }) => {
+  const field = page.getByLabel('Main responsibilities').first()
+  await field.fill('Responsible for the design system\nBuilt the docs site')
+  const hints = page.locator('#exp-0-responsibilities-suggestions')
+  await expect(hints.locator('li')).toHaveText([
+    'Line 1 starts with “Responsible for”. Start with what you did instead, e.g. “Led”, “Built”, “Cut”.',
+    'No numbers yet. Add a result where you can: how many, how much, how fast.',
+  ])
+  await expect(field).toHaveAttribute('aria-describedby', /exp-0-responsibilities-suggestions/)
+
+  await field.fill('Led the design system rebuild for 4 product teams')
+  await expect(hints).toHaveCount(0)
+
+  await field.fill('Responsible for testing')
+  await page.getByRole('button', { name: 'Submit', exact: true }).click()
+  await expect(page.getByRole('alert')).toHaveCount(0)
+  await expect(page.getByText('SECTION 03 · SUBMITTED')).toBeVisible()
+})

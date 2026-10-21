@@ -46,6 +46,14 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 - **Default section order:** general → skills → exp → edu → projects → (optional sections appended when added).
 - Model each section as a type definition (fields + a `view(row)` function that returns display parts). Adding a new section type means adding one definition.
 
+## Writing hints
+
+Bullet fields (Work Experience responsibilities, Volunteer "What you did") show a "Suggestions" list under the textarea as you type. They're advice, never errors: they don't block Submit, use the accent colour rather than warn, and aren't a live region. The field's `aria-describedby` includes them.
+
+- Rules are in `bulletHints()` (`src/lib/hints.js`): weak openings ("Responsible for", "Worked on", "Helped with"…), lines over 30 words, the same opening verb on several lines, and no number anywhere (digits, %, or words like "doubled").
+- Messages name lines as numbered in the textarea, blank lines included.
+- A field opts in with `review: bulletHints` in its definition in `types.js`; `Field.jsx` renders whatever `review(value)` returns.
+
 ## Reordering
 
 - Users can reorder every section except `general`, which stays pinned first.
@@ -181,7 +189,7 @@ Built:
 
 - `npm test`: Vitest unit tests in `tests/unit` (format helpers, validation, reducer, block builder, parser text, pagination, DOCX structure and embedded data, import parser).
 - `npm run test:e2e`: Playwright tests in `tests/e2e` against the production build (`vite preview`). There are two projects: `desktop` (1280×900) and `mobile` (Pixel 7, `*mobile*` files only). They run with reduced motion so View Transitions don't add timing noise; `entries.spec.js` has one test with motion on.
-  - They cover editing flows, undo, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
+  - They cover editing flows, writing hints, undo, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
   - `open(page, data)` in `tests/e2e/helpers.js` seeds localStorage. The shared sample CV is in `tests/fixtures.js`.
 - `npm run test:all` runs lint, unit and browser tests. CI (`.github/workflows/ci.yml`) runs lint, unit tests, build and browser tests on every push and PR.
 
@@ -217,17 +225,16 @@ Candidates for future work, roughly by value. None of these are started.
 
 **Help writing a better CV**
 
-2. **Writing hints.** Non-blocking suggestions on bullets: weak openings ("Responsible for…"), no numbers or outcomes, very long bullets, repeated verbs. Never blocks Submit.
-3. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
+2. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
 
 **Keeping work safe**
 
-4. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
-5. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
+3. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
+4. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
 
 **Engineering**
 
-6. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
-7. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+5. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
+6. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
 
-Suggested next: 2 (writing hints).
+Suggested next: 2 (gap detection).
