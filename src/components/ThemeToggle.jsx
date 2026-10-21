@@ -1,8 +1,7 @@
 import { MoonIcon, SunIcon } from './Icons.jsx'
 
-// Announced as a "Dark mode" toggle with aria-pressed, so the visible label
-// (the theme you'd switch to) changing doesn't confuse screen readers.
-// Compact is the icon-only button in the mobile header.
+// Icon-only, announced as a "Dark mode" toggle with aria-pressed. The icon
+// shows the theme you'd switch to. Compact is the mobile header version.
 export default function ThemeToggle({ theme, onToggle, compact = false }) {
   const dark = theme === 'dark'
   const size = compact ? 20 : 16
@@ -10,13 +9,12 @@ export default function ThemeToggle({ theme, onToggle, compact = false }) {
   return (
     <button
       type="button"
-      className={compact ? 'btn-icon' : 'btn-ghost'}
+      className={compact ? 'btn-icon' : 'btn-ghost btn-ghost--icon'}
       aria-label="Dark mode"
       aria-pressed={dark}
       onClick={(e) => onToggle(e.currentTarget)}
     >
       {dark ? <SunIcon size={size} /> : <MoonIcon size={size} />}
-      {!compact && <span aria-hidden="true">{dark ? 'Light' : 'Dark'}</span>}
     </button>
   )
 }

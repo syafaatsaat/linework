@@ -2,13 +2,15 @@ import { keepFocusInGroup } from '../lib/focus.js'
 import { ChevronLeft, ChevronRight } from './Icons.jsx'
 
 // ‹ Page X of Y ›. Desktop shows text labels; the mobile bottom bar is icon-only.
+// Compact (mobile) buttons are icon-only, so they need an aria-label; the
+// desktop ones are named by their visible "Prev"/"Next" text (label in name).
 export default function PageNav({ page, count, onChange, compact = false }) {
   return (
     <nav className={compact ? 'page-nav page-nav--bar no-print' : 'page-nav no-print'} aria-label="CV pages" data-focus-group>
       <button
         type="button"
         className={compact ? 'btn-icon-box' : 'btn-outline btn-with-icon'}
-        aria-label="Previous page"
+        aria-label={compact ? 'Previous page' : undefined}
         disabled={page <= 0}
         onClick={(e) => {
           const button = e.currentTarget
@@ -25,7 +27,7 @@ export default function PageNav({ page, count, onChange, compact = false }) {
       <button
         type="button"
         className={compact ? 'btn-icon-box' : 'btn-outline btn-with-icon'}
-        aria-label="Next page"
+        aria-label={compact ? 'Next page' : undefined}
         disabled={page >= count - 1}
         onClick={(e) => {
           const button = e.currentTarget

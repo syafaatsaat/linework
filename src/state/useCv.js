@@ -22,6 +22,7 @@ export function useCv() {
       updateField: (key, index, field, value) => dispatch({ type: 'updateField', key, index, field, value }),
       addEntry: (key) => dispatch({ type: 'addEntry', key }),
       removeEntry: (key, index) => dispatch({ type: 'removeEntry', key, index }),
+      moveEntry: (key, index, to) => dispatch({ type: 'moveEntry', key, index, to }),
       submit: (key) => dispatch({ type: 'submit', key }),
       edit: (key) => dispatch({ type: 'edit', key }),
       cancel: (key) => dispatch({ type: 'cancel', key }),

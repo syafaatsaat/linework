@@ -133,6 +133,19 @@ export function cvReducer(state, action) {
       return updateSection(state, action.key, { draft })
     }
 
+    case 'moveEntry': {
+      // Move entry `index` to position `to` within the section's draft.
+      const { key, index, to } = action
+      const rows = state.sections[key].draft
+      if (index === to || index < 0 || to < 0 || index >= rows.length || to >= rows.length) return state
+      const draft = [...rows]
+      const [row] = draft.splice(index, 1)
+      draft.splice(to, 0, row)
+      const next = updateSection(state, key, { draft })
+      // Errors point at entries by index, so they move with them.
+      return state.errors.length ? { ...next, errors: validateRows(key, draft) } : next
+    }
+
     case 'submit': {
       const { key } = action
       const errors = validateRows(key, state.sections[key].draft)

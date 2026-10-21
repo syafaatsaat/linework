@@ -21,6 +21,30 @@ export function withViewTransition(update) {
   return document.startViewTransition(() => flushSync(update)).updateCallbackDone
 }
 
+// Two elements trade places in a View Transition: an entry moving one step
+// earlier or later. The entry fieldsets are positional (React keeps the
+// elements and swaps what's in them), so the names are set by hand and
+// swapped with the content: each entry keeps its name and glides to the
+// other's place.
+export function swapWithTransition(first, second, update) {
+  if (!canTransition() || !first || !second) {
+    update()
+    return Promise.resolve()
+  }
+  first.style.viewTransitionName = 'swap-a'
+  second.style.viewTransitionName = 'swap-b'
+  const transition = document.startViewTransition(() => {
+    flushSync(update)
+    first.style.viewTransitionName = 'swap-b'
+    second.style.viewTransitionName = 'swap-a'
+  })
+  transition.finished.finally(() => {
+    first.style.viewTransitionName = ''
+    second.style.viewTransitionName = ''
+  })
+  return transition.updateCallbackDone
+}
+
 // A page turn in the preview: the whole sheet slides out one way and the new
 // page in from the other ('next' or 'prev'). The data attribute switches the
 // CSS from per-block names to one name for the page (motion.css).

@@ -22,7 +22,19 @@
 
 .entry-actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
+  gap: 8px;
+  /* Same spacing as between fields (.entry-grid gap). */
+  margin-top: 14px;
+}
+
+/* Earlier/Later sit on the left, Remove entry on the right. */
+.entry-move {
+  display: flex;
+  gap: 8px;
+  margin-right: auto;
 }
 
 /* Below 360px two field columns get too cramped. */

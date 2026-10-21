@@ -53,8 +53,10 @@ function normalizeHeading(text) {
 }
 
 function headingKey(line, bodySize) {
-  if (line.bullet || words(line.text) > 5) return null
+  if (line.bullet) return null
+  // Count words after normalizing, so a letter-spaced heading counts as one.
   const name = normalizeHeading(line.text)
+  if (words(name) > 5) return null
   for (const [key, names] of Object.entries(HEADINGS)) if (names.includes(name)) return key
   // An unrecognised heading: a Word heading style, or (in a PDF) a short
   // all-caps line set larger than the body text. Size matters so a company

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { focusAfterRender, keepFocusInGroup } from '../lib/focus.js'
+import { swapWithTransition } from '../lib/motion.js'
 import { SECTION_TYPES } from '../sections/types.js'
 import EntryFieldset from './EntryFieldset.jsx'
 import SubmittedSummary from './SubmittedSummary.jsx'
@@ -13,6 +14,7 @@ import { SECTION_ERROR_ID, SECTION_FORM_ID } from './formIds.js'
 // Actions that replace the focused control hand focus on (see lib/focus.js):
 // submit → Edit button, or the first invalid field; cancel → Edit button;
 // add/remove entry → the new entry's first field / the add button;
+// move entry → the same button on the moved entry (or its pair at the ends);
 // remove section → the next section's title.
 export default function SectionPanel({ sectionKey, position, count, section, errors, attempt = 0, actions, compact = false }) {
   const type = SECTION_TYPES[sectionKey]
@@ -28,6 +30,7 @@ export default function SectionPanel({ sectionKey, position, count, section, err
   }
   const enter = toggled ? ' panel-enter' : ''
 
+  const [announcement, setAnnouncement] = useState('')
   const toggle = () => document.querySelector('[data-section-toggle]')
 
   const submit = (e) => {
@@ -52,6 +55,21 @@ export default function SectionPanel({ sectionKey, position, count, section, err
     const form = e.currentTarget.form
     actions.removeEntry(sectionKey, index)
     focusAfterRender(() => form.querySelector('.btn-add'))
+  }
+
+  const moveEntry = (index, to, e) => {
+    const form = e.currentTarget.form
+    const dir = to < index ? 'earlier' : 'later'
+    const entries = form.querySelectorAll('.entry')
+    const update = () => actions.moveEntry(sectionKey, index, to)
+    swapWithTransition(entries[index], entries[to], update).then(() => {
+      setAnnouncement(`${type.noun[0].toUpperCase()}${type.noun.slice(1)} moved to entry ${to + 1} of ${draft.length}.`)
+      focusAfterRender(() => {
+        const moved = form.querySelectorAll('.entry')[to]
+        const same = moved?.querySelector(`[data-move="${dir}"]`)
+        return same && !same.disabled ? same : moved?.querySelector('[data-move]:not(:disabled)')
+      })
+    })
   }
 
   const removeSection = () => {
@@ -138,12 +156,17 @@ export default function SectionPanel({ sectionKey, position, count, section, err
               type={type}
               row={row}
               index={i}
+              count={draft.length}
               errors={errors}
               errorId={SECTION_ERROR_ID}
               onChange={(index, field, value) => actions.updateField(sectionKey, index, field, value)}
               onRemove={removeEntry}
+              onMove={draft.length > 1 ? moveEntry : undefined}
             />
           ))}
+          <p className="sr-only" aria-live="polite">
+            {announcement}
+          </p>
 
           {type.multi && (
             <button type="button" className="btn-add" onClick={addEntry}>

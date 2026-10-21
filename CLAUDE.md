@@ -122,7 +122,7 @@ The grid background is four layered `linear-gradient`s (major and minor, horizon
 **Type:**
 - UI labels, buttons and meta text: Space Mono 400/700, 11–13px.
 - UI body and headings: Hanken Grotesk 400–700.
-- Borders are 1.5px with a 4px radius. Chips are fully rounded (radius 22px) on mobile.
+- Borders are 1px with a 4px radius. Chips are fully rounded (radius 22px) on mobile.
 
 **Drafting details:**
 - A "210 mm" dimension line with arrowheads above the sheet.
@@ -151,7 +151,8 @@ Built:
 
 | Animation | What it does | Where |
 |---|---|---|
-| Change highlight | On submit, new or changed blocks on the A4 preview get a fading blue highlight (~1.6 s). If the change is on another page, the preview jumps there. Reordering alone highlights nothing. | `src/cv/useChangedBlocks.js`, page jump in `App.jsx`, `.cv-block--changed` in `CvSheet.css` |
+| Change highlight | On submit, new or changed blocks on the A4 preview get a fading blue highlight (~1.6 s). If the change is on another page, the preview jumps there. Blocks are compared by content, not id, so reordering sections or entries highlights nothing. | `src/cv/useChangedBlocks.js`, page jump in `App.jsx`, `.cv-block--changed` in `CvSheet.css` |
+| Entry swap | Earlier/Later on an entry swaps the two fieldsets in a View Transition. The fieldsets are positional (React keeps them and swaps their contents), so `swapWithTransition()` names the two elements by hand and swaps the names with the content. Focus follows the moved entry. | `swapWithTransition()` in `src/lib/motion.js`, `moveEntry` in `SectionPanel.jsx` |
 | Smooth reorder | Every section move (Earlier/Later, mobile ↑/↓, dropping a dragged tab) runs in a View Transition: desktop tabs (`tab-*`), Sections sheet rows (`row-*`) and preview blocks (`cv-*`) glide to their new places in 220 ms. Mobile chips are deliberately unnamed: they sit behind the open sheet and would fly over it. | `withViewTransition()` in `src/lib/motion.js`, wrapped `move` in `App.jsx`, timing in `motion.css` |
 | Bottom sheets | Slide up with a backdrop fade. Closing by the user (Done, backdrop, Escape) plays the slide down before unmounting; closing after an action (import, export) is instant. | `BottomSheet.jsx`, `BottomSheet.css` |
 | Confirm dialog | Fades and scales in on `showModal()` and out on `close()`, in pure CSS (`@starting-style` + `transition-behavior: allow-discrete`). | `ConfirmDialog.css` |
@@ -161,6 +162,14 @@ Built:
 | Theme switch reveal | Switching light/dark spreads the new theme out in a circle from the toggle button (~450 ms, radius to the furthest corner). During the reveal no element keeps its own view-transition-name (`html[data-theme-reveal]`), so the page is revealed as one image. `useTheme` sets `data-theme` inside the transition so the "after" snapshot already has the new theme. | `revealTheme()` in `src/lib/motion.js`, `useTheme.js`, reveal rules in `motion.css` |
 | Import "scan" | While Import CV is reading a file, a blueprint scan line with a soft glow sweeps down the A4 preview, repeating until the read finishes. It's an overlay on the sheet frame, not the CV, and is hidden (not frozen) under reduced motion. Fast reads may only show a flash; there's no artificial delay. | `onReadingChange` in `ImportButton.jsx`, `reading` state in `App.jsx`, `.cv-sheet-frame--scanning` in `CvSheet.css` |
 | Drafting lines | The "210 mm" dimension line draws in sequence (arrow, rule, label, rule, arrow) when the preview appears. On the preview sheet, each heading rule draws left to right, 80 ms after the one above, whenever a heading appears (load, new section, page turn). The sheet swaps the heading border for an identical 1px line so it can animate; the print copy keeps the real border. | `DimensionLine.css`, `CvSheet.jsx`/`CvBlock.jsx` (`drawDelay`), `CvSheet.css` |
+
+## Testing
+
+- `npm test`: Vitest unit tests in `tests/unit` (format helpers, validation, reducer, block builder, parser text, pagination, DOCX structure and embedded data, import parser).
+- `npm run test:e2e`: Playwright tests in `tests/e2e` against the production build (`vite preview`). There are two projects: `desktop` (1280×900) and `mobile` (Pixel 7, `*mobile*` files only). They run with reduced motion so View Transitions don't add timing noise; `entries.spec.js` has one test with motion on.
+  - They cover editing flows, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
+  - `open(page, data)` in `tests/e2e/helpers.js` seeds localStorage. The shared sample CV is in `tests/fixtures.js`.
+- `npm run test:all` runs lint, unit and browser tests. CI (`.github/workflows/ci.yml`) runs lint, unit tests, build and browser tests on every push and PR.
 
 ## Design references (`/design`)
 
@@ -183,3 +192,32 @@ Seed data in the mockups ("Ada Tan") is sample content only.
 7. Theme tokens + dark mode
 8. Mobile layout (segmented view, chips, bottom sheets)
 9. Accessibility pass. Test real exports in an ATS checker and with `pdftotext`.
+
+## Ideas (not built yet)
+
+Candidates for future work, roughly by value. None of these are started.
+
+**Gaps in existing features**
+
+1. **Warn before losing unsaved edits.** Reloading or closing the tab while a section is in editing mode silently discards the draft. Add a `beforeunload` prompt when any section has unsaved changes.
+2. **More optional sections.** Volunteering, Awards and Publications are common and Import CV currently skips them (`HEADINGS.skip` in `parseCv.js`). Each is one new definition in `src/sections/types.js`, plus moving its headings out of `skip`.
+3. **US Letter page size.** The CV is A4 only. An A4/Letter choice must reach the preview sheet, pagination probe, `@page` rule and DOCX page size together.
+
+**Help writing a better CV**
+
+4. **Keyword match against a job ad.** Paste a job description; show which of its key terms appear in the CV and which are missing. Client-side only, no AI. Read from the same blocks as the parser view.
+5. **Writing hints.** Non-blocking suggestions on bullets: weak openings ("Responsible for…"), no numbers or outcomes, very long bullets, repeated verbs. Never blocks Submit.
+6. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
+
+**Keeping work safe**
+
+7. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
+8. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
+9. **Undo.** "Removed Certifications. Undo" for removing entries, sections and reset, alongside or instead of confirm dialogs.
+
+**Engineering**
+
+10. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
+11. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+
+Suggested next: 4 (keyword match).

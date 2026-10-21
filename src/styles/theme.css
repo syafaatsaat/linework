@@ -24,7 +24,7 @@
 
   --font-ui: 'Hanken Grotesk', system-ui, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, monospace;
-  --border: 1.5px;
+  --border: 1px;
   --radius: 4px;
 
   color-scheme: light;
