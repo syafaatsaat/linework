@@ -20,6 +20,7 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 - **Submit** commits the draft to the submitted copy and shows a summary of the values in HTML.
 - **Edit** reopens the inputs, pre-filled with the submitted values.
 - **Cancel/switching away** discards unsaved changes. Keep two copies of the data: `draft` and `committed`.
+- Drafts aren't saved, so reloading or closing the tab with unsubmitted edits shows the browser's "Leave site?" prompt (`hasUnsavedChanges()` in `cvState.js`, `beforeunload` listener in `useCv.js`). Opening Edit without changing anything doesn't count.
 - The **CV preview and both exports show committed data only**.
 
 ## Sections
@@ -74,6 +75,14 @@ Each section has two states: **editing** (form inputs) and **submitted** (read-o
 ## Parser view
 
 A toggle next to the preview that swaps the designed sheet for a `<pre>` showing the plain text an ATS would extract, generated from the same data. Use one shared function so the preview, the DOCX and the parser view can't drift apart.
+
+## Job match
+
+A "Job match" toggle beside "Parser view" swaps the sheet for a panel where you paste a job ad and see which of its key terms the CV uses (found / missing, with an `n of N` count). The preview is in one of three modes: `sheet`, `parser` or `match` (`mode` in `App.jsx`, toggles in `PreviewModes.jsx`).
+
+- It reads `blocksToText(blocks)`, the same text as the parser view, so only submitted sections count.
+- Extraction and matching are rule-based, in `src/cv/keywords.js`. Terms are words and 2–3 word phrases, with stop words and job-ad filler ("experience", "team", "strong"…) dropped. They're ranked by frequency, plus a boost for names written with capitals or symbols (TypeScript, CI/CD). Matching handles simple word forms (design/designed/designing, API/APIs), hyphens, dots and spacing (front-end = frontend, Node.js = NodeJS). At most 25 terms are shown.
+- The pasted ad is saved in localStorage (`linework:job-ad`). It never leaves the browser.
 
 ## Export
 
@@ -167,7 +176,7 @@ Built:
 
 - `npm test`: Vitest unit tests in `tests/unit` (format helpers, validation, reducer, block builder, parser text, pagination, DOCX structure and embedded data, import parser).
 - `npm run test:e2e`: Playwright tests in `tests/e2e` against the production build (`vite preview`). There are two projects: `desktop` (1280×900) and `mobile` (Pixel 7, `*mobile*` files only). They run with reduced motion so View Transitions don't add timing noise; `entries.spec.js` has one test with motion on.
-  - They cover editing flows, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
+  - They cover editing flows, the unsaved-edits prompt, job match, reordering (buttons and drag), entry reordering, pagination, the parser view, PDF text extraction (`page.pdf()` + pdfjs), export→import round trips for PDF and DOCX, axe audits, and computed-style checks against the theme tokens and CV rules (`styles.spec.js`).
   - `open(page, data)` in `tests/e2e/helpers.js` seeds localStorage. The shared sample CV is in `tests/fixtures.js`.
 - `npm run test:all` runs lint, unit and browser tests. CI (`.github/workflows/ci.yml`) runs lint, unit tests, build and browser tests on every push and PR.
 
@@ -199,25 +208,23 @@ Candidates for future work, roughly by value. None of these are started.
 
 **Gaps in existing features**
 
-1. **Warn before losing unsaved edits.** Reloading or closing the tab while a section is in editing mode silently discards the draft. Add a `beforeunload` prompt when any section has unsaved changes.
-2. **More optional sections.** Volunteering, Awards and Publications are common and Import CV currently skips them (`HEADINGS.skip` in `parseCv.js`). Each is one new definition in `src/sections/types.js`, plus moving its headings out of `skip`.
-3. **US Letter page size.** The CV is A4 only. An A4/Letter choice must reach the preview sheet, pagination probe, `@page` rule and DOCX page size together.
+1. **More optional sections.** Volunteering, Awards and Publications are common and Import CV currently skips them (`HEADINGS.skip` in `parseCv.js`). Each is one new definition in `src/sections/types.js`, plus moving its headings out of `skip`.
+2. **US Letter page size.** The CV is A4 only. An A4/Letter choice must reach the preview sheet, pagination probe, `@page` rule and DOCX page size together.
 
 **Help writing a better CV**
 
-4. **Keyword match against a job ad.** Paste a job description; show which of its key terms appear in the CV and which are missing. Client-side only, no AI. Read from the same blocks as the parser view.
-5. **Writing hints.** Non-blocking suggestions on bullets: weak openings ("Responsible for…"), no numbers or outcomes, very long bullets, repeated verbs. Never blocks Submit.
-6. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
+3. **Writing hints.** Non-blocking suggestions on bullets: weak openings ("Responsible for…"), no numbers or outcomes, very long bullets, repeated verbs. Never blocks Submit.
+4. **Gap detection.** Note long gaps between jobs (from the Experience date ranges) so the user can address them.
 
 **Keeping work safe**
 
-7. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
-8. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
-9. **Undo.** "Removed Certifications. Undo" for removing entries, sections and reset, alongside or instead of confirm dialogs.
+5. **Multiple CVs / versions.** Several saved CVs (e.g. one tailored per application) with duplicate and rename, still in localStorage under separate keys.
+6. **Backup and restore.** Everything lives in one browser's storage; clearing site data loses it. Add an explicit backup file and restore. (The DOCX export already embeds the data via `src/cv/embedded.js`, but that isn't obvious to users.)
+7. **Undo.** "Removed Certifications. Undo" for removing entries, sections and reset, alongside or instead of confirm dialogs.
 
 **Engineering**
 
-10. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
-11. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
+8. **Deploy.** Static site with no backend: host on GitHub Pages via a GitHub Actions workflow.
+9. **Offline / installable (PWA).** Fonts are already self-hosted; add a web app manifest and a service worker.
 
-Suggested next: 4 (keyword match).
+Suggested next: 3 (writing hints).

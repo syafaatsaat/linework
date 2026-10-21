@@ -20,7 +20,7 @@ const MOBILE_QUERY = '(max-width: 719px)'
 export default function App() {
   const [state, rawActions, submitted] = useCv()
   const [theme, toggleTheme] = useTheme()
-  const [parser, setParser] = useState(false)
+  const [mode, setMode] = useState('sheet') // preview: 'sheet' | 'parser' | 'match'
   const [requestedPage, setPage] = useState(0)
   const [reading, setReading] = useState(false) // an import is reading a file
   const mobile = useMediaQuery(MOBILE_QUERY)
@@ -66,14 +66,14 @@ export default function App() {
       pageCount: pages.length,
       // Prev/Next slides the page in the direction of travel (lib/motion.js).
       goToPage: (target) => turnPage(target > page ? 'next' : 'prev', () => setPage(target)),
-      parser,
-      toggleParser: () => setParser(!parser),
+      mode,
+      toggleMode: (next) => setMode(mode === next ? 'sheet' : next),
     },
     theme: { value: theme, toggle: toggleTheme },
     reset: () => {
       actions.reset()
       setPage(0)
-      setParser(false)
+      setMode('sheet')
     },
     importCv: {
       hasData,
@@ -81,13 +81,13 @@ export default function App() {
       run: (result) => {
         actions.importCv({ ...result.data, review: result.review })
         setPage(0)
-        setParser(false)
+        setMode('sheet')
       },
     },
     exports: {
       pdf: () => {
-        // Leave parser view (and flush any closing sheet) before the print dialog opens.
-        flushSync(() => setParser(false))
+        // Back to the sheet (and flush any closing sheet) before the print dialog opens.
+        flushSync(() => setMode('sheet'))
         printPdf(name)
       },
       docx: () => exportDocx(blocks, name, { order: submitted.order, committed: submitted.committed }),

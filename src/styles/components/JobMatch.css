@@ -1,0 +1,96 @@
+/* JobMatch component. App UI (not the CV), so it follows the site theme. */
+
+.job-match {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--panel);
+  border: var(--border) solid var(--strong);
+  border-radius: var(--radius);
+}
+
+.job-match-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.job-match-text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.job-match-score {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.job-match-score:empty {
+  display: none;
+}
+
+.job-match-meter {
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.job-match-meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 200ms ease-out;
+}
+
+.job-match-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.job-match-group h3 {
+  margin: 0;
+}
+
+.term-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.term {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: var(--border) solid var(--line);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+.term-mark {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.term--missing .term-mark {
+  color: var(--warn);
+}
+
+.term--found .term-mark {
+  color: var(--accent);
+}
+
+.preview-modes {
+  display: flex;
+  gap: 8px;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer } from 'react'
 import { saveText } from '../lib/storage.js'
-import { STORAGE_KEY, createInitialState, cvReducer, toStorage } from './cvState.js'
+import { STORAGE_KEY, createInitialState, cvReducer, hasUnsavedChanges, toStorage } from './cvState.js'
 
 export function useCv() {
   const [state, dispatch] = useReducer(cvReducer, undefined, createInitialState)
@@ -11,6 +11,19 @@ export function useCv() {
   useEffect(() => {
     saveText(STORAGE_KEY, snapshot)
   }, [snapshot])
+
+  // Drafts don't persist, so ask before a reload or tab close throws one away.
+  // The browser shows its own generic message.
+  const unsaved = hasUnsavedChanges(state)
+  useEffect(() => {
+    if (!unsaved) return
+    const warn = (e) => {
+      e.preventDefault()
+      e.returnValue = '' // older browsers need this to show the prompt
+    }
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [unsaved])
 
   // Committed data as { order, committed }, stable across keystrokes. The CV
   // preview and exports read this, so they can never see a draft.

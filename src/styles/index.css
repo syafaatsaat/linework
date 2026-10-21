@@ -25,6 +25,7 @@
 @import './components/PageNav.css';
 @import './components/PageWarning.css';
 @import './components/ParserView.css';
+@import './components/JobMatch.css';
 @import './components/MobileLayout.css';
 @import './components/MobileHeader.css';
 @import './components/ViewSwitch.css';

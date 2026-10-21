@@ -87,6 +87,16 @@ export function toStorage(state) {
   return { order: state.order, committed, review }
 }
 
+// True when a section's form holds edits that Submit hasn't committed: what
+// a reload or closing the tab would lose. Opening Edit without changing
+// anything doesn't count, and neither does an untouched blank form.
+export function hasUnsavedChanges(state) {
+  return state.order.some((key) => {
+    const { editing, draft, committed } = state.sections[key]
+    return editing && JSON.stringify(draft) !== JSON.stringify(draftFrom(key, committed))
+  })
+}
+
 function updateSection(state, key, patch) {
   return {
     ...state,

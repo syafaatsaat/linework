@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cvReducer, toStorage } from '../../src/state/cvState.js'
+import { cvReducer, hasUnsavedChanges, toStorage } from '../../src/state/cvState.js'
 import { sample } from '../fixtures.js'
 
 // Applies actions in order, starting from a CV built from `data` (or blank).
@@ -150,6 +150,31 @@ describe('sections', () => {
     const imported = run([], { ...sample, review: ['exp'] })
     expect(imported.sections.exp.review).toBe(true)
     expect(cvReducer(imported, { type: 'markReviewed', key: 'exp' }).sections.exp.review).toBe(false)
+  })
+})
+
+describe('hasUnsavedChanges', () => {
+  it('is false for an untouched CV, blank or submitted', () => {
+    expect(hasUnsavedChanges(run([]))).toBe(false)
+    expect(hasUnsavedChanges(run([], sample))).toBe(false)
+  })
+
+  it('is false after opening Edit without changing anything', () => {
+    expect(hasUnsavedChanges(run([{ type: 'edit', key: 'exp' }], sample))).toBe(false)
+  })
+
+  it('is true while a form has edits, and false again after submit or cancel', () => {
+    const typed = run(fill('general', { name: 'Ada', email: 'a@b.co', phone: '1' }))
+    expect(hasUnsavedChanges(typed)).toBe(true)
+    expect(hasUnsavedChanges(cvReducer(typed, { type: 'submit', key: 'general' }))).toBe(false)
+
+    const moved = run([{ type: 'edit', key: 'exp' }, { type: 'moveEntry', key: 'exp', index: 0, to: 1 }], sample)
+    expect(hasUnsavedChanges(moved)).toBe(true)
+    expect(hasUnsavedChanges(cvReducer(moved, { type: 'cancel', key: 'exp' }))).toBe(false)
+  })
+
+  it('is false once you switch away, since that discards the draft', () => {
+    expect(hasUnsavedChanges(run([...fill('general', { name: 'Ada' }), { type: 'select', key: 'skills' }]))).toBe(false)
   })
 })
 

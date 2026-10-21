@@ -24,8 +24,8 @@ export default function DesktopLayout({ cv, preview, theme, exports, reset, impo
           page={preview.page}
           pageCount={preview.pageCount}
           onPageChange={preview.goToPage}
-          parser={preview.parser}
-          onToggleParser={preview.toggleParser}
+          mode={preview.mode}
+          onToggleMode={preview.toggleMode}
         />
       </div>
     </div>

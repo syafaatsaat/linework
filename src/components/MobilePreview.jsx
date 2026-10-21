@@ -1,20 +1,23 @@
 import CvSheet from './CvSheet.jsx'
 import PageNav from './PageNav.jsx'
 import PageWarning from './PageWarning.jsx'
-import ParserToggle from './ParserToggle.jsx'
+import JobMatch from './JobMatch.jsx'
 import ParserView from './ParserView.jsx'
+import PreviewModes from './PreviewModes.jsx'
 
 // The real A4 page scaled to the screen width (not reflowed).
-export default function MobilePreview({ blocks, pageBlocks, changed, scanning, page, pageCount, onPageChange, parser, onToggleParser }) {
+export default function MobilePreview({ blocks, pageBlocks, changed, scanning, page, pageCount, onPageChange, mode, onToggleMode }) {
   return (
     <>
       <main className="m-main m-preview">
         <div className="m-preview-bar">
           <span className="mono-meta">A4 · submitted sections only</span>
-          <ParserToggle on={parser} onToggle={onToggleParser} />
+          <PreviewModes mode={mode} onToggle={onToggleMode} />
         </div>
-        {parser ? (
+        {mode === 'parser' ? (
           <ParserView blocks={blocks} />
+        ) : mode === 'match' ? (
+          <JobMatch blocks={blocks} />
         ) : (
           <>
             <CvSheet blocks={pageBlocks} changed={changed} scanning={scanning} label={`CV preview, page ${page + 1} of ${pageCount}`} />
@@ -22,7 +25,7 @@ export default function MobilePreview({ blocks, pageBlocks, changed, scanning, p
           </>
         )}
       </main>
-      {!parser && <PageNav page={page} count={pageCount} onChange={onPageChange} compact />}
+      {mode === 'sheet' && <PageNav page={page} count={pageCount} onChange={onPageChange} compact />}
     </>
   )
 }
