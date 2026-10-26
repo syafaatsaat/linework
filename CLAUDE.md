@@ -111,7 +111,7 @@ A "Job match" toggle beside "Parser view" swaps the sheet for a panel where you 
 
 ## Layout
 
-**Desktop (≥ ~960px):** header (logo `linework/cv`, theme toggle, export) → two columns: editor (`flex: 1 1 440px`) and preview stage (`flex: 999 1 560px`, sheet max-width 620px). Both columns wrap to stacked on narrower screens.
+**Desktop (≥ ~960px):** header (logo: an A4 sheet under a dimension line + `linework/cv` with `/cv` in accent, theme toggle, export) → two columns: editor (`flex: 1 1 440px`) and preview stage (`flex: 999 1 560px`, sheet max-width 620px). Both columns wrap to stacked on narrower screens.
 
 Editor column:
 1. Section tabs (wrapping row, each showing `⠿ 01 · status` + label), then "+ Add section".

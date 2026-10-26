@@ -18,10 +18,23 @@ function Icon({ size = 16, strokeWidth = 2, children }) {
   )
 }
 
+// An A4 sheet (14 × 19.8 = 210:297) under a drafting dimension line, like the "210 mm" line over the preview.
 export const LogoIcon = ({ size = 28 }) => (
-  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <rect x="3" y="3" width="22" height="22" />
-    <path d="M3 10h22M10 10v15" />
+  <svg
+    aria-hidden="true"
+    width={size}
+    height={size}
+    viewBox="0 0 28 28"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M7 1.5v3M21 1.5v3M7 3h14M9.2 1.8 7 3l2.2 1.2M18.8 1.8 21 3l-2.2 1.2" />
+    <rect x="7" y="7" width="14" height="19.8" strokeLinecap="butt" />
+    <path d="M10 11h5" strokeWidth="2.25" />
+    <path d="M10 13.5h8M10 17h8M10 20h5.5" strokeWidth="1" />
   </svg>
 )
 

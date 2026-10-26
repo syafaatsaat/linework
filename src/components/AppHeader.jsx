@@ -15,7 +15,7 @@ export default function AppHeader({ theme, onToggleTheme, onReset, importCv, onE
       <div className="app-header-inner">
         <div className="logo">
           <LogoIcon />
-          <span className="logo-text">linework/cv</span>
+          <span className="logo-text">linework<span className="logo-accent">/cv</span></span>
         </div>
         <div className="header-actions">
           <ImportButton

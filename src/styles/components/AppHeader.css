@@ -29,6 +29,10 @@
   letter-spacing: 0.04em;
 }
 
+.logo-accent {
+  color: var(--accent);
+}
+
 .header-actions {
   display: flex;
   gap: 10px;
