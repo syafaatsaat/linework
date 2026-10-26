@@ -30,7 +30,7 @@ export default function PreviewStage({ blocks, pageBlocks, changed, scanning, pa
           <PageWarning count={pageCount} />
         </>
       )}
-      <p className="mono-meta no-print">Preview shows submitted sections only · prints on white in both themes</p>
+      <p className="stage-note mono-meta no-print">Preview shows submitted sections only · prints on white in both themes</p>
     </main>
   )
 }

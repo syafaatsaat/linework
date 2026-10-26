@@ -12,7 +12,8 @@
 .stage-bar,
 .dimension,
 .stage-holder,
-.page-nav {
+.page-nav,
+.stage-note {
   width: 100%;
   max-width: 620px;
 }
@@ -27,6 +28,10 @@
 
 .stage-holder {
   position: relative;
+}
+
+.stage-note {
+  text-align: center;
 }
 
 /* Side by side (wide enough for both columns' flex bases, 440 + 40 gap + 560,
